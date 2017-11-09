@@ -40,7 +40,7 @@
 //************************************************************
 //----------this part depends on where you deploy this project
 //***********************************************************
-#define HOME_MINIREL "/home/ameya/minirel"//location of project root directory
+#define HOME_MINIREL "/home/samadhan/Desktop/git/minirel"//location of project root directory
 #define MAX_PATH_LENGTH 255 						//length of absolute address of any file
 #define ATTRLEN		32
 #define MR_MAX_FILENAME_SIZE 255
@@ -66,8 +66,8 @@ typedef struct ps {
 
 typedef struct gtps {
 		//	unsigned  char slotmap[BITMS_NUM];
-			unsigned 	pid;
-			char contents [PAGESIZE+1];
+			unsigned  	pid;
+			unsigned char contents [PAGESIZE+1];
 			} GtPage;
 
 typedef struct psrelcat {
