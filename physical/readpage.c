@@ -58,14 +58,17 @@ relCache[1].attrHead;
     //-------------------------
 
     printf("relCacheIndex =%d relCache%d.valid=%c",relCacheIndex,relNum,relCache[relNum].valid);
-     if(relNum < relCacheIndex && relCache[relNum].valid=='v')//relNum is available in relCache)       
+    // correct one//if(relNum < relCacheIndex && relCache[relNum].valid=='v')//relNum is available in relCache) 
+    if(relCache[relNum].valid=='v')//temporaray        
         {
             
            // findPgInBuff(relNum,pid)//find pid in PGBUFF[relNum])
             if (!isPgInBuff(relNum,pid))//pid is not availble in PGBUFF)
             {
+
+
                 //check whether dirty bit is set or not
-                if(relCache[relNum].dirty == 1)
+                if(relCache[relNum].dirty == 'd')
                 {
                     //insure that file is open in wb+ mode
                     //write the dirty page to the disk 1st
@@ -81,7 +84,7 @@ relCache[1].attrHead;
                 //if(fread(tempbuff,1,PAGESIZE*3,relCache[relNum].relFile) > 0)
                 len=fread(gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
                 printf("number of byte read %u",len);
-                if(!ferror(relCache[relNum].relFile)> 0)
+                if(!ferror(relCache[relNum].relFile))
                 {
                     gPgTable[relNum].pid=pid;
                     //printf("%s",gPgTable[relNum].contents);

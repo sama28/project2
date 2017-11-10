@@ -5,7 +5,7 @@
 #include <stdio.h>
 //relCache=2;//just for testing remove it compulsorily
 
-FlushPage(int relNum,unsigned pgid)
+int FlushPage(int relNum,unsigned pgid)
 {
     int len;
     //assuming file is opened in ab+ mode directly write 
@@ -19,9 +19,11 @@ FlushPage(int relNum,unsigned pgid)
         fflush(relCache[relNum].relFile);
         relCache[relNum].dirty=0;
         printf("\nflushing old page:-\n\n%s",gPgTable[relNum].contents);
+        return 1;
     }
     else{
 
         printf("\n\nflushpage():->there is problem in flushing the page");
     }
+    return 0;
 }

@@ -120,7 +120,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     relCache[relCacheIndex].dirty='c';
     relCache[relCacheIndex].attrHead=NULL;
     relCache[relCacheIndex].valid='v';
-    printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
+   // printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
     relCacheIndex++;
 
     bread_string(relcat_page,32,&relcat_index,tmp);
@@ -136,7 +136,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     relCache[relCacheIndex].dirty='c';
     relCache[relCacheIndex].attrHead=NULL;
     relCache[relCacheIndex].valid='v';
-    printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty);
+    //printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty);
     
     fseek(attrcatFile,attrcatRid.pid*PAGESIZE,SEEK_SET);
     fread(&attrcat_page,sizeof(attrcat_page),1,attrcatFile);
@@ -149,7 +149,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
             offset=bread_int(attrcat_page,4,&attrcat_index);
             length=bread_int(attrcat_page,4,&attrcat_index);
             type=bread_int(attrcat_page,2,&attrcat_index);
-            printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
+            //printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
             attrListHead=addAttrListNode(attrListHead,attrName,offset,length,type);
         }
         relCache[j].attrHead=attrListHead;
@@ -165,6 +165,8 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     attrcatRid.slotnum=bread_int(relcat_page,4,&relcat_index);
     printf("%d",relcat_index);
     int howmuchRec;
+    relCacheIndex++;
+    /*
     if(relCache[0].numRecs<20){
         howmuchRec=relCache[0].numRecs;
     }
@@ -202,7 +204,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
         relCache[i].relFile=NULL;
         relCache[i].dirty='c';
         relCache[relCacheIndex].valid='i';
-    }
+    }*/
 }
 
 OpenCats()
