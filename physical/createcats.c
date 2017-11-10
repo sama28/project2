@@ -236,8 +236,8 @@ CreateCats(char *d)//d should be d=HOME/data/[dbname]/data
 
 			pg1.slotmap[0]=0xff;//hex=1111 1111 
 			pg1.slotmap[1]=0xf0;//1111 0000
-			fwrite(&(&pg)->slotmap[0],s[7],1,fda);	//writing bitmap
-			fwrite(&(&pg)->slotmap[1],s[7],1,fda);	//writing bitmap
+			fwrite(&(&pg1)->slotmap[0],s[7],1,fda);	//writing bitmap
+			fwrite(&(&pg1)->slotmap[1],s[7],1,fda);	//writing bitmap
 
 			for(i = 2 ;i<MR_ATTRCAT_BITMS_NUM;i++)
 			{

@@ -131,7 +131,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     relCache[relCacheIndex].numAttrs=bread_int(relcat_page,2,&relcat_index);
     relCache[relCacheIndex].Rid.pid=1;
     relCache[relCacheIndex].Rid.slotnum=1;
-    relCache[relCacheIndex].relFile=relcatFile;
+    relCache[relCacheIndex].relFile=attrcatFile;
     relCache[relCacheIndex].dirty='c';
     relCache[relCacheIndex].attrHead=NULL;
     printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty);

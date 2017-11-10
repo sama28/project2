@@ -1,29 +1,23 @@
-/*
-/*
 //------cumpulsory header--------------
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
 #include "../include/mrdtypes.h"
-/*
+
+nextRec(int relNum, Rid* startRid, Rid *foundRid, char *recPtr);
+
+
 GetNextRec(int relNum,recid * startRid,recid* foundRid,void * recPtr)
 {
  printf("GetNextRec \n ");
 
-
-
-
-
-
-
-        //relCache[relNum].startRid->pid;
+ nextRec(relNum,startRid,foundRid,recPtr);
 }
-*/
+
 //--------------------------------------------
 //---------------------------------------------
 //----------test stub-----------------------------
 /*
-
 int relCacheIndex = 2; //temporary definition remove it ones ameya changes reflect
 int relNum = 1;
 //int pid=1;
@@ -32,6 +26,7 @@ relCacheEntry relCache[10];
 relCache[relNum].numPgs = 2;
 relCache[relNum].numRecs = 12;
 relCache[relNum].recLength = 42;
+*/
 int main()
 {
         int rln = 1;
@@ -40,12 +35,12 @@ int main()
         startRid.slotnum = 6;
         char record[MR_ATTRCAT_REC_SIZE]; //attrcat rec size
 
-        nextrec(rln, startRid, &foundRid, record);
+        nextrec(rln, &startRid, &foundRid, record);
         printf("%s", record);
 }
 //---------------------------------------------
 //----------------------------------------------
-nextRec(int relNum, Rid startRid, Rid *foundRid, char *recPtr)
+nextRec(int relNum, Rid* startRid, Rid *foundRid, char *recPtr)
 {
         int bitmapByteNum;
         int bitmapbitnum;
@@ -55,14 +50,14 @@ nextRec(int relNum, Rid startRid, Rid *foundRid, char *recPtr)
         if (relCache[relNum].relFile)
         { //relation is open and entries are there in relCache
 
-                if (startRid.pid < relCache[relNum].numPgs && startRid.slotnum < relCache[relNum].numRecs)
+                if (startRid->pid < relCache[relNum].numPgs && startRid->slotnum < relCache[relNum].numRecs)
                 { //pid is valid and not the outside of the page range
 
-                        ReadPage(relNum, startRid.pid);
-                        if (gPgTable[relNum].pid == startRid.pid)
+                        ReadPage(relNum, startRid->pid);
+                        if (gPgTable[relNum].pid == startRid->pid)
                         {
-                                bitmapByteNum = startRid.slotnum / 8;
-                                bitmapbitnum = startRid.slotnum % 8;
+                                bitmapByteNum = startRid->slotnum / 8;
+                                bitmapbitnum = startRid->slotnum % 8;
                                 cmprtr1 = 0x80;
                                 cmprtr1 = cmprtr1 >> bitmapbitnum;
                                 cmprtr2 = gPgTable[relNum].contents[bitmapByteNum];
@@ -88,7 +83,7 @@ unsigned firstRecSlotInd(relNum)
 {
         return (((PAGESIZE - PGTAIL_SPACE) / (8 * relCache[relNum].recLength + 1))+1);
 }
-
+/*
 void ReadPage(int relNum, unsigned pid)
 {
 
@@ -127,8 +122,8 @@ relCache[1].Rid;
 relCache[1].relFile;
 relCache[1].dirty=0;
 relCache[1].attrHead;
-*/
-/*
+*//*
+
         //----------------------------------------
 
         //----------------------------code part-----------------------------
@@ -184,7 +179,7 @@ relCache[1].attrHead;
         // printf("ReadPage \n ");
 }
 */
-/*
+
 //--------------------------------
 //--buffer management related-----
 //--prototypical instances and implementation so that buffermanagement could be decoupeled
@@ -204,7 +199,7 @@ int isPgInBuff(int relNum, unsigned pgid)
 
         return 0;
 }
-
+/*
 FlushPage(int relNum, unsigned pgid)
 {
         int len;
