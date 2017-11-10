@@ -34,8 +34,13 @@ char	**argv;
       printf("\n---------------------------------------------------\n");
       
       OpenCats();
+<<<<<<< HEAD
       unsigned char a[58]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
       testMain();
+=======
+      //unsigned char a[59]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
+      //InsertRec(0,&a);
+>>>>>>> 6d9bc19cc68987eb643bb389242099b260526300
     }
     else{
       printf("\n---------------------------------------------------\n");
