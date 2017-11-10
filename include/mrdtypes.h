@@ -4,23 +4,34 @@
 #define DTCHAR 					1
 #define DTUNSIGNED_CHAR 		2
 #define DTSHORT 				3
-#define DTSIGNED_SHORT			3 
-#define DTSIGNED_SHORT_INT		3
 #define DTUNSIGNED_SHORT		4
 #define DTINT					5
-#define DTSIGNED_INT			5
 #define DTUNSIGNED_INT			6
-#define DTLONG					7
-#define DTSIGNED_LONG			7
-#define DTUNSIGNED_LONG		    8
-#define DTLONG_LONG			    9
-#define DTSIGNED_LON_LONG		9
-#define DTUNSIGNED_LONG_LONG    10
-#define DTFLOT					11
-#define DTDOUBLE				12
-#define DTLONG_DOUBLE			13
-#define DTSTRING                14
-#define DTCHAR_ARRAY            14
+#define DTSTRING                7
+
+
+
+
+
+
+//#define DTCHAR_ARRAY            7
+
+
+//#define DTSIGNED_INT			5
+
+//#define DTSIGNED_SHORT			3 
+//#define DTSIGNED_SHORT_INT		3
+
+//#define DTLONG					7
+//#define DTSIGNED_LONG			    7
+//#define DTUNSIGNED_LONG		    8
+//#define DTLONG_LONG			    9
+//#define DTSIGNED_LON_LONG		    9
+//#define DTUNSIGNED_LONG_LONG      10
+//#define DTFLOT					11
+//#define DTDOUBLE				    12
+//#define DTLONG_DOUBLE			    13
+
 
 
 
