@@ -4,22 +4,83 @@
 #include "../include/globals.h"
 #include "../include/mrdtypes.h"
 #include  <string.h>
-nextRec(int relNum, Rid* startRid, Rid *foundRid, char *recPtr);
+int nextRec(int relNum, Rid* startRid, char *recPtr);
 unsigned firstRecSlotInd(relNum);
 int isPgInBuff(int relNum, unsigned pgid);
 unsigned int i;
 
 //-------------------------------------------
-GetNextRec(int relNum,Rid * startRid,Rid* foundRid,void * recPtr)
+GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
 {
  printf("GetNextRec \n ");
 
- nextRec(relNum,startRid,foundRid,recPtr);
+ int bitmapByteNum;
+ int bitmapbitnum;
+ unsigned char cmprtr1, cmprtr2;
+ unsigned fstrecind;
+
+ foundRid->pid=startRid->pid;
+ foundRid->slotnum=startRid->slotnum;     
+ //------------------------------------------------
+  if (relCache[relNum].relFile!=NULL)
+  { //relation is open and entries are there in relCache
+        while(foundRid->pid < relCache[relNum].numPgs)
+        {
+                ReadPage(relNum, foundRid->pid);
+                 //1. Read the Required Page In gPgTable
+                //2.If Page Is Read Successfully And Available In gPgTable
+                if (gPgTable[relNum].pid == foundRid->pid)
+                {
+                        while(foundRid->slotnum < relCache[relNum].numRecs)
+                        {
+                         //pid is valid and not the outside of the page range                   
+                          bitmapByteNum = foundRid->slotnum / 8;
+                          bitmapbitnum = foundRid->slotnum % 8;
+                          cmprtr1 = 0x80;
+                          cmprtr1 = cmprtr1 >> bitmapbitnum;
+                          cmprtr2 = gPgTable[relNum].contents[bitmapByteNum];
+                          if ((cmprtr1 & cmprtr2) != 0)
+                          { //slot is valid so record exists
+
+                                  //finding the corresponding record slot
+                                  fstrecind=firstRecSlotInd(relNum);
+                                  fstrecind=fstrecind+relCache[relNum].recLength*foundRid->slotnum;
+                                  //offset to the desired record;
+                                  for(i=0;i<relCache[relNum].recLength;i++)
+                                  {
+                                      recPtr[i]=gPgTable[relNum].contents[fstrecind+i];
+                                  }
+                                  //memcpy(recPtr, &gPgTable[relNum].contents[fstrecind],relCache[relNum].recLength);
+                                  printf("\n\nInGetnextRec : Rec Copied SuccessFully...");
+                                  return 1;
+                          }
+                             // printf("\n\nIn nextRec There Is No Rec At Given Slot No");
+                            foundRid->slotnum++;
+                        }        
+                }
+                else{
+                      printf("\n\nIn GetnextRec Failed To Bring The Required Page");
+                      return -3;
+                  }
+                  foundRid->pid++;
+                  foundRid->slotnum=0;
+        }
+        return -2;
+        printf("\n\nRECORD NOT FOUND...");
+   }      
+  else{
+      printf("\n\nRELATION IS NOT OPENED....");
+      return -1;
+  }
+  
+  return 0;
+ //---------------------------------------------
+
 }
 
 //---------------------------------------------
 //----------------------------------------------
-nextRec(int relNum, Rid* startRid, Rid *foundRid, char *recPtr)
+int nextRec(int relNum, Rid* startRid, char *recPtr)
 {
         int bitmapByteNum;
         int bitmapbitnum;
@@ -33,7 +94,11 @@ nextRec(int relNum, Rid* startRid, Rid *foundRid, char *recPtr)
                 if (startRid->pid < relCache[relNum].numPgs && startRid->slotnum < relCache[relNum].numRecs)
                 { //pid is valid and not the outside of the page range
 
+                        
                         ReadPage(relNum, startRid->pid);
+                        //1. Read the Required Page In gPgTable
+                        
+                        //2.If Page Is Read Successfully And Available In gPgTable
                         if (gPgTable[relNum].pid == startRid->pid)
                         {
                                 bitmapByteNum = startRid->slotnum / 8;
@@ -47,21 +112,25 @@ nextRec(int relNum, Rid* startRid, Rid *foundRid, char *recPtr)
 
                                         //finding the corresponding record slot
                                         fstrecind=firstRecSlotInd(relNum);
-
+                                        fstrecind=fstrecind+relCache[relNum].recLength*startRid->slotnum;
+                                        //offset to the desired record;
                                         for(i=0;i<relCache[relNum].recLength;i++)
                                         {
                                             recPtr[i]=gPgTable[relNum].contents[fstrecind+i];
                                         }
                                         //memcpy(recPtr, &gPgTable[relNum].contents[fstrecind],relCache[relNum].recLength);
                                         printf("\n\nInnextRec : Rec Copied SuccessFully...");
+                                        return 1;
                                 }
                                 else
                                 {
                                     printf("\n\nIn nextRec There Is No Rec At Given Slot No");
+                                    return -4;
                                 }
                         }
                         else{
                             printf("\n\nIn nextRec Page Table Doesn't Contain The Required Page gPgTable[relNum].pid == startRid->pid");
+                            return -3;
 
                         }
                 }
@@ -69,12 +138,15 @@ nextRec(int relNum, Rid* startRid, Rid *foundRid, char *recPtr)
                 {
                         //record is not in the File
                         printf("\n\nIn nextRec:Record Is Not In The File");
+                        return -2;
                  }
         }
         else{
 
             printf("\n\nERROR IN GETNEXTREC relCache[relNum].relFile = NULL ");
+            return -1;
         }
+        return 0;
 }
 
 //return the index of 1st byte of recordSlot [Bitmap|recordSlot] byte

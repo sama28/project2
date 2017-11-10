@@ -66,11 +66,7 @@ typedef struct ps {
 
 typedef struct gtps {
 		//	unsigned  char slotmap[BITMS_NUM];
-<<<<<<< HEAD
-			unsigned  	pid;
-=======
 			unsigned 	pid;
->>>>>>> 6d9bc19cc68987eb643bb389242099b260526300
 			unsigned char contents [PAGESIZE+1];
 			} GtPage;
 
