@@ -22,8 +22,8 @@ CFLAGS = -g $(DFLAG) -I$(INCLUDE)
 # "#ifdef" for more details
 
 SRCS = \
-	createdb.c opendb.c closedb.c destroydb.c quit.c \
-	create.c destroy.c load.c print.c sort.c buildindex.c dropindex.c
+	createdb.cpp opendb.cpp closedb.cpp destroydb.cpp quit.cpp \
+	create.cpp destroy.cpp load.cpp print.cpp sort.cpp buildindex.cpp dropindex.cpp
 
 OBJ = \
 	createdb.o opendb.o closedb.o destroydb.o quit.o \

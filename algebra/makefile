@@ -22,7 +22,7 @@ CFLAGS = -g $(DFLAG) -I$(INCLUDE)
 # "#ifdef" for more details
 
 SRCS = \
-	insert.c delete.c join.c project.c select.cpp
+	insert.cpp delete.cpp join.cpp project.cpp select.cpp
 
 OBJ = \
 	insert.o delete.o join.o project.o select.o

@@ -4,6 +4,8 @@
 /*************************************************************
 		CONSTANTS
 *************************************************************/
+#ifndef DEF
+#define DEF
 #include<stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -122,3 +124,4 @@ struct buffCat
 	int dirty;
 };
 */
+#endif

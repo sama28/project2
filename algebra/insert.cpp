@@ -1,14 +1,13 @@
 
-
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
+
 #include <stdio.h>
 
-
-Join (argc, argv)
-int	argc;
-char	**argv;
+int Insert (int argc, char **argv)
+//int	argc;
+//char	**argv;
 
 {
     /* print command line arguments */
@@ -17,7 +16,7 @@ char	**argv;
     for (k = 1 ; k < argc; ++k)
 	printf ("\targv[%d] = %s\n", k, argv[k]);
 
-     printf("Join \n");
+     printf("Insert \n");
      return (OK);  /* all's fine */
 }
 

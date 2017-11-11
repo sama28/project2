@@ -33,7 +33,7 @@ CFLAGS = -g $(DFLAG) -I$(INCLUDE)
 # 	stuff to build the executables
 #############################################################
 
-SRCS =  main.c
+SRCS =  main.cpp
 
 OBJ = main.o 
 
@@ -52,11 +52,13 @@ SCHEMA.o :
 PHYSICAL.o :
 	@cd $(PHYSICAL) ; make $@
 
+PARSER.o :
+	@cd $(PARSER) ; make $@
 
 
 minirel : $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSER)/FES.o $(OBJ) 
 	@echo generating $@
-	@cc $(CFLAGS) $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSER)/FES.o $(OBJ) -o $@
+	@cc -std=c++11 $(CFLAGS) $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSER)/FES.o $(OBJ) -o $@
 
 
 $(OBJ) :  $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/mrdtypes.h

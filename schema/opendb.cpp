@@ -47,7 +47,7 @@ char	**argv;
   else if (errno){
       printf("\n---------------------------------------------------\n");
       printf("Error opening database.\n%s---------------------------\n",strerror(errno));
-      printf("\n---------------------------------------------------\n");
+      printf("\n-------------------------------------------------------\n");
   }
   return 0;
   printf("");
@@ -75,7 +75,7 @@ void testMain()
       char record1[MR_ATTRCAT_REC_SIZE];//attrcat rec size
       
      //ReadPage(rln,0);
-      testReadFile();
+      //testReadFile();
       //relCacheTest();
       //GetNextRec(rln, &startRid, &foundRid, record);
       //shwRelCatRec(record);
@@ -89,9 +89,16 @@ void testMain()
       //shwRelCatRec(record);
 
       rln=1;
-      startRid.slotnum=12;
+      startRid.slotnum=0;
       GetNextRec(rln, &startRid, &foundRid, record1);
       shwAttrCatRec(record1);
+      for(int i=0;i<11;i++)
+      {
+      startRid.slotnum=foundRid.slotnum+1;
+      GetNextRec(rln, &startRid, &foundRid, record1);
+      shwAttrCatRec(record1);
+      }
+
 
             
            /* printf("\n\nInside opendb\testMain\n\nTesting ReadPage");

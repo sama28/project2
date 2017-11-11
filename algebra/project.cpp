@@ -6,10 +6,7 @@
 #include <stdio.h>
 
 
-Delete (argc, argv)
-int	argc;
-char	**argv;
-
+int Project (int argc, char **argv)
 {
     /* print command line arguments */
     short	k;		/* iteration counter	    */
@@ -17,7 +14,7 @@ char	**argv;
     for (k = 1 ; k < argc; ++k)
 	printf ("\targv[%d] = %s\n", k, argv[k]);
 
-     printf("Delete ........fine.........\n");
+     printf("Project ......... fine ...\n");
      return (OK);  /* all's fine */
 }
 

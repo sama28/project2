@@ -4,6 +4,10 @@
    As you find error conditions to report, 
    make additions to this file. 
 ************************************************************/
-
+#ifndef ERR
+#define ERR
 #define RELNOEXIST  101   /* Relation does not exist */
 #define ATTRNOEXIST 102   /* Attribute does not exist */
+
+
+#endif

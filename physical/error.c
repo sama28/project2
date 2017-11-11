@@ -1,6 +1,0 @@
-
-
-ErrorMsgs()
-{
- printf("ErrorMsgs \n ");
-}
