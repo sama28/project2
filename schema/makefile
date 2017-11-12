@@ -37,7 +37,8 @@ SCHEMA.o : $(OBJ)
 	@echo generating $@
 	@ld -r $(OBJ) -o $@
 
-$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h
+$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/fncn.h $(INCLUDE)/mrdtypes.h
+
 
 ###############################################################
 #  misc

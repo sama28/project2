@@ -1,8 +1,9 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
-
+#include "../include/fncn.h";
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -11,15 +12,15 @@
 #include<errno.h>
 
 struct attrList* addAttrListNode(struct attrList* attrListHead,char attrName[],unsigned offset,unsigned length,unsigned short type){
-    struct attrList* new;
-    new=(struct attrList*) malloc(sizeof(struct attrList));
-    strcpy(new->attrName,attrName);
-    new->offset=offset;
-    new->length=length;
-    new->type=type;
-    new->next=NULL;
+    struct attrList* new1;
+    new1=(struct attrList*) malloc(sizeof(struct attrList));
+    strcpy(new1->attrName,attrName);
+    new1->offset=offset;
+    new1->length=length;
+    new1->type=type;
+    new1->next=NULL;
     if(attrListHead==NULL){
-        attrListHead=new;
+        attrListHead=new1;
     }   
     else{
         struct attrList* tmp;
@@ -27,8 +28,8 @@ struct attrList* addAttrListNode(struct attrList* attrListHead,char attrName[],u
         while(tmp->next!=NULL){
             tmp=tmp->next;
           }
-          tmp->next=new;
-          new->next=NULL;
+          tmp->next=new1;
+          new1->next=NULL;
     }
     return attrListHead;
 }
@@ -104,16 +105,16 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
       //  printf("%x",relcat_page[i]);
     relcat_index+=MR_RELCAT_BITMS_NUM;
     unsigned char tmp[32];
-    bread_string(relcat_page,32,&relcat_index,tmp);
-    strcpy(relCache[relCacheIndex].relName,tmp);
-    relCache[relCacheIndex].recLength=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].recPerPg=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].numPgs=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].numRecs=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].numAttrs=bread_int(relcat_page,2,&relcat_index);
+    bread_string((unsigned char*)relcat_page,32,&relcat_index,tmp);
+    strcpy(relCache[relCacheIndex].relName,(char*)tmp);
+    relCache[relCacheIndex].recLength=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].recPerPg=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].numPgs=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].numRecs=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].numAttrs=bread_int((unsigned char*)relcat_page,2,&relcat_index);
     struct recid attrcatRid;
-    attrcatRid.pid=bread_int(relcat_page,4,&relcat_index);
-    attrcatRid.slotnum=bread_int(relcat_page,4,&relcat_index);
+    attrcatRid.pid=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    attrcatRid.slotnum=bread_int((unsigned char*)relcat_page,4,&relcat_index);
     relCache[relCacheIndex].Rid.pid=0;
     relCache[relCacheIndex].Rid.slotnum=0;
     relCache[relCacheIndex].relFile=relcatFile;
@@ -123,13 +124,13 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
    // printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
     relCacheIndex++;
 
-    bread_string(relcat_page,32,&relcat_index,tmp);
-    strcpy(relCache[relCacheIndex].relName,tmp);
-    relCache[relCacheIndex].recLength=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].recPerPg=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].numPgs=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].numRecs=bread_int(relcat_page,4,&relcat_index);
-    relCache[relCacheIndex].numAttrs=bread_int(relcat_page,2,&relcat_index);
+    bread_string((unsigned char*)relcat_page,32,&relcat_index,tmp);
+    strcpy(relCache[relCacheIndex].relName,(char*)tmp);
+    relCache[relCacheIndex].recLength=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].recPerPg=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].numPgs=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].numRecs=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    relCache[relCacheIndex].numAttrs=bread_int((unsigned char*)relcat_page,2,&relcat_index);
     relCache[relCacheIndex].Rid.pid=0;
     relCache[relCacheIndex].Rid.slotnum=1;
     relCache[relCacheIndex].relFile=attrcatFile;
@@ -144,11 +145,11 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     for(int j=0;j<2;j++){
         struct attrList* attrListHead=NULL;
         for(int i=0;i<relCache[j].numAttrs;i++){
-            bread_string(attrcat_page,32,&attrcat_index,tmp);
-            strcpy(attrName,tmp);
-            offset=bread_int(attrcat_page,4,&attrcat_index);
-            length=bread_int(attrcat_page,4,&attrcat_index);
-            type=bread_int(attrcat_page,2,&attrcat_index);
+            bread_string((unsigned char*)attrcat_page,32,&attrcat_index,tmp);
+            strcpy(attrName,(char*)tmp);
+            offset=bread_int((unsigned char*)attrcat_page,4,&attrcat_index);
+            length=bread_int((unsigned char*)attrcat_page,4,&attrcat_index);
+            type=bread_int((unsigned char*)attrcat_page,2,&attrcat_index);
             //printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
             attrListHead=addAttrListNode(attrListHead,attrName,offset,length,type);
         }
@@ -161,8 +162,8 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
             printf("%s %u %u %u\n",tmp->attrName,tmp->offset,tmp->length,tmp->type);
         }printf("\n");}
     */
-    attrcatRid.pid=bread_int(relcat_page,4,&relcat_index);
-    attrcatRid.slotnum=bread_int(relcat_page,4,&relcat_index);
+    attrcatRid.pid=bread_int((unsigned char*)relcat_page,4,&relcat_index);
+    attrcatRid.slotnum=bread_int((unsigned char*)relcat_page,4,&relcat_index);
     printf("%d",relcat_index);
     int howmuchRec;
     relCacheIndex++;
@@ -207,7 +208,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     }*/
 }
 
-OpenCats()
+void OpenCats(void )
 {
     printf("reached opencat");
     int flag=1,size; 

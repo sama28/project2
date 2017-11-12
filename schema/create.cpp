@@ -2,14 +2,12 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
+#include "../include/fncn.h"
 #include <stdio.h>
 
 
 
-Create (argc, argv)
-int	argc;
-char	**argv;
-
+int Create(int argc,char ** argv)
 {
   //   printf("%s",relCache[0].relName);
     /* print command line arguments 

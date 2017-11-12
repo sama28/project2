@@ -2,11 +2,12 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
+#include "../include/fncn.h"
 #include <stdio.h>
 
 
 
-BuildIndex (int argc,char ** argv)
+int BuildIndex (int argc,char ** argv)
 {
     /* print command line arguments */
     short	k;		/* iteration counter	    */

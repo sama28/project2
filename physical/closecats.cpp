@@ -1,5 +1,5 @@
 
-CloseCats()
+void CloseCats(void)
 {
- printf("closecats \n ");
+ //printf("closecats \n ");
 }

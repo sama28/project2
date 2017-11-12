@@ -1,7 +1,8 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
-#include <stdio.h>
+#include "../include/fncn.h"
+#include <stdio.h> 
 
 #include<errno.h>
 #include <sys/types.h>
@@ -9,10 +10,12 @@
 #include <stdlib.h>
 #include <string.h>
 void testMain();
-int OpenDB (argc, argv)
-int	argc;
-char	**argv;
+void shwRelCatRec(unsigned char recptr[]);
+void shwAttrCatRec(unsigned char recptr[]);
+void relCacheTest(void);
+void testReadFile(void);
 
+int OpenDB(int argc,char ** argv)
 {
   int flag=1,p;
   struct dirent *dp;
@@ -34,7 +37,7 @@ char	**argv;
       printf("\n---------------------------------------------------\n");
       
       OpenCats();
-      unsigned char a[58]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
+      unsigned char a[200]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
       testMain();
 
     }
@@ -53,10 +56,6 @@ char	**argv;
   printf("");
   return 0;
 }
-
-shwRelCatRec(char recptr[]);
-relCacheTest();
-testReadFile();
 void testMain()
 {
 //---------------------------
@@ -91,12 +90,12 @@ void testMain()
       rln=1;
       startRid.slotnum=0;
       GetNextRec(rln, &startRid, &foundRid, record1);
-      shwAttrCatRec(record1);
+      shwAttrCatRec((unsigned char*)record1);
       for(int i=0;i<11;i++)
       {
       startRid.slotnum=foundRid.slotnum+1;
       GetNextRec(rln, &startRid, &foundRid, record1);
-      shwAttrCatRec(record1);
+      shwAttrCatRec((unsigned char *)record1);
       }
 
 
@@ -112,7 +111,7 @@ void testMain()
             //------------------------------------
             */
 }
-shwRelCatRec(char recptr[])
+void shwRelCatRec(unsigned char recptr[])
 {
  unsigned char d[RELNAME];
   //char e[4],f[4];
@@ -125,15 +124,15 @@ shwRelCatRec(char recptr[])
   //relcat(relName,recLength,rcPerPg,numPgs,numRecs,numAttrs,pid,rid)
 
   val=0;
-  bread_string(recptr,RELNAME,&val,d);
-  e=bread_int(recptr,4,&val);
-  f=bread_int(recptr,4,&val);
-  g=bread_int(recptr,4,&val);//numPgs
-  h=bread_int(recptr,4,&val);
-  i=bread_int(recptr,2,&val);
-  j=bread_int(recptr,4,&val);
-  k=bread_int(recptr,4,&val);
-  //l=bread_int(recptr,4,&val);
+  bread_string((unsigned char *)recptr,RELNAME,&val,d);
+  e=bread_int((unsigned char *)recptr,4,&val);
+  f=bread_int((unsigned char *)recptr,4,&val);
+  g=bread_int((unsigned char *)recptr,4,&val);//numPgs
+  h=bread_int((unsigned char *)recptr,4,&val);
+  i=bread_int((unsigned char *)recptr,2,&val);
+  j=bread_int((unsigned char *)recptr,4,&val);
+  k=bread_int((unsigned char *)recptr,4,&val);
+  //l=bread_int((unsigned char *)recptr,4,&val);
 
  /*
   fread(d,32,1,fda);
@@ -152,7 +151,7 @@ printf("\n\n%s\n%u\n%u\n%d",(char*)d,(unsigned)e,(unsigned)f,(short)g);
 printf("\n\n%s %u %u %u %u %u %u %u\n\n",d,e,f,g,h,i,j,k);
 
 }
-shwAttrCatRec(char recptr[])
+void shwAttrCatRec(unsigned char recptr[])
 {
   unsigned char d[RELNAME];
   //char e[4],f[4];
@@ -165,16 +164,16 @@ shwAttrCatRec(char recptr[])
   //relcat(relName,recLength,rcPerPg,numPgs,numRecs,numAttrs,pid,rid)
 
   val=0;
-  bread_string(recptr,RELNAME,&val,d);
-  e=bread_int(recptr,4,&val);
-  f=bread_int(recptr,4,&val);
-  g=bread_int(recptr,2,&val);
+  bread_string((unsigned char *)recptr,RELNAME,&val,d);
+  e=bread_int((unsigned char *)recptr,4,&val);
+  f=bread_int((unsigned char *)recptr,4,&val);
+  g=bread_int((unsigned char *)recptr,2,&val);
   printf("\n\n%s %u %u %d",d,e,f,g);
 
 }
 
 
-relCacheTest()
+void relCacheTest(void )
 {
 
 
@@ -193,7 +192,7 @@ if(relCache[1].relFile!=NULL)
 }
 
 
-testReadFile()
+void testReadFile(void)
 {
 printf("\n\nIN TESTREADFILE");
   FILE*fd ,*fda; 

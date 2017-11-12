@@ -8,7 +8,7 @@
 
 # where to look for the files
 
-HOME = /home/samadhan/Desktop/git/minirel
+HOME = /home/samadhan/Desktop/cppgit/git/minirel
 
 INCLUDE  = $(HOME)/include
 
@@ -52,7 +52,7 @@ SCHEMA.o :
 PHYSICAL.o :
 	@cd $(PHYSICAL) ; make $@
 
-PARSER.o :
+FES.o :
 	@cd $(PARSER) ; make $@
 
 
@@ -61,7 +61,7 @@ minirel : $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSE
 	@cc -std=c++11 $(CFLAGS) $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSER)/FES.o $(OBJ) -o $@
 
 
-$(OBJ) :  $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/mrdtypes.h
+$(OBJ) :  $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/mrdtypes.h $(INCLUDE)/fncn.h
 
 ###############################################################
 #  misc
@@ -69,7 +69,5 @@ $(OBJ) :  $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/m
 
 clean:  # remove all .o files and other garbage
 	rm *.o
-
-
 
 

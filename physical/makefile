@@ -8,7 +8,7 @@
 
 ####################################################################
 # FLAGS for the C compiler
-####################################################################
+#####################################################################
 
 # where to look for the header files
 INCLUDE = ../include
@@ -38,7 +38,7 @@ PHYSICAL.o : $(OBJ)
 	@echo generating $@
 	@ld -r $(OBJ) -o $@
 
-$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h
+$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/fncn.h
 
 ###############################################################
 #  misc

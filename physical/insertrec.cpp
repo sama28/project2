@@ -1,48 +1,14 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
+#include "../include/fncn.h"
+#include <string.h>
+/*
 
-void getBinary(unsigned int* z,unsigned int x){
-    for(int i=0;i<8;i++)
-    z[i]=0;
-	int c=7;
-	while(x!=0){
-		z[c]=x%2;
-		x=x/2;
-		c--;
-	}
-}
-
-int getDecimal(unsigned int* z){
-    int sum=0,base=1;
-    for (int i=7;i>-1;i--){
-        sum=sum+base*z[i];
-        base=base*2;
-    }
-    return sum;
-}
-
-void getPath(char* path,char* filename){
-    char* c;
-    if(!strcmp("relcat",filename) || !strcmp("attrcat",filename)){
-        strcpy(path,HOME_MINIREL);
-        c=strcat(path,"/data/");
-        c=strcat(c,MR_CURR_DB);
-        c=strcat(c,"/catalog/");
-        c=strcat(c,filename);
-        strcpy(path,c);
-        chmod(path,S_IWUSR|S_IRUSR);
-    }
-    else{
-        strcpy(path,HOME_MINIREL);
-        c=strcat(path,"/data/");
-        c=strcat(c,MR_CURR_DB);
-        c=strcat(c,filename);
-        strcpy(path,c);
-    }
-}
-
-InsertRec(int relNum, char *rec){
+void getPath(char* path,char* filename);
+unsigned int bread_int(unsigned char* buffer,int size,int* init);
+*/
+void InsertRec(int relNum, char *rec){
     //printf("reached insertrec");
     FILE *fp;
     char path[255];
@@ -86,8 +52,8 @@ InsertRec(int relNum, char *rec){
                 if(gPgTable[relNum].contents[i]!=0xff){
                     slotByte=i;   
                     tmp=slotByte;
-                    slot=bread_int(&gPgTable[relNum].contents,1,&tmp);
-                    getBinary(&slotArray,slot);
+                    slot=bread_int((unsigned char*)&gPgTable[relNum].contents,1,&tmp);
+                    getBinary((unsigned int*)&slotArray,slot);
                     //printf("%d",slot);
                     for(int j=0;j<8 && slotIndex==-1;j++){
                         //makeprintf("for2%d\n",slotByte*8+j);
@@ -114,7 +80,7 @@ InsertRec(int relNum, char *rec){
         //printf("pagenum%d\nslotByte%d\nslotIndex%d\nrecordnum%d\n",pagenum,slotByte,slotIndex,slotByte*8+slotIndex);
         
         //printf("%d\n",NUM_SLOTS+(slotByte*8+slotIndex)*relCache[relNum].recLength);
-        newslot=getDecimal(&slotArray);
+        newslot=getDecimal((unsigned int*)&slotArray);
         write_this_slot=newslot;
         //printf("%d",write_this_slot);
         offset=slotByte;
@@ -149,3 +115,44 @@ InsertRec(int relNum, char *rec){
         printf("%s",strerror(errno));
     }
 }
+
+int getDecimal(unsigned int* z){
+    int sum=0,base=1;
+    for (int i=7;i>-1;i--){
+        sum=sum+base*z[i];
+        base=base*2;
+    }
+    return sum;
+}
+void getBinary(unsigned int* z,unsigned int x)
+{
+    for(int i=0;i<8;i++)
+    z[i]=0;
+	int c=7;
+	while(x!=0){
+		z[c]=x%2;
+		x=x/2;
+		c--;
+	}
+}
+
+void getPath(char* path,char* filename){
+    char* c;
+    if(!strcmp("relcat",filename) || !strcmp("attrcat",filename)){
+        strcpy(path,HOME_MINIREL);
+        c=strcat(path,"/data/");
+        c=strcat(c,MR_CURR_DB);
+        c=strcat(c,"/catalog/");
+        c=strcat(c,filename);
+        strcpy(path,c);
+        chmod(path,S_IWUSR|S_IRUSR);
+    }
+    else{
+        strcpy(path,HOME_MINIREL);
+        c=strcat(path,"/data/");
+        c=strcat(c,MR_CURR_DB);
+        c=strcat(c,filename);
+        strcpy(path,c);
+    }
+}
+

@@ -1,8 +1,9 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
-
-DeleteRec(int relNum,Rid* rid){
+#include "../include/fncn.h"
+#include <string.h>
+void DeleteRec(int relNum,Rid* rid){
     //printf("%d\n%d ",rid->pid,rid->slotnum);
     int count=0,isOnlyRec=0,offset,newslot,tmp,slotByte,slotIndex,slot,slotArray[8],maxRec,NUM_SLOTS=(((PAGESIZE-PGTAIL_SPACE)/(8*relCache[relNum].recLength+1))+1);
     maxRec=(PAGESIZE-PGTAIL_SPACE-NUM_SLOTS)/relCache[relNum].recLength;
@@ -34,8 +35,8 @@ DeleteRec(int relNum,Rid* rid){
         }
         for(int i=0;i<NUM_SLOTS;i++){
             tmp=i;
-            slot=bread_int(&gPgTable[relNum].contents,1,&tmp);
-            getBinary(&slotArray,slot);
+            slot=bread_int((unsigned char*)&gPgTable[relNum].contents,1,&tmp);
+            getBinary((unsigned int *)&slotArray,slot);
             for(int j=0;j<8;j++){
                 if(slotArray[j]==1)
                     count++;
@@ -48,14 +49,14 @@ DeleteRec(int relNum,Rid* rid){
         //printf("%02x",gPgTable[relNum].contents[j]);
         slotByte=rid->slotnum/8;
         tmp=slotByte;
-        slot=bread_int(&gPgTable[relNum].contents,1,&tmp);
-        getBinary(&slotArray,slot);
+        slot=bread_int((unsigned char*)&gPgTable[relNum].contents,1,&tmp);
+        getBinary((unsigned int *)&slotArray,slot);
         //for(int i=0;i<8;i++)
         //printf("%d",slotArray[i]);
         slotIndex=rid->slotnum%8;
         printf("\n%d\n",slotIndex);
         slotArray[slotIndex]=0;
-        newslot=getDecimal(&slotArray);
+        newslot=getDecimal((unsigned int *)&slotArray);
         write_this_slot=newslot;
         //printf("%d",write_this_slot);
         offset=slotByte;

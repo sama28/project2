@@ -9,7 +9,7 @@
 
 //int	argc;
 //char	**argv;
-extern "C" int Select(int ,char **);
+//extern "C" int Select(int ,char **);
 int Select (int argc, char ** argv)
 {
     /* print command line arguments */

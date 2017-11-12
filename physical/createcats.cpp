@@ -22,7 +22,8 @@
 #include <unistd.h>
 #include<errno.h>
  // ssize_t write(int fd, const void *buf, size_t count);
-CreateCats(char *d)//d should be d=HOME/data/[dbname]/data
+
+int CreateCats(char *d)//d should be d=HOME/data/[dbname]/data
 {	
 		//chmod("./testsbit",S_IRWXU| S_ISVTX|O_DIRECTORY);
 	

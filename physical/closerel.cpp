@@ -1,6 +1,6 @@
 
 
-CloseRel()
+void CloseRel(void )
 {
- printf("CloseRel \n ");
+// printf("CloseRel \n ");
 }

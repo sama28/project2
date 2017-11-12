@@ -124,4 +124,6 @@ struct buffCat
 	int dirty;
 };
 */
+
+//int FlushPage(int relNum,unsigned pgid);
 #endif

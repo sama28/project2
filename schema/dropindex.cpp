@@ -2,14 +2,12 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
+#include "../include/fncn.h"
 #include <stdio.h>
 
 
 
-DropIndex (argc, argv)
-int	argc;
-char	**argv;
-
+int DropIndex (int argc,char ** argv)
 {
     /* print command line arguments */
     short	k;		/* iteration counter	    */

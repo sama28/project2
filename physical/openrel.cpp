@@ -1,6 +1,6 @@
 
 
-OpenRel()
+void OpenRel(void )
 {
- printf("OpenRel \n ");
+ //printf("OpenRel \n ");
 }

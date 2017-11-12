@@ -2,6 +2,7 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
+#include "../include/fncn.h"
 #include <stdio.h>
 //-------------------------------------
 //-----additional header---------
@@ -15,9 +16,7 @@
 //-----------------------------------
 #include<string.h>
 //------------------------------------
-int CreateDB (argc, argv)
-int	argc;
-char	**argv;
+int CreateDB (int argc,char ** argv)
 {
 
     /* print command line arguments */

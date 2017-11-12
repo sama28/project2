@@ -3,14 +3,19 @@
 #include "../include/error.h"
 #include "../include/globals.h"
 #include "../include/mrdtypes.h"
+#include "../include/fncn.h"
 #include  <string.h>
-int nextRec(int relNum, Rid* startRid, char *recPtr);
-unsigned firstRecSlotInd(relNum);
-int isPgInBuff(int relNum, unsigned pgid);
+//int nextRec(int relNum, Rid* startRid, char *recPtr);
+//unsigned firstRecSlotInd(int relNum);
+//int isPgInBuff(int relNum, unsigned pgid);
 unsigned int i;
 
 //-------------------------------------------
-GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
+int nextRec(int relNum, Rid* startRid, char *recPtr);
+unsigned firstRecSlotInd(int relNum);
+void ReadPage(int relNum,unsigned pid);
+
+int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
 {
  printf("GetNextRec \n ");
 
@@ -39,7 +44,7 @@ GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                           cmprtr1 = 0x80;
                           cmprtr1 = cmprtr1 >> bitmapbitnum;
                           cmprtr2 = gPgTable[relNum].contents[bitmapByteNum];
-                          printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
+                          //printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
                           if ((cmprtr1 & cmprtr2) != 0x00)
                           { //slot is valid so record exists
 
@@ -55,7 +60,7 @@ GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                                   printf("\n\nInGetnextRec : Rec Copied SuccessFully...");
                                   return 1;
                           }
-                             printf("\n\nIn nextRec There Is No Rec At Given Slot No");
+                             //printf("\n\nIN GetNextRec There Is No Rec At Given Slot No");
                             foundRid->slotnum++;
                         }        
                 }
@@ -67,10 +72,10 @@ GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                   foundRid->slotnum=0;
         }
         return -2;
-        printf("\n\nRECORD NOT FOUND...");
+        printf("\n\nIN GetNextRec RECORD NOT FOUND...");
    }      
   else{
-      printf("\n\nRELATION IS NOT OPENED....");
+      printf("\n\nIN GetNextRec RELATION IS NOT OPENED....");
       return -1;
   }
   
@@ -130,7 +135,7 @@ int nextRec(int relNum, Rid* startRid, char *recPtr)
                                 }
                         }
                         else{
-                            printf("\n\nIn nextRec Page Table Doesn't Contain The Required Page gPgTable[relNum].pid == startRid->pid");
+                            printf("\n\nIn nextRec global Page Table Doesn't Contain The Required Page gPgTable[relNum].pid == startRid->pid");
                             return -3;
 
                         }
@@ -151,7 +156,7 @@ int nextRec(int relNum, Rid* startRid, char *recPtr)
 }
 
 //return the index of 1st byte of recordSlot [Bitmap|recordSlot] byte
-unsigned firstRecSlotInd(relNum)
+unsigned firstRecSlotInd(int relNum)
 {
         return (unsigned)(((PAGESIZE - PGTAIL_SPACE) / (8 * relCache[relNum].recLength + 1))+1);
 }

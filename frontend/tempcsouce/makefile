@@ -1,4 +1,3 @@
-
 ####################################################################
 #	This is the Makefile for FRONTEND.
 #
@@ -10,17 +9,11 @@
 # where to look for the header files
 INCLUDE = .
 
-# set this to invoke the C++ compiler instead of the default
-# C compiler while using the default *.o rules itself.
-
-CC=g++
-
-
 ####################################################################
 # FLAGS for the C compiler
 ####################################################################
 DFLAG = 
-CFLAGS = -g $(DFLAG) -I$(INCLUDE)
+CFLAGS = -std=c++11  -g $(DFLAG) -I$(INCLUDE)
 # -g to generate symbolic info. used by
 #    the debugger.
 # DFLAG can be used to turn specific debug
@@ -29,7 +22,7 @@ CFLAGS = -g $(DFLAG) -I$(INCLUDE)
 
 
 SRCS = \
-	fes.c
+	fes.cpp
 
 OBJ = \
 	fes.o
@@ -57,4 +50,5 @@ lint:
 
 clean:  # remove all .o files and other garbage
 	rm *.o
+
 

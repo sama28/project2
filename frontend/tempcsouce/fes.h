@@ -1,4 +1,3 @@
-
     /* 
 	This is a complete file for the front-end.
 
@@ -112,4 +111,3 @@
 #define ILLEGAL		-504
 
 /*****************************************************************/
-

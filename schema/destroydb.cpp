@@ -2,13 +2,11 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
+#include "../include/fncn.h"
 #include <stdio.h>
 
 
-DestroyDB (argc, argv)
-int	argc;
-char	**argv;
-
+int DestroyDB(int argc,char ** argv)
 {
 
     /* print command line arguments */

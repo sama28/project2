@@ -14,7 +14,11 @@ int relNum =1;
 int pid=0;
 relCacheEntry relCache[10];
 */
-ReadPage(int relNum,unsigned pid)
+int FlushPage(int relNum,unsigned pgid);
+int isPgInBuff(int relNum,unsigned pgid );
+//int isPgInBuff(int relNum,unsigned pgid );
+void showPageContent(int relNum);
+void ReadPage(int relNum,unsigned pid)
 {
 //-------------------------------------
 //temporary---

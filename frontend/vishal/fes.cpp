@@ -185,7 +185,8 @@ PARSER_TABLE table [21] [20] = {
 };
 
 
-void parser (void )
+void
+parser(void)
 {
 char	buff[ BUFSIZ + 2 ],
 	params [ MAXPARAS  ] [ PARALEN ],
@@ -196,7 +197,6 @@ short	loop,
 	do {					/* loop until 'getquery'      */
 	   for (loop = 0 ; loop < (MAXPARAS ) ; loop++)
 	       ptr [loop] = params [loop];
-
 	    getinput (buff);			/* returns a DONE code        */
 	    rcode = processquery (buff, ptr);
 	} while (rcode == CONTINUE);
@@ -217,7 +217,8 @@ short	loop,
 	*** even within double quotes.				     ***
 */
 
-int getinput (char buff[])
+int
+getinput (char buff[])
 {
 int	i;
 
@@ -251,10 +252,11 @@ int	i;
 	    }
 	}
     }
+	printf("GetInput returning\n");
 } /* getinput */
 
-
-int processquery (char	*buff,char	**ptr)
+int
+processquery (char	*buff,char	**ptr)
 {
 char	tokenbuff [ PARALEN ],
 	*buffstart;
@@ -396,12 +398,12 @@ int tcode;
 	return (CONTINUE);
 } /* processquery */
 
-
-int synerror (char *start, char *error_at, short command, short state, short tcode)
+int
+synerror (char *start, char *error_at, short command, short state, short tcode)
 {
 short	i, len, more;
 
-	len = (int*) error_at - (int*) start;
+	len = (int)(error_at - start);
 	for (i = 0 ; i < len ; i++)
 	    printf (" ");
 	while (*error_at == ' ') {
@@ -536,7 +538,8 @@ short	i, len, more;
 	filled up.
 */
 
-int findtoken (char *p, char *tokenp, short *len)
+int
+findtoken (char *p, char *tokenp, short *len)
 /*
 char	*p,				 pointer to input buffer 	      
 	*tokenp;			 pointer to token buffer 	      

@@ -1,6 +1,6 @@
 
 
-ErrorMsgs()
+void ErrorMsgs(void )
 {
- printf("ErrorMsgs... \n ");
+ //printf("ErrorMsgs... \n ");
 }
