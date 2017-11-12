@@ -80,6 +80,8 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc)
 	vector <struct attrList> attrHead;
     } relCacheEntry;
     */
+    //relcat(relName,recLength,rcPerPg,numPgs,numRecs,numAttrs,pid,rid)
+
     
 
 }
