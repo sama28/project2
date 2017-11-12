@@ -38,7 +38,7 @@ PHYSICAL.o : $(OBJ)
 	@echo generating $@
 	@ld -r $(OBJ) -o $@
 
-$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/fncn.h
+$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/fncn.h $(INCLUDE)/mrdtypes.h
 
 ###############################################################
 #  misc
