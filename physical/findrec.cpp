@@ -1,9 +1,9 @@
-#if 0 
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
 #include "../include/mrdtypes.h"
 #include "../include/fncn.h"
+#include "string.h"
 
 
 int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
@@ -17,16 +17,18 @@ status=GetNextRec(relNum,startRid,foundRid,recPtr);
 //find record start from startRid
     if(status==1)//if record is found sucessfully
     {
-        attrList source;
-        source.next=NULL;
         //find attr with Given offset
         //returnAttrNode(struct attrList* attrListHead,int offset,struct attrList* source)
         
-        //returnAttrNode(relCache[relNum].attrHead,offset,&source);
-        if(source.type==attrType && source.length==attrSize)
+        returnAttrNode(relCache[relNum].attrHead,offset,&source);
+
+        if(relCache[relNum].attrHead[offset].type==attrType && relCache[relNum]attrHead[offset].length==attrSize)
         {
-            if(isRecRight(relNum,recPtr,source,))
-        }
+            if(isRecRight(relNum,recPtr,&source,offset,valuePtr,compOp))
+            {
+                printf("In FindRec record Found..");
+            }
+        }        
     }
 }
 int isRecRight(int relNum,char *recPtr,attrList *source,int offset,char *valuePtr,int compOp )
@@ -101,7 +103,7 @@ unsigned attrOfstInRec(char *recPtr,int relNum,int offset)
     int len=0;
     for(int i=0;i<offset;i++)
     {
-        //returnAttrNode(relCache[relNum].attrHead,i,&source);
+        returnAttrNode(relCache[relNum].attrHead,i,&source);
         len=len+source.length;
     }
     return len;
@@ -355,4 +357,3 @@ int floatcomp(float a,float b,int compOp)
     }
     return 0;
 }
-#endif
