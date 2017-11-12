@@ -133,6 +133,7 @@ int isInputValid(int num,char **string){
 
 int Create (int argc,char** argv)
 {
+#if 0
     //printf("%d%s\n",argc,argv[1]);
     int attrCount=(argc-2)/2,offset=0,count=0,recLength=0;
     unsigned char record[relCache[1].recLength+1];
@@ -240,8 +241,5 @@ int Create (int argc,char** argv)
     }
 
     return (OK);
+#endif
 }
-
-
-
-

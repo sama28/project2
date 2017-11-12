@@ -38,19 +38,10 @@ int OpenDB(int argc,char ** argv)
       printf("\n---------------------------------------------------\n");
       
       OpenCats();
-<<<<<<< HEAD
       unsigned char a[200]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
       //testMain();
       findRelNumTest();
 
-=======
-      unsigned char a[59]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
-      
-      //InsertRec(0,a);InsertRec(0,a);FlushPage(0,0);
-      //for(int i=0;i<512;i++)
-      //printf("%02x",gPgTable[0].contents[i]);
-      //testMain();
->>>>>>> fc44eb8341a1bae9394025752c5be666c0566785
     }
     else{
       printf("\n---------------------------------------------------\n");

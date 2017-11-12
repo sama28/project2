@@ -106,6 +106,7 @@ typedef struct relList{
 	FILE *relFile;
 	char dirty;
 	vector <struct attrList> attrHead;
+	struct recid attr0Rid;
 } relCacheEntry;
 
 
