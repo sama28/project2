@@ -19,5 +19,5 @@ void OpenCats(void);
 int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp );
 unsigned attrOfstInRec(char *recPtr,int relNum,int offset);
 int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp );
-
+int FindRelNum(char *relName);
 #endif

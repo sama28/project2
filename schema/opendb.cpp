@@ -15,6 +15,7 @@ void shwRelCatRec(unsigned char recptr[]);
 void shwAttrCatRec(unsigned char recptr[]);
 void relCacheTest(void);
 void testReadFile(void);
+void findRelNumTest(void);
 
 int OpenDB(int argc,char ** argv)
 {
@@ -39,7 +40,8 @@ int OpenDB(int argc,char ** argv)
       
       OpenCats();
       unsigned char a[200]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
-      testMain();
+      //testMain();
+      findRelNumTest();
 
     }
     else{
@@ -59,7 +61,8 @@ int OpenDB(int argc,char ** argv)
 }
 void testMain()
 {
-//---------------------------
+//------------------------------
+
       //InsertRec(0,&a);
       //testing purpuse not part of original caode
       //relCache[1].dirty=1;
@@ -116,7 +119,7 @@ void testMain()
       GetNextRec(rln, &startRid, &foundRid, record1);
       shwAttrCatRec((unsigned char *)record1);
       }
-*/
+
 
             
            /* printf("\n\nInside opendb\testMain\n\nTesting ReadPage");
@@ -129,7 +132,7 @@ void testMain()
             //shwAttrRec(gPgTable[1].contents);
             //------------------------------------
             */
-}
+          }
 void shwRelCatRec(unsigned char recptr[])
 {
  unsigned char d[RELNAME];
@@ -315,4 +318,15 @@ void testReadFile(void)
     printf("file can not be oppened fd %d errno %d",fd,errno);//debug code	
   }
 
+}
+
+void findRelNumTest(void)
+{
+  char c[RELNAME]="relcat";
+  char d[RELNAME]="attrcat";
+  char e[RELNAME]="relcsfat";
+
+  printf("for relcat index in Cache =%d",FindRelNum(c));
+  printf("for attrcat index in Cache =%d",FindRelNum(d));
+  printf("for relcsfat index in Cache =%d",FindRelNum(e));
 }
