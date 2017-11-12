@@ -29,7 +29,7 @@ CFLAGS = -g $(DFLAG) -I$(INCLUDE)
 
 
 SRCS = \
-	fes.c
+	fes.cpp
 
 OBJ = \
 	fes.o
