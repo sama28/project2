@@ -1,7 +1,7 @@
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
-#include "../include/fncn.h";
+#include "../include/fncn.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,39 +10,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include<errno.h>
-
-struct attrList* addAttrListNode(struct attrList* attrListHead,char attrName[],unsigned offset,unsigned length,unsigned short type){
-    struct attrList* new1;
-    new1=(struct attrList*) malloc(sizeof(struct attrList));
-    strcpy(new1->attrName,attrName);
-    new1->offset=offset;
-    new1->length=length;
-    new1->type=type;
-    new1->next=NULL;
-    if(attrListHead==NULL){
-        attrListHead=new1;
-    }   
-    else{
-        struct attrList* tmp;
-        tmp=attrListHead;
-        while(tmp->next!=NULL){
-            tmp=tmp->next;
-          }
-          tmp->next=new1;
-          new1->next=NULL;
-    }
-    return attrListHead;
-}
-
-struct attrList* returnAttrNode(struct attrList* attrListHead,int i){
-    struct attrList* tmp;
-    int count=0;
-    tmp=attrListHead;
-    while(tmp!=NULL && count<i){
-      tmp=tmp->next;count++;
-    }
-    return tmp;
-}
+#include<vector>
+using namespace std;
 /*
 void cachePopulate2(FILE* relcatFile, FILE* attrcatFile){
     int size=fileSize(relcatFile);
@@ -119,9 +88,8 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     relCache[relCacheIndex].Rid.slotnum=0;
     relCache[relCacheIndex].relFile=relcatFile;
     relCache[relCacheIndex].dirty='c';
-    relCache[relCacheIndex].attrHead=NULL;
     relCache[relCacheIndex].valid='v';
-   // printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
+    printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
     relCacheIndex++;
 
     bread_string((unsigned char*)relcat_page,32,&relcat_index,tmp);
@@ -135,9 +103,8 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     relCache[relCacheIndex].Rid.slotnum=1;
     relCache[relCacheIndex].relFile=attrcatFile;
     relCache[relCacheIndex].dirty='c';
-    relCache[relCacheIndex].attrHead=NULL;
     relCache[relCacheIndex].valid='v';
-    //printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty);
+    printf("%s\n%x\n%x\n%x\n%x\n%x\n%x\n%x\n%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty);
     
     fseek(attrcatFile,attrcatRid.pid*PAGESIZE,SEEK_SET);
     fread(&attrcat_page,sizeof(attrcat_page),1,attrcatFile);
@@ -150,18 +117,22 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
             offset=bread_int((unsigned char*)attrcat_page,4,&attrcat_index);
             length=bread_int((unsigned char*)attrcat_page,4,&attrcat_index);
             type=bread_int((unsigned char*)attrcat_page,2,&attrcat_index);
-            //printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
-            attrListHead=addAttrListNode(attrListHead,attrName,offset,length,type);
+            printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
+            //attrListHead=addAttrListNode(attrListHead,attrName,offset,length,type);
+            struct attrList obj;
+            strcpy(obj.attrName,attrName);
+            obj.offset=offset;
+            obj.length=length;
+            obj.type=type;
+            relCache[j].attrHead.push_back(obj);
         }
-        relCache[j].attrHead=attrListHead;
     }
-    /* Print attribute cache
+     //Print attribute cache
     for(int j=0;j<2;j++){
         for(int i=0;i<relCache[j].numAttrs;i++){
-            struct attrList* tmp=returnAttrNode(relCache[j].attrHead,i);
-            printf("%s %u %u %u\n",tmp->attrName,tmp->offset,tmp->length,tmp->type);
+            printf("qwert %s %u %u \n",relCache[j].attrHead[i].attrName,relCache[j].attrHead[i].offset,relCache[j].attrHead[i].length,relCache[j].attrHead[i].type);
         }printf("\n");}
-    */
+    
     attrcatRid.pid=bread_int((unsigned char*)relcat_page,4,&relcat_index);
     attrcatRid.slotnum=bread_int((unsigned char*)relcat_page,4,&relcat_index);
     printf("%d",relcat_index);
