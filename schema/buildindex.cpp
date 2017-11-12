@@ -15,7 +15,7 @@ int BuildIndex (int argc,char ** argv)
     for (k = 1 ; k < argc; ++k)
 	printf ("\targv[%d] = %s\n", k, argv[k]);
 
-     printf("BuildIndex \n");
+     printf("BuildIndex.. \n");
      return (OK);  /* all's fine */
 }
 

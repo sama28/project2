@@ -8,7 +8,7 @@
 
 # where to look for the files
 
-HOME = /home/samadhan/Desktop/cppgit/git/minirel
+HOME = /home/samadhan/Desktop/git/minirel
 
 INCLUDE  = $(HOME)/include
 
