@@ -8,7 +8,7 @@
 void getPath(char* path,char* filename);
 unsigned int bread_int(unsigned char* buffer,int size,int* init);
 */
-void InsertRec(int relNum, char *rec){
+void InsertRec(int relNum,unsigned char *rec){
     //printf("reached insertrec");
     FILE *fp;
     char path[255];
@@ -41,8 +41,8 @@ void InsertRec(int relNum, char *rec){
                 gPgTable[relNum].pid=relCache[relNum].numPgs;   
             }
             else{
-                fseek(fp,PAGESIZE*pagenum,SEEK_SET);
-                fread(&gPgTable[relNum].contents,PAGESIZE,1,fp);
+                fseek(fp,pagenum*PAGESIZE,SEEK_SET);
+                fread(&gPgTable[relNum].contents,1,PAGESIZE,fp);
                 gPgTable[relNum].pid=pagenum;   
             }
             //for(int j=0;j<PAGESIZE;j++)
@@ -89,8 +89,8 @@ void InsertRec(int relNum, char *rec){
         //printf("offset%d\n",offset+relCache[relNum].recLength);
         for(int i=0;i<relCache[relNum].recLength;i++)
             gPgTable[relNum].contents[i+offset]=rec[i];
-        //for(int j=0;j<PAGESIZE;j++)
-        //printf("%x",gPgTable[relNum].contents[j]);
+        for(int j=0;j<PAGESIZE;j++)
+        printf("%02x",gPgTable[relNum].contents[j]);
         //printf("pagenum%d",pagenum);
         
         fseek(fp,PAGESIZE*pagenum,SEEK_SET);

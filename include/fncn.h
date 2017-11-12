@@ -16,8 +16,20 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr);
 int fileSize(FILE *fp);
 int CreateCats(char *d);
 void OpenCats(void);
+<<<<<<< HEAD
+void InsertRec(int relNum,unsigned char *rec);
+void WriteRec(int relNum,unsigned char* rec,Rid* rid);
+void GetSlots(struct recidArray* ridArray,int count,int relNum);
+void CloseCats(void);
+void bwrite_int(unsigned char* tmp,int num,int size,int* init);
+=======
 int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp );
 unsigned attrOfstInRec(char *recPtr,int relNum,int offset);
 int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp );
+<<<<<<< HEAD
 int FindRelNum(char *relName);
+=======
+>>>>>>> 8915fb5bac5686a51da8405629de70a12b9a1f66
+
+>>>>>>> fc44eb8341a1bae9394025752c5be666c0566785
 #endif

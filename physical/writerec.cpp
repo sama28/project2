@@ -7,17 +7,13 @@ void getPath(char* path,char* filename);
 unsigned int bread_int(unsigned char* buffer,int size,int* init);
 void getBinary(unsigned int* z,unsigned int x);
 int getDecimal(unsigned int* z);
+void GetSlots(struct recidArray* ridArray,int count,int relNum);
 
-
-void WriteRec(int relNum,char* rec,Rid* rid){
+void WriteRec(int relNum,unsigned char* rec,Rid* rid){
     //printf("%d\n%d ",rid->pid,rid->slotnum);
     int offset,newslot,tmp,slotByte,slotIndex,slot,slotArray[8],maxRec,NUM_SLOTS=(((PAGESIZE-PGTAIL_SPACE)/(8*relCache[relNum].recLength+1))+1);
     maxRec=(PAGESIZE-PGTAIL_SPACE-NUM_SLOTS)/relCache[relNum].recLength;
     //printf("reclen%d",strlen(rec)-1);
-    if(strlen(rec)!=relCache[relNum].recLength){
-        printf("Invalid Record Format....\n");
-        return;
-    }
     if(rid->pid>relCache[relNum].numPgs-1){
         printf("Pid exceeds total pages in the file.\n");
         return;
@@ -49,7 +45,7 @@ void WriteRec(int relNum,char* rec,Rid* rid){
         //printf("%d",slotArray[i]);
         slotIndex=rid->slotnum%8;
         printf("\n%d\n",slotIndex);
-        slotArray[slotIndex]=0;
+        slotArray[slotIndex]=1;
         newslot=getDecimal((unsigned int *)&slotArray);
         write_this_slot=newslot;
         //printf("%d",write_this_slot);
@@ -59,6 +55,7 @@ void WriteRec(int relNum,char* rec,Rid* rid){
         //printf("offset%d\n",offset+relCache[relNum].recLength);
         for(int i=0;i<relCache[relNum].recLength;i++)
             gPgTable[relNum].contents[i+offset]=rec[i];
+        printf("writerec\n");    
         for(int j=0;j<PAGESIZE;j++)
         printf("%02x",gPgTable[relNum].contents[j]);
         fseek(relCache[relNum].relFile,PAGESIZE*rid->pid,SEEK_SET);

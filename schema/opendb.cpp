@@ -2,7 +2,6 @@
 #include "../include/error.h"
 #include "../include/globals.h"
 #include "../include/fncn.h"
-#include "../include/mrdtypes.h"
 #include <stdio.h> 
 
 #include<errno.h>
@@ -39,10 +38,19 @@ int OpenDB(int argc,char ** argv)
       printf("\n---------------------------------------------------\n");
       
       OpenCats();
+<<<<<<< HEAD
       unsigned char a[200]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
       //testMain();
       findRelNumTest();
 
+=======
+      unsigned char a[59]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
+      
+      //InsertRec(0,a);InsertRec(0,a);FlushPage(0,0);
+      //for(int i=0;i<512;i++)
+      //printf("%02x",gPgTable[0].contents[i]);
+      //testMain();
+>>>>>>> fc44eb8341a1bae9394025752c5be666c0566785
     }
     else{
       printf("\n---------------------------------------------------\n");
@@ -76,17 +84,7 @@ void testMain()
       startRid.slotnum =0;
       char record[MR_RELCAT_REC_SIZE];
       char record1[MR_ATTRCAT_REC_SIZE];//attrcat rec size
-
-      //--------------------------------------------
-      //data to test findRec-----------------------
-      int a_type=relCache[0].attrHead[0].type;
-      int a_size=relCache[0].attrHead[0].length;
-      int a_offset=relCache[0].attrHead[0].offset;
-      int a_compOp=LT;
-      char a_vptr[100]="b";
-      //unsigned val=3;
-      //strcpy(a_vptr,(char*)&val);
-
+      
      //ReadPage(rln,0);
       //testReadFile();
       //relCacheTest();
@@ -103,16 +101,8 @@ void testMain()
 
       rln=1;
       startRid.slotnum=0;
-
-      //GetNextRec(rln, &startRid, &foundRid, record1);
-      printf("\n\n-----------------\n\nBefore FindRec...value of att=%s",relCache[1].attrHead[2].attrName);
-      printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].offset);
-      printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].length);
-      printf("\n\n-----------------\n\nBefore FindRec...value of att=%d",relCache[1].attrHead[2].type);
-      FindRec(rln,&startRid,&foundRid,record1,a_type,a_size,a_offset,a_vptr,a_compOp);
+      GetNextRec(rln, &startRid, &foundRid, record1);
       shwAttrCatRec((unsigned char*)record1);
-  
-      /*
       for(int i=0;i<11;i++)
       {
       startRid.slotnum=foundRid.slotnum+1;
@@ -197,22 +187,26 @@ void shwAttrCatRec(unsigned char recptr[])
 
 void relCacheTest(void )
 {
-  printf("\n\ninside RelCache Test.....");
 
-  printf("RelCacheIndex %d",relCacheIndex);
-  if(relCache[0].relFile!=NULL)
-  {
-     printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty,relCache[0].valid);
-  }
-  if(relCache[1].relFile!=NULL)
-  {
-     printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty,relCache[1].valid);
-  }
+
+printf("\n\ninside RelCache Test.....");
+
+printf("RelCacheIndex %d",relCacheIndex);
+if(relCache[0].relFile!=NULL)
+{
+  printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty,relCache[0].valid);
+}
+if(relCache[1].relFile!=NULL)
+{
+  printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty,relCache[1].valid);
+}
 
 }
+
+
 void testReadFile(void)
 {
-  printf("\n\nIN TESTREADFILE");
+printf("\n\nIN TESTREADFILE");
   FILE*fd ,*fda; 
   fd =relCache[0].relFile; //fopen(path,"rb+");
   fda =relCache[1].relFile; //fopen(path1,"rb+");
@@ -317,6 +311,7 @@ void testReadFile(void)
   {
     printf("file can not be oppened fd %d errno %d",fd,errno);//debug code	
   }
+
 
 }
 

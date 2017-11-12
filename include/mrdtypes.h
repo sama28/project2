@@ -11,7 +11,7 @@
 #define DTINT					5
 #define DTUNSIGNED_INT			6
 #define DTSTRING                7
-#define DTFLOT					8
+#define DTFLOAT					8
 
 
 
