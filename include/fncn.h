@@ -21,5 +21,8 @@ void WriteRec(int relNum,unsigned char* rec,Rid* rid);
 void GetSlots(struct recidArray* ridArray,int count,int relNum);
 void CloseCats(void);
 void bwrite_int(unsigned char* tmp,int num,int size,int* init);
+int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp );
+unsigned attrOfstInRec(char *recPtr,int relNum,int offset);
+int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp );
 
 #endif

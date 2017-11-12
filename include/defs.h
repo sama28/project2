@@ -45,7 +45,7 @@ using namespace std;
 //************************************************************
 //----------this part depends on where you deploy this project
 //***********************************************************
-#define HOME_MINIREL "/home/ameya/project/project2"//location of project root directory
+#define HOME_MINIREL "/home/samadhan/Desktop/git/minirel"//location of project root directory
 #define MAX_PATH_LENGTH 255 						//length of absolute address of any file
 #define ATTRLEN		32
 #define MR_MAX_FILENAME_SIZE 255
