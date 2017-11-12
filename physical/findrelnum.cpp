@@ -8,7 +8,7 @@
 int FindRelNum(char *relName)
 {
   int i;
-    printf("\n\nFindRelNum \n ");
+    printf("\n\nFindRelNum  \n ");
         i=0;
         while(i<=relCacheIndex)
         {

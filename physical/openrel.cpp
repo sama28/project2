@@ -81,7 +81,22 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc)
     } relCacheEntry;
     */
     //relcat(relName,recLength,rcPerPg,numPgs,numRecs,numAttrs,pid,rid)
-
+    int offset;
+    offset=0;
+    strncpy(relCache[indexLoc].relName,relCatEntry,RELNAME);
+    offset=RELNAME;
+    relCache[indexLoc].recLength=*(unsigned *)(relCatEntry+offset);
+    offset=offset+4;
+    relCache[indexLoc].recPerPg =*(unsigned *)(relCatEntry+offset);
+    offset=offset+4;
+    relCache[indexLoc].numPgs=*(unsigned *)(relCatEntry+offset);
+    offset=offset+4;
+    relCache[indexLoc].numRecs=*(unsigned *)(relCatEntry+offset);
+    offset=offset+4;
+    relCache[indexLoc].numAttrs=*(unsigned short *)(relCatEntry+offset);
+    offset=offset+2;
     
-
+    //do the Entry Of Pid And Rid
+    //relCache[indexLoc].recLength=*(unsigned *)(relCatEntry+offset);
+    //offset=offset+4;
 }
