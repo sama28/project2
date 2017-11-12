@@ -14,6 +14,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include<errno.h>
+#include<vector>
+using namespace std;
+
 #define PAGESIZE			2048				/* number of bytes in a page */
 #define BITMS_NUM           (PAGESIZE/128)		//assuming a record is atleat 4 byte and one bitmap 												slot is of 4byte 
 #define	MAXRECORD			(32*BITMS_NUM) 	//since one bitmap slot can corresponds to 32 records
@@ -42,7 +45,7 @@
 //************************************************************
 //----------this part depends on where you deploy this project
 //***********************************************************
-#define HOME_MINIREL "/home/samadhan/Desktop/git/minirel"//location of project root directory
+#define HOME_MINIREL "/home/ameya/project/project2"//location of project root directory
 #define MAX_PATH_LENGTH 255 						//length of absolute address of any file
 #define ATTRLEN		32
 #define MR_MAX_FILENAME_SIZE 255
@@ -84,6 +87,12 @@ typedef struct psattrcat {
 					char contents [MAXRECORD];
 } PageAttrCat;
 /*****************************************************************/
+struct attrList{
+	char attrName[ATTRLEN];
+	unsigned length;
+	unsigned offset;
+	unsigned short type;
+};
 
 typedef struct relList{
 	char valid;
@@ -96,16 +105,10 @@ typedef struct relList{
 	struct recid Rid;
 	FILE *relFile;
 	char dirty;
-	struct attrList* attrHead;
+	vector <struct attrList> attrHead;
 } relCacheEntry;
 
-typedef struct attrList{
-	char attrName[ATTRLEN];
-	unsigned length;
-	unsigned offset;
-	unsigned short type;
-	struct attrList* next;
-};
+
 /*
 struct pageBuffer
 {
