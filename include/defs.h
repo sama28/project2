@@ -17,7 +17,7 @@
 #include<vector>
 using namespace std;
 
-#define PAGESIZE			2048				/* number of bytes in a page */
+#define PAGESIZE			512			/* number of bytes in a page */
 #define BITMS_NUM           (PAGESIZE/128)		//assuming a record is atleat 4 byte and one bitmap 												slot is of 4byte 
 #define	MAXRECORD			(32*BITMS_NUM) 	//since one bitmap slot can corresponds to 32 records
 #define PGTAIL_SPACE		4 				//sapce always left blanks for safety
@@ -58,10 +58,15 @@ using namespace std;
 *************************************************************/
 
 /* Rid structure */
+
 typedef struct recid {
 	unsigned 	pid;
 	unsigned 	slotnum;
 } Rid;
+
+struct recidArray{
+	struct recid Rid;
+};
 
 /* Page Structure */
 typedef struct ps {
@@ -106,6 +111,7 @@ typedef struct relList{
 	FILE *relFile;
 	char dirty;
 	vector <struct attrList> attrHead;
+	struct recid attr0Rid;
 } relCacheEntry;
 
 

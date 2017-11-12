@@ -16,5 +16,10 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr);
 int fileSize(FILE *fp);
 int CreateCats(char *d);
 void OpenCats(void);
+void InsertRec(int relNum,unsigned char *rec);
+void WriteRec(int relNum,unsigned char* rec,Rid* rid);
+void GetSlots(struct recidArray* ridArray,int count,int relNum);
+void CloseCats(void);
+void bwrite_int(unsigned char* tmp,int num,int size,int* init);
 
 #endif
