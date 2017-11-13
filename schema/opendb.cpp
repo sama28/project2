@@ -19,7 +19,6 @@ void findRelNumTest(void);
 
 int OpenDB(int argc,char ** argv)
 {
-<<<<<<< HEAD
   int flag=1,p;
   struct dirent *dp;
   char path[MAX_PATH_LENGTH],*c;
@@ -44,7 +43,6 @@ int OpenDB(int argc,char ** argv)
       //testMain();
       findRelNumTest();
 
-=======
   if(MR_CURR_DB[0]==0){
     int flag=1,p;
     struct dirent *dp;
@@ -77,7 +75,6 @@ int OpenDB(int argc,char ** argv)
         printf("Database not found.----------------------------------\n");
         printf("\n---------------------------------------------------\n");
       }
->>>>>>> 17a8905cc2b098501a90ea7ff860e5262ff1ee25
     }
     else if (errno){
         printf("\n---------------------------------------------------\n");
