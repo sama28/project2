@@ -62,7 +62,9 @@ typedef struct recid {
 	unsigned 	pid;
 	unsigned 	slotnum;
 } Rid;
-
+struct recidArray{
+	struct recid Rid;
+};
 /* Page Structure */
 typedef struct ps {
 //	unsigned  char slotmap[BITMS_NUM];

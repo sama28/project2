@@ -1,3 +1,4 @@
+#if 0
 #include "../include/defs.h"
 #include "../include/error.h"
 #include "../include/globals.h"
@@ -7,7 +8,8 @@
 
 int OpenRel(char * relName)
 {
-     printf("\n\nOpenRel..... \n ");
+
+    printf("\n\nOpenRel..... \n ");
      int staus,indexLoc;
      int rltnExist;
      char relCatEntry[MR_RELCAT_REC_SIZE];//Entry Of ReCord In relcat
@@ -36,18 +38,18 @@ int OpenRel(char * relName)
     }
     
 }
-int findRecInRelcat(char * relName,char *recPtr)
+int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid)
 {
     //for Refferences...
     //int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
     
     int status;
-    Rid startRid,foundRid;
+    Rid startRid;
 
     startRid.pid=0;
     startRid.slotnum=0;
     
-    status=FindRec(0,&startRid,&foundRid,recPtr,(short)DTSTRING,(unsigned)RELNAME,(unsigned)0,relName,EQ);
+    status=FindRec(0,&startRid,foundRid,recPtr,(short)DTSTRING,(unsigned)RELNAME,(unsigned)0,relName,EQ);
 
     if(status==1)
     {
@@ -62,10 +64,11 @@ int findRecInRelcat(char * relName,char *recPtr)
     }
     return 0;
 }
-int makeRelCacheEntry(char *relCatEntry,int indexLoc)
+*/
+int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
 {   //it will polpulate IndexLoc Cache index with relCatEntry
 
-    /*//for Refference
+    /*for Refference
     typedef struct relList{
 	char valid;
 	char relName[RELNAME];
@@ -95,8 +98,27 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc)
     offset=offset+4;
     relCache[indexLoc].numAttrs=*(unsigned short *)(relCatEntry+offset);
     offset=offset+2;
-    
-    //do the Entry Of Pid And Rid
-    //relCache[indexLoc].recLength=*(unsigned *)(relCatEntry+offset);
-    //offset=offset+4;
+    relCache[indexLoc].attr0Rid.pid=*(unsigned *)(relCatEntry+offset);
+    offset=offset+4;
+    relCache[indexLoc].attr0Rid.rid=*(unsigned *)(relCatEntry+offset);
+
+    relCache[indexLoc].Rid.pid=foundRid->pid;
+    relCache[indexLoc].Rid.slotnum=foundRid->slotnum;
+
 }
+replaceRelCahceEntry(char *recPtr)
+{
+}
+int entryWhere()
+{
+    if(relCacheIndex<20)//relCacheIndex<MAX_RELCACHE_ENTRY
+    {
+        return relCacheIndex;
+    }
+    else{
+            //decide replacement policy
+            
+
+    }
+}
+#endif
