@@ -73,11 +73,7 @@ int isInputValid(int num,char **string){
     strcpy(seen[i],string[i]);
     char path[MAX_PATH_LENGTH];
     getPath(path,string[1]);
-    if(doesFileExist(path)){
-        printf("Relation File Already Exists.\n");
-        return (NOTOK);
-    }
-    if(strlen(string[1])<=RELNAME && !doesFileExist(path)){//Add provision for checking if relation already exists.
+    if(strlen(string[1])<=RELNAME){//Add provision for checking if relation already exists.
         valid=valid & 1;
     }
     else{
@@ -139,11 +135,16 @@ int Create (int argc,char** argv)
     //sanitize(&record,relCache[1].recLength+1);
     struct recidArray RidArray[attrCount];
     //printf("%d\n",attrCount);
-    
+    char path[MAX_PATH_LENGTH];
+    getPath(path,argv[1]);
+    printf("%s",path);
+    if(doesFileExist(path)){
+        printf("Relation already exists.\n");
+        return (NOTOK);
+    }
     if(isInputValid(argc,argv)){
         //printf("Valid");
         GetSlots(&RidArray[0],attrCount,1);
-        struct attrList* tmp=(struct attrList*) malloc(sizeof(struct attrList)) ;
         for(int i=2;i<argc;i=i+2){
             offset=0;
             sanitize(record,relCache[1].recLength+1);
@@ -227,7 +228,6 @@ int Create (int argc,char** argv)
         int a7=bread_int(record2,4,&t);
         printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);
         InsertRec(0,record2);
-        free(tmp);
         relCache[0].dirty='d';
         relCache[1].dirty='d';
         relCache[0].numRecs++;
