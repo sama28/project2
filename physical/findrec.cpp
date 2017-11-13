@@ -121,7 +121,8 @@ int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp )
             }
         break;
         
-s        case DTFLOAT:
+        
+        case DTFLOAT:
             if(floatcomp(*((float *)(recPtr+bOfst)),*(float *)valuePtr,compOp))
             {
                 return 1;

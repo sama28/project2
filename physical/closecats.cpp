@@ -10,6 +10,7 @@
 void sanitize(unsigned char* a,int num);
 void CloseCats(void)
 {
+    printf("%d",relCacheIndex);
     unsigned char record[relCache[0].recLength+1];
     int offset=0;
     for(int i=0;i<20;i++){
@@ -44,7 +45,9 @@ void CloseCats(void)
             
             WriteRec(0,record,&relCache[i].Rid);
         }
+        relCache[i].valid='i';
     }
+    relCacheIndex=0;
     fclose(relCache[0].relFile);
     fclose(relCache[1].relFile);
 }

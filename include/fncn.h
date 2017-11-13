@@ -24,5 +24,9 @@ void bwrite_int(unsigned char* tmp,int num,int size,int* init);
 int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp );
 unsigned attrOfstInRec(char *recPtr,int relNum,int offset);
 int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp );
+<<<<<<< HEAD
 int FindRelNum(char *relName);
+=======
+
+>>>>>>> 17a8905cc2b098501a90ea7ff860e5262ff1ee25
 #endif

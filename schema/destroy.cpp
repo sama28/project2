@@ -7,9 +7,10 @@
 
 int Destroy(int argc,char ** argv)
 {
-
-    CloseCats();
-     return (OK);  /* all's fine */
+    char path[MAX_PATH_LENGTH];
+    getPath(path,argv[1])
+    if()
+    return (OK);  /* all's fine */
 }
 
 

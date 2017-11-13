@@ -35,6 +35,7 @@ void InsertRec(int relNum,unsigned char *rec){
             slotByte=-1;
             if(pagenum+1>relCache[relNum].numPgs){
                 relCache[relNum].numPgs++;
+                relCache[relNum].dirty='d';
                 isNewpage=1;
                 for(int i=0;i<sizeof(gPgTable[relNum].contents);i++)
                 gPgTable[relNum].contents[i]=0;
@@ -95,6 +96,8 @@ void InsertRec(int relNum,unsigned char *rec){
         
         fseek(fp,PAGESIZE*pagenum,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,fp);
+        gPgTable[relNum].dirty='d';
+        relCache[relNum].numRecs++;
         if(isNewpage){
             //relCache[relNum].numPgs++;
         }
@@ -151,6 +154,7 @@ void getPath(char* path,char* filename){
         strcpy(path,HOME_MINIREL);
         c=strcat(path,"/data/");
         c=strcat(c,MR_CURR_DB);
+        c=strcat(c,"/");
         c=strcat(c,filename);
         strcpy(path,c);
     }
