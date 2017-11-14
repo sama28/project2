@@ -40,8 +40,8 @@ using namespace std;
 #define RELCAT		"relcat"   /* name of the relation catalog file */
 #define ATTRCAT		"attrcat"  /* name of the attribute catalog file */
 
-#define NUM_RELCACHE_ENTRY ((PAGESIZE-PGTAIL_SPACE-(BITMS_NUM*sizeof(unsigned int)))/MR_RELCATENTRYSIZE)
-
+#define NUM_RELCACHE_ENTRY 20//((PAGESIZE-PGTAIL_SPACE-(BITMS_NUM*sizeof(unsigned int)))/MR_RELCATENTRYSIZE)
+#define MR_FIRST_USR_RLTN_IND 2
 //************************************************************
 //----------this part depends on where you deploy this project
 //***********************************************************
@@ -74,6 +74,7 @@ typedef struct ps {
 typedef struct gtps {
 		//	unsigned  char slotmap[BITMS_NUM];
 			unsigned 	pid;
+			int dirty;
 			unsigned char contents [PAGESIZE+1];
 			} GtPage;
 

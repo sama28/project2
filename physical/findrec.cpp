@@ -14,7 +14,7 @@ int strncomp(char* a,char* b,int len,int compOp);int floatcomp(float a,float b,i
 
 int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
 {
- //printf("FindRec \n ");
+ printf("FindRec :relNum=%d value =%s compOp=%d\n ",relNum,valuePtr,compOp);
 int status,flag=1;      
 //GetNextRec(int relNum,recid * startRid,recid* foundRid,void * recPtr)
 

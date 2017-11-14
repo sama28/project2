@@ -72,7 +72,7 @@ relCache[1].attrHead;
 
 
                 //check whether dirty bit is set or not
-                if(relCache[relNum].dirty == 'd')
+                if(gPgTable[relNum].dirty == 'd')
                 {
                     //insure that file is open in wb+ mode
                     //write the dirty page to the disk 1st

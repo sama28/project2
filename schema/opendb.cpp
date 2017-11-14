@@ -16,6 +16,7 @@ void shwAttrCatRec(unsigned char recptr[]);
 void relCacheTest(void);
 void testReadFile(void);
 void findRelNumTest(void);
+void openRelTest(void);
 
 int OpenDB(int argc,char ** argv)
 {
@@ -41,8 +42,9 @@ int OpenDB(int argc,char ** argv)
       OpenCats();
       unsigned char a[200]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
       //testMain();
-      findRelNumTest();
-
+     // findRelNumTest();
+     openRelTest();
+    }
   if(MR_CURR_DB[0]==0){
     int flag=1,p;
     struct dirent *dp;
@@ -69,6 +71,7 @@ int OpenDB(int argc,char ** argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
+        //openRelTest();
       }
       else{
         printf("\n---------------------------------------------------\n");
@@ -86,6 +89,7 @@ int OpenDB(int argc,char ** argv)
   else{
     printf("db already open.");
   }
+}
 }
 void testMain()
 {
@@ -357,4 +361,10 @@ void findRelNumTest(void)
   printf("for relcat index in Cache =%d",FindRelNum(c));
   printf("for attrcat index in Cache =%d",FindRelNum(d));
   printf("for relcsfat index in Cache =%d",FindRelNum(e));
+}
+void openRelTest(void)
+{
+  relCache[1].valid='i';
+  gPgTable[2].dirty='d';
+  printf("\n\n\n\nrelNum  =%d",OpenRel("attrcat"));
 }

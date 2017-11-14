@@ -31,5 +31,5 @@ extern unsigned int relCacheIndex;
 extern struct relList relCache[NUM_RELCACHE_ENTRY];
 extern unsigned char relcat_page[PAGESIZE+1];
 extern unsigned char attrcat_page[PAGESIZE+1];
-
+extern int relCacheRplcmntInd;//DONT USE IT FOR VERY SPECIFIC PURPOSE
 #endif

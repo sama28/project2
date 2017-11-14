@@ -6,9 +6,9 @@
 #include <string.h>
 #include <stdio.h>
 int FindRelNum(char *relName)
-{
+{   //returns the Relation Number On success Else Returns Falls
   int i;
-    printf("\n\nFindRelNum  \n ");
+    printf("\n\nFindRelNum args:%s  \n ",relName);
         i=0;
         while(i<=relCacheIndex)
         {

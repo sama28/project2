@@ -17,7 +17,7 @@ void ReadPage(int relNum,unsigned pid);
 
 int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
 {
- printf("GetNextRec \n ");
+ //printf("GetNextRec \n ");
 
  int bitmapByteNum;
  int bitmapbitnum;
@@ -57,7 +57,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                                       recPtr[i]=gPgTable[relNum].contents[fstrecind+i];
                                   }
                                   //memcpy(recPtr, &gPgTable[relNum].contents[fstrecind],relCache[relNum].recLength);
-                                  printf("\n\nInGetnextRec : Rec Copied SuccessFully...");
+                                 // printf("\n\nInGetnextRec : Rec Copied SuccessFully...");
                                   return 1;
                           }
                              //printf("\n\nIN GetNextRec There Is No Rec At Given Slot No");

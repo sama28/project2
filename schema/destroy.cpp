@@ -8,8 +8,7 @@
 int Destroy(int argc,char ** argv)
 {
     char path[MAX_PATH_LENGTH];
-    getPath(path,argv[1])
-    if()
+    getPath(path,argv[1]);
     return (OK);  /* all's fine */
 }
 

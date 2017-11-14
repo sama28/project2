@@ -17,8 +17,8 @@ int FlushPage(int relNum,unsigned pgid)
     if(!ferror(relCache[relNum].relFile))//actually condition shloud be ==PAGESIZE
     {
         fflush(relCache[relNum].relFile);
-        relCache[relNum].dirty=0;
-        printf("\nflushing old page:-\n\n%s",gPgTable[relNum].contents);
+        gPgTable[relNum].dirty='c';
+       printf("\nflushing old page:-\n\n%s",gPgTable[relNum].contents);
         return 1;
     }
     else{
