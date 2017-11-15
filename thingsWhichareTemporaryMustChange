@@ -1,0 +1,27 @@
+in OpenRel->replaceRelCacheEntry-> LINE 113 
+remove constant 20 with apropriate value
+---------------------------------------------
+if(relCacheIndex < 20)//relCacheIndex<MAX_RELCACHE_ENTRY
+                   and
+
+int whomToReplace()
+{
+    if(relCacheRplcmntInd<20)//relCacheIndex<MAX_RELCACHE_ENTRY
+} 
+///////////////////////////////////////////////////////////////
+
+DURING CHANGE DB REINITIALISE replaceRelCacheEntry
+//////////////////////////////////////////////////////////////
+if in update  number of attribute increses is not hendeled
+in open Rel
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////
+Cache Replacement Policy Is Trivial We Can Think For Better
+
+///////////////////////////////////////////////////////////////
