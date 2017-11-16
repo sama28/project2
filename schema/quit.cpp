@@ -5,17 +5,16 @@
 #include "../include/fncn.h"
 #include <stdio.h>
 
+int CloseDB (int argc,char ** argv);
 
 int Quit(int argc,char ** argv)
 {
-    /* print command line arguments */
-    short	k;		/* iteration counter	    */
-    printf ("%s:\n", argv[0]);
-    for (k = 1 ; k < argc; ++k)
-	printf ("\targv[%d] = %s\n", k, argv[k]);
-
-     printf("Quit \n");
-     return (OK);  /* all's fine */
+    //printf("inside quit");
+    if(MR_CURR_DB[0]!=0){
+        CloseDB(argc,argv);
+        //printf("1");
+    }
+    //printf("2");
 }
 
 

@@ -1,9 +1,3 @@
-    /* 
-	This is the basic definition file.
-    */
-/*************************************************************
-		CONSTANTS
-*************************************************************/
 #ifndef DEF
 #define DEF
 #include<stdio.h>
@@ -23,7 +17,7 @@ using namespace std;
 #define PGTAIL_SPACE		4 				//sapce always left blanks for safety
 
 #define RELNAME		32	/* max length of a relation name */
-#define MAXOPEN		20  /* max number of files that can be open
+#define MAXOPEN		8  /* max number of files that can be open
 										   at the same time */
 										   
 //#define MR_MAXBUFPG 1024	
@@ -134,3 +128,4 @@ struct buffCat
 
 //int FlushPage(int relNum,unsigned pgid);
 #endif
+

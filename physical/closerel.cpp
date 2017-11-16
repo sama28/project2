@@ -10,8 +10,8 @@ void sanitize(unsigned char* a,int num);
 void clearCacheEntry(int relNum){
     relCache[relNum].valid='i';
     relCache[relNum].attrHead.clear();
-    if(relCache[relNum].relFile!=NULL)
-        fclose(relCache[relNum].relFile);
+    //if(relCache[relNum].relFile!=NULL)
+    //    fclose(relCache[relNum].relFile);
     relCache[relNum].attrHead.clear();
     relCache[relNum].dirty='c';
 }
@@ -40,7 +40,7 @@ void CloseRel(int relNum)
         bwrite_int(record,relCache[relNum].attr0Rid.pid,sizeof(int),&offset);
         bwrite_int(record,relCache[relNum].attr0Rid.slotnum,sizeof(int),&offset);
         printf("stringlen %d",strlen((char*)record));
-        /*for(int k=0;k<relCache[0].recLength;k++)
+        for(int k=0;k<relCache[0].recLength;k++)
             printf("%02x",record[k]);
             printf("\n");
             
@@ -56,9 +56,9 @@ void CloseRel(int relNum)
         for(int k=0;k<relCache[0].recLength;k++)
         printf("%02x",record[k]);
         printf("\n");
-        */
+        
         WriteRec(0,record,&relCache[relNum].Rid);
-        //clearCacheEntry(relNum);
+        clearCacheEntry(relNum);
         
     }
 

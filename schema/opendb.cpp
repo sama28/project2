@@ -20,31 +20,6 @@ void openRelTest(void);
 
 int OpenDB(int argc,char ** argv)
 {
-  int flag=1,p;
-  struct dirent *dp;
-  char path[MAX_PATH_LENGTH],*c;
-
-	strcpy(path,HOME_MINIREL);
-	c=strcat(path,"/data/");
-	strcpy(path,c);
-  DIR *dir= opendir(path);
-  if (dir){
-    while((dp =readdir(dir))!=NULL && flag){
-      if(!(p=strcmp(dp->d_name,argv[1])))
-        flag=0;
-    }
-    if(flag==0){
-      strcpy(MR_CURR_DB,argv[1]);
-      printf("\n---------------------------------------------------\n");
-      printf("Database %s is opened successfully.---------------------\n",MR_CURR_DB);
-      printf("\n---------------------------------------------------\n");
-      
-      OpenCats();
-      unsigned char a[200]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
-      testMain();
-     // findRelNumTest();
-     //openRelTest();
-    }
   if(MR_CURR_DB[0]==0){
     int flag=1,p;
     struct dirent *dp;
@@ -52,6 +27,7 @@ int OpenDB(int argc,char ** argv)
     strcpy(path,HOME_MINIREL);
     c=strcat(path,"/data/");
     strcpy(path,c);
+    printf("%s",path);
     DIR *dir= opendir(path);
     if (dir){
       while((dp =readdir(dir))!=NULL && flag){
@@ -71,7 +47,6 @@ int OpenDB(int argc,char ** argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
-        //openRelTest();
       }
       else{
         printf("\n---------------------------------------------------\n");
@@ -89,7 +64,6 @@ int OpenDB(int argc,char ** argv)
   else{
     printf("db already open.");
   }
-}
 }
 void testMain()
 {
@@ -135,7 +109,6 @@ void testMain()
 
       rln=1;
       startRid.slotnum=0;
-      /*
       //GetNextRec(rln, &startRid, &foundRid, record1);
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%s",relCache[1].attrHead[2].attrName);
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].offset);
@@ -143,10 +116,9 @@ void testMain()
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%d",relCache[1].attrHead[2].type);
       FindRec(rln,&startRid,&foundRid,record1,a_type,a_size,a_offset,a_vptr,a_compOp);
       shwAttrCatRec((unsigned char*)record1);
-      */
-       startRid.pid=0;
-      startRid.slotnum=0;
-      for(int i=0;i<20;i++)
+  
+      /*
+      for(int i=0;i<11;i++)
       {
       
       GetNextRec(1, &startRid, &foundRid, record1);
@@ -162,7 +134,7 @@ void testMain()
       shwRelCatRec((unsigned char *)record);
       startRid.slotnum=foundRid.slotnum+1;
       }
-
+*/
 
             
            /* printf("\n\nInside opendb\testMain\n\nTesting ReadPage");
@@ -361,17 +333,6 @@ void testReadFile(void)
     printf("file can not be oppened fd %d errno %d",fd,errno);//debug code	
   }
 
-}
-
-void findRelNumTest(void)
-{
-  char c[RELNAME]="relcat";
-  char d[RELNAME]="attrcat";
-  char e[RELNAME]="relcsfat";
-
-  printf("for relcat index in Cache =%d",FindRelNum(c));
-  printf("for attrcat index in Cache =%d",FindRelNum(d));
-  printf("for relcsfat index in Cache =%d",FindRelNum(e));
 }
 void openRelTest(void)
 {

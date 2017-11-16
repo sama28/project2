@@ -50,6 +50,13 @@ void CloseCats(void)
             WriteRec(0,record,&relCache[i].Rid);
         }
     }
+    for(int i=0;i<MAXOPEN;i++){
+        if(gPgTable[i].dirty=='d'){
+            printf("flushing page %d",i);
+            FlushPage(i,gPgTable[i].pid);
+            gPgTable[i].dirty='c';
+        }
+    }
     for(int i=0;i<20;i++)
         clearCacheEntry(i);
     relCacheIndex=0;

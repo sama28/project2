@@ -2,6 +2,7 @@
 #ifndef FNCTN
 #define FNCTN
 
+int nextRec(int relNum, Rid* startRid, char *recPtr);
 void getPath(char* path,char* filename);
 int Create (int argc,char** argv);
 void cnvrtTypeNumToStr(int num,char *str,int len);

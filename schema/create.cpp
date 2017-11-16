@@ -81,8 +81,8 @@ int isInputValid(int num,char **string){
     }
     for(int i=2;i<num;i=i+2){
         if(strlen(string[i])<=ATTRLEN){
-            if((string[i+1][0]=='i' && strlen(string[i+1])==1) || (string[i+1][0]=='f' && strlen(string[i+1])==1)){
-                valid=valid & 1;
+            if(((string[i+1][0]=='i' || string[i+1][0]=='I') && strlen(string[i+1])==1) || ((string[i+1][0]=='f' || string[i+1][0]=='F') && strlen(string[i+1])==1) || (string[i+1][0]=='u' && string[i+1][1]=='i' && strlen(string[i+1])==2) || (string[i+1][0]=='u' && string[i+1][1]=='s' && strlen(string[i+1])==2) || (string[i+1][0]=='u' && string[i+1][1]=='c' && strlen(string[i+1])==2) || (string[i+1][0]=='c' && strlen(string[i+1])==1) ){
+                 valid=valid & 1;
             }
             else if(string[i+1][0]=='S' || string[i+1][0]=='s'){
                 if(strlen(string[i+1])<=3 && string[i+1][1]<58 && string[i+1][1]>48 && (string[i+1][2]==0 || (string[i+1][2]>47 && string[i+1][2]<58))){
@@ -194,6 +194,28 @@ int Create (int argc,char** argv)
                 bwrite_int(record,DTSTRING,sizeof(short),&offset);
                 recLength+=sum;
                 //printf("string");
+            }
+            else if(argv[i+1][0]=='u'){
+                if(argv[i+1][1]=='i'){
+                    bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                    bwrite_int(record,DTUNSIGNED_INT,sizeof(short),&offset);
+                    recLength+=sizeof(int);
+                }
+                else if(argv[i+1][1]=='s'){
+                    bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                    bwrite_int(record,DTUNSIGNED_SHORT,sizeof(short),&offset);
+                    recLength+=sizeof(int);
+                }
+                else if(argv[i+1][1]=='c'){
+                    bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                    bwrite_int(record,DTUNSIGNED_CHAR,sizeof(short),&offset);
+                    recLength+=sizeof(int);
+                }
+            }
+            else if(argv[i+1][0]=='c'){
+                bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                bwrite_int(record,DTCHAR,sizeof(short),&offset);
+                recLength+=sizeof(int);
             }
             //for(int k=0;k<42;k++)
             //printf("%x",record[k]);
