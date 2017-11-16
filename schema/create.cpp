@@ -81,7 +81,7 @@ int isInputValid(int num,char **string){
     }
     for(int i=2;i<num;i=i+2){
         if(strlen(string[i])<=ATTRLEN){
-            if((string[i+1][0]=='i' && strlen(string[i+1])) || (string[i+1][0]=='f' && strlen(string[i+1]))){
+            if((string[i+1][0]=='i' && strlen(string[i+1])==1) || (string[i+1][0]=='f' && strlen(string[i+1])==1)){
                 valid=valid & 1;
             }
             else if(string[i+1][0]=='S' || string[i+1][0]=='s'){
@@ -115,21 +115,32 @@ int isInputValid(int num,char **string){
     }
     //printf("%d",strlen(string[2]));
     if(valid){
-        FILE* fp=fopen(path,"ab");
-        if(fp){
-            //printf("ban gayi");
-            fclose(fp);
+        struct stat st={0};
+        if(stat(path,&st)==-1){
+            int status=mkdir(path,0700);
+            if(status==0){
+                strcat(path,"/");
+                strcat(path,string[1]);
+                FILE* fp=fopen(path,"ab");
+                if(fp){
+                    fclose(fp);
+                }
+                else if(errno){
+                    printf("%s",strerror(errno));
+                    valid=valid & 0;
+                }
+            }
+            else{
+                valid=valid & 0;
+            }
         }
-        else if(errno){
-            printf("%s",strerror(errno));
-        }
+        
     }
     return valid;
 }
 
 int Create (int argc,char** argv)
 {
-#if 0
     //printf("%d%s\n",argc,argv[1]);
     int attrCount=(argc-2)/2,offset=0,count=0,recLength=0;
     unsigned char record[relCache[1].recLength+1];
@@ -186,11 +197,11 @@ int Create (int argc,char** argv)
             }
             //for(int k=0;k<42;k++)
             //printf("%x",record[k]);
-            //int t=0;
-            //unsigned char q[32];
-            //bread_string(record,32,&t,q);
-            //int a1=bread_int(record,4,&t);int a2=bread_int(record,4,&t);int a3=bread_int(record,2,&t);
-            //printf("\n%s\n%d\n%d\n%d",q,a1,a2,a3);
+            int t=0;
+            unsigned char q[32];
+            bread_string(record,32,&t,q);
+            int a1=bread_int(record,4,&t);int a2=bread_int(record,4,&t);int a3=bread_int(record,2,&t);
+            printf("\n%s\n%d\n%d\n%d",q,a1,a2,a3);
             //printf("\nrids\t%d\t%d\n",(RidArray+count)->Rid.slotnum,(RidArray+count)->Rid.pid);
             Rid temp;
             temp.pid=RidArray[count].Rid.pid;
@@ -221,17 +232,16 @@ int Create (int argc,char** argv)
         //for(int k=0;k<relCache[0].recLength;k++)
        // printf("%x",record2[k]);
 
-        int t=0;
+        /*int t=0;
         unsigned char q[32];
         bread_string(record2,32,&t,q);
         int a1=bread_int(record2,4,&t);int a2=bread_int(record2,4,&t);int a3=bread_int(record2,4,&t);
         int a4=bread_int(record2,4,&t);int a5=bread_int(record2,2,&t);int a6=bread_int(record2,4,&t);
         int a7=bread_int(record2,4,&t);
-        printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);
+        printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);*/
         InsertRec(0,record2);
         relCache[0].dirty='d';
         relCache[1].dirty='d';
-        relCache[0].numRecs++;
         relCache[1].numRecs+=attrCount;
         printf("Relation Successfully Created\n");
         
@@ -241,5 +251,8 @@ int Create (int argc,char** argv)
     }
 
     return (OK);
-#endif
 }
+
+
+
+

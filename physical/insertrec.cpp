@@ -102,7 +102,7 @@ void InsertRec(int relNum,unsigned char *rec){
             //relCache[relNum].numPgs++;
         }
         fflush(fp);
-        if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
+        /*if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
             struct stat st;
             mode_t mode;
             stat(path, &st);
@@ -111,7 +111,7 @@ void InsertRec(int relNum,unsigned char *rec){
             // modify mode
             mode &= ~(S_IWUSR);    // Clear this bit 
             chmod(path, mode);
-        }
+        }*/
         
     }
     else if(errno){
@@ -159,4 +159,3 @@ void getPath(char* path,char* filename){
         strcpy(path,c);
     }
 }
-

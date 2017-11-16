@@ -23,5 +23,6 @@ int FindRelNum(char *relName)
             }
 
         }
+        printf("\n\nPrintf");
         return -1;
 }

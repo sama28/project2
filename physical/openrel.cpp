@@ -38,16 +38,27 @@ int OpenRel(char * relName)
         if(rltnExist)
         {
            entryAt=bringInRelCache(relCatEntry,&foundRid);
-            if(entryAt>2)
+            if(entryAt>=MR_FIRST_USR_RLTN_IND)
             {
                 //compulSorily bring One Page Of New relaTion
                 gPgTable[entryAt].pid=1;//this Entry There For Forced Read
                 gPgTable[entryAt].dirty='c';
                 ReadPage(entryAt,0);
+                return entryAt;
+            }
+            else
+            {
+                printf("\n\nERROR SYSTEM CATALOG(RELCAT/ATTRCAT) ENTRY IN CACHE IS REPLACED BY OPENREL...");
+                return -1;
             }
         }
-        
+        else
+        {
+            return -2;
+            printf("\n\nIN OPENREL :- RELATION DOESN'T EXISTS....");
+        }
     }
+    return -3;
     
 }
 int bringInRelCache(char * relCatEntry,Rid *foundRid)
@@ -56,12 +67,21 @@ int bringInRelCache(char * relCatEntry,Rid *foundRid)
     //retruns the index of The location in relCache at which New Entry Is Placed
 
     printf("bringInRelCache(char * relCatEntry=%s,Rid *foundRid(pid ,slotnum)(%u %u))",relCatEntry,foundRid->pid,foundRid->slotnum);
-    int loc,flushed;
+    int loc,flushed,entrymade=0;
     loc=entryWhere();
     flushed=flushRelCacheEntry(loc);
     if(flushed==1)
     {
-      if(makeRelCacheEntry(relCatEntry,loc,foundRid))
+        if(loc<19)
+        {
+           relCacheRplcmntInd=loc+1;
+        }
+        else
+        {
+            relCacheRplcmntInd=MR_FIRST_USR_RLTN_IND;
+        }
+       entrymade=makeRelCacheEntry(relCatEntry,loc,foundRid);
+      if(entrymade==1)
       {
           return loc;
       }
@@ -117,42 +137,66 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
     printf("\n\nint makeRelCacheEntry(char *relCatEntry=%s,int indexLoc =%d,Rid *foundRid(pid,SlotNum)(%u ,%u))",relCatEntry,indexLoc,foundRid->pid,foundRid->slotnum);
     int offset,attrCatEntryMade=0;
     offset=0;
-    strncpy(relCache[indexLoc].relName,relCatEntry,RELNAME);
-    offset=RELNAME;
-    relCache[indexLoc].recLength=*(unsigned *)(relCatEntry+offset);
-    offset=offset+4;
-    relCache[indexLoc].recPerPg =*(unsigned *)(relCatEntry+offset);
-    offset=offset+4;
-    relCache[indexLoc].numPgs=*(unsigned *)(relCatEntry+offset);
-    offset=offset+4;
-    relCache[indexLoc].numRecs=*(unsigned *)(relCatEntry+offset);
-    offset=offset+4;
-    relCache[indexLoc].numAttrs=*(unsigned short *)(relCatEntry+offset);
-    offset=offset+2;
-    relCache[indexLoc].attr0Rid.pid=*(unsigned *)(relCatEntry+offset);
-    offset=offset+4;
-    relCache[indexLoc].attr0Rid.slotnum=*(unsigned *)(relCatEntry+offset);
+    char path[MAX_PATH_LENGTH];
+    int status;
+    if(relCache[indexLoc].valid=='v' && relCache[indexLoc].relFile !=NULL )
+    {
+        status=fclose(relCache[indexLoc].relFile);
+    }
+    else{
+        status=0;
+    }
+    if(status==0)
+    {
+        strncpy(relCache[indexLoc].relName,relCatEntry,RELNAME);
+        offset=RELNAME;
+        relCache[indexLoc].recLength=*(unsigned *)(relCatEntry+offset);
+        offset=offset+4;
+        relCache[indexLoc].recPerPg =*(unsigned *)(relCatEntry+offset);
+        offset=offset+4;
+        relCache[indexLoc].numPgs=*(unsigned *)(relCatEntry+offset);
+        offset=offset+4;
+        relCache[indexLoc].numRecs=*(unsigned *)(relCatEntry+offset);
+        offset=offset+4;
+        relCache[indexLoc].numAttrs=*(unsigned short *)(relCatEntry+offset);
+        offset=offset+2;
+        relCache[indexLoc].attr0Rid.pid=*(unsigned *)(relCatEntry+offset);
+        offset=offset+4;
+        relCache[indexLoc].attr0Rid.slotnum=*(unsigned *)(relCatEntry+offset);
 
-    relCache[indexLoc].Rid.pid=foundRid->pid;
-    relCache[indexLoc].Rid.slotnum=foundRid->slotnum;
+        relCache[indexLoc].Rid.pid=foundRid->pid;
+        relCache[indexLoc].Rid.slotnum=foundRid->slotnum;
 
-    relCache[indexLoc].dirty='c';
-    relCache[indexLoc].valid='v';
+        relCache[indexLoc].dirty='c';
+        relCache[indexLoc].valid='v';
 
-    printf("\n\nEntry In RelCahce:-\n%s %u %u %u %u %d %u %u",relCache[indexLoc].relName,relCache[indexLoc].recLength,relCache[indexLoc].recPerPg,relCache[indexLoc].numRecs,relCache[indexLoc].numAttrs,relCache[indexLoc].attr0Rid.pid,relCache[indexLoc].attr0Rid.slotnum);
-    //POPULATE attrHead
-   //relCache[indexLoc].attrHead[]
-   attrCatEntryMade=makeAttrCacheEntry(indexLoc,relCache[indexLoc].attr0Rid,relCache[indexLoc].numAttrs,relCache[indexLoc].recLength);
-   if(attrCatEntryMade==1)
-   {
        
-       return 1;
-   } 
-  else
-  {
-      relCache[indexLoc].valid='i';
-      return 0;
-  }
+        printf("\n\nEntry In RelCahce:-\n%s %u %u %u %u %d %u %u",relCache[indexLoc].relName,relCache[indexLoc].recLength,relCache[indexLoc].recPerPg,relCache[indexLoc].numRecs,relCache[indexLoc].numAttrs,relCache[indexLoc].attr0Rid.pid,relCache[indexLoc].attr0Rid.slotnum);
+        //POPULATE attrHead
+        //relCache[indexLoc].attrHead[]
+        attrCatEntryMade=makeAttrCacheEntry(indexLoc,relCache[indexLoc].attr0Rid,relCache[indexLoc].numAttrs,relCache[indexLoc].recLength);
+        if(attrCatEntryMade!=1)
+        {
+            relCache[indexLoc].valid='i';
+            return 0;
+            
+        } 
+        //open New Relation File
+        getPath(path,relCache[indexLoc].relName);
+        relCache[indexLoc].relFile=fopen(path,"rb+");
+        if(relCache[indexLoc].relFile == NULL)
+        {
+            printf("\n\nNEW RELATION FILE CAN NOT BE OPENED");
+            return 0;
+        }
+        return 1;
+    }
+    else
+    {
+        relCache[indexLoc].valid='i';
+        printf("\n\nEROR IN CLOSING OLDRELATION FILE.....");
+        return 0;
+    }
 
 }
 void makeRelCatRec(unsigned char *cacheEntry,int indexLoc)
@@ -190,35 +234,37 @@ int makeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength
 
     printf("\n\nmakeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength)");
     relCache[Loc].attrHead.clear();
-    status=nextRec(1,&startRid,recPtr);
-    i=0;
-    while(status==1 && i<numAttrs)
+    //status=nextRec(1,&startRid,recPtr);
+   for(i=0;i<numAttrs;i++)
     {
         //WARNING RIGHT THING TO DO IS COMPARE OFFSET ORDERRING OF ATTRIBUTE....
-        offset=0;
-        strncpy(attrHead.attrName,recPtr,ATTRLEN);
-        offset=ATTRLEN;
-        attrHead.offset=*(unsigned *)(recPtr+offset);
-        offset=offset+4;
-        attrHead.length=*(unsigned *)(recPtr+offset);
-        offset=offset+4;
-        attrHead.type=*(short *)(recPtr+offset);
-        printf("\n\nENTRY MADE IN ATTRCACHE %s %u %u %d",attrHead.attrName,attrHead.offset,attrHead.length,attrHead.type);
-      
-        relCache[Loc].attrHead.push_back(attrHead);
-      
-        if(startRid.slotnum < relCache[1].numRecs-1)
+        status=nextRec(1,&startRid,recPtr);
+        if(status==1)
         {
+            offset=0;
+            strncpy(attrHead.attrName,recPtr,ATTRLEN);
+            offset=ATTRLEN;
+            attrHead.offset=*(unsigned *)(recPtr+offset);
+            offset=offset+4;
+            attrHead.length=*(unsigned *)(recPtr+offset);
+            offset=offset+4;
+            attrHead.type=*(short *)(recPtr+offset);    
+            printf("\n\nENTRY MADE IN ATTRCACHE %s %u %u %d",attrHead.attrName,attrHead.offset,attrHead.length,attrHead.type);
+      
+            relCache[Loc].attrHead.push_back(attrHead);
+      
             startRid.slotnum++;
+            if(startRid.slotnum >= relCache[1].numRecs)
+            {
+               startRid.pid++;
+                startRid.slotnum=0;
+            }
         }
         else
         {
-            startRid.pid++;
-            startRid.slotnum=0;
+            break;
+            i=numAttrs+1;//just to break loop
         }
-        status=nextRec(1,&startRid,recPtr);
-        i++;
-        
     }
     if(i==numAttrs)
     {
@@ -242,13 +288,11 @@ int flushRelCacheEntry(int Loc)
     if(gPgTable[Loc].dirty=='d' && relCache[Loc].valid=='v')
     {
         printf("\n\nint flushRelCacheEntry(int Loc)=%d",Loc);
-       gPgFlushed=FlushPage(Loc,gPgTable[Loc].pid);
+        gPgFlushed=FlushPage(Loc,gPgTable[Loc].pid);
     }
     else{
         gPgFlushed=1;
     }
-    
-    
     
     //---------------------------------------------
     //CODE FOR FLUSHING ATTRCAT ENTRY SHOLD BE hERE
@@ -286,7 +330,8 @@ int entryWhere()
             //decide replacement policy
             //for fifo use below
             printf("\n\nint entryWhere()-> whomToReplace()");
-            return whomToReplace();
+            //return whomToReplace();
+            return relCacheRplcmntInd;
     }
 }
 int whomToReplace(void)

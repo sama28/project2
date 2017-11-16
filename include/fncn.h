@@ -4,6 +4,7 @@
 
 void getPath(char* path,char* filename);
 unsigned int bread_int(unsigned char* buffer,int size,int* init);
+void clearCacheEntry(int relNum);
 void bread_string(unsigned char* buffer,int size,int* init,unsigned char* tmp);
 void getBinary(unsigned int* z,unsigned int x);
 int getDecimal(unsigned int* z);
@@ -27,4 +28,6 @@ int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short at
 int FindRelNum(char *relName);
 int nextRec(int relNum, Rid* startRid, char *recPtr);
 int OpenRel(char * relName);
+void getSlots2(int relNum,struct recidArray* RidArray,Rid attrcat0,int count);
+
 #endif

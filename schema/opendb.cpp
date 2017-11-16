@@ -41,9 +41,9 @@ int OpenDB(int argc,char ** argv)
       
       OpenCats();
       unsigned char a[200]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
-      //testMain();
+      testMain();
      // findRelNumTest();
-     openRelTest();
+     //openRelTest();
     }
   if(MR_CURR_DB[0]==0){
     int flag=1,p;
@@ -135,7 +135,7 @@ void testMain()
 
       rln=1;
       startRid.slotnum=0;
-
+      /*
       //GetNextRec(rln, &startRid, &foundRid, record1);
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%s",relCache[1].attrHead[2].attrName);
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].offset);
@@ -143,15 +143,26 @@ void testMain()
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%d",relCache[1].attrHead[2].type);
       FindRec(rln,&startRid,&foundRid,record1,a_type,a_size,a_offset,a_vptr,a_compOp);
       shwAttrCatRec((unsigned char*)record1);
-  
-      /*
-      for(int i=0;i<11;i++)
+      */
+       startRid.pid=0;
+      startRid.slotnum=0;
+      for(int i=0;i<20;i++)
       {
-      startRid.slotnum=foundRid.slotnum+1;
-      GetNextRec(rln, &startRid, &foundRid, record1);
+      
+      GetNextRec(1, &startRid, &foundRid, record1);
       shwAttrCatRec((unsigned char *)record1);
+      startRid.slotnum=foundRid.slotnum+1;
       }
-*/
+      startRid.pid=0;
+      startRid.slotnum=0;
+      for(int i=0;i<5;i++)
+      {
+      
+      GetNextRec(0, &startRid, &foundRid, record);
+      shwRelCatRec((unsigned char *)record);
+      startRid.slotnum=foundRid.slotnum+1;
+      }
+
 
             
            /* printf("\n\nInside opendb\testMain\n\nTesting ReadPage");
@@ -164,7 +175,7 @@ void testMain()
             //shwAttrRec(gPgTable[1].contents);
             //------------------------------------
             */
-          }
+}
 void shwRelCatRec(unsigned char recptr[])
 {
  unsigned char d[RELNAME];
@@ -364,7 +375,9 @@ void findRelNumTest(void)
 }
 void openRelTest(void)
 {
-  relCache[1].valid='i';
-  gPgTable[2].dirty='d';
-  printf("\n\n\n\nrelNum  =%d",OpenRel("attrcat"));
+  //relCache[1].valid='i';
+  //gPgTable[2].dirty='d';
+  printf("\n\n\n\nrelNum  =%d",OpenRel("ss1"));
+  printf("\n\n\n\nrelNum  =%d",OpenRel("ss2"));
+    printf("\n\n\n\nrelNum  =%d",OpenRel("ss1"));
 }

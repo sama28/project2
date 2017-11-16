@@ -84,7 +84,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     }*/
     
 
-    //printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
+    printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
     
 
     bread_string((unsigned char*)gPgTable[0].contents,32,&relcat_index,tmp);
@@ -141,37 +141,42 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
 
 void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
     int howmuchRec;
-    if(relCache[0].numRecs<20){
+    if(relCache[0].numRecs<8){
         howmuchRec=relCache[0].numRecs;
     }
     else{
-        howmuchRec=20;
+        howmuchRec=8;
     }
+
+    printf("howmuch%d\n",relCache[0].numRecs);
     //for(int k=0;k<512;k++)
     //printf("%02x",gPgTable[0].contents[k]);
     Rid startRid1,foundRid1,attrcatRid;
     int offset;
     startRid1.pid=0;startRid1.slotnum=2;
-    for (int i=2;i<howmuchRec;i++){
+    for (int i=2;i<8;i++){
         //printf("%d\t%d\n",startRid1.pid,startRid1.slotnum);
         
         char rec2[relCache[0].recLength+1];
         if(GetNextRec(0,&startRid1,&foundRid1,rec2)){
-        int offset=0;
-        strncpy(relCache[i].relName,rec2,32);offset+=32;
-        relCache[i].recLength=*(unsigned*)(rec2+offset);offset+=4;
-        printf("reclen%d\n",relCache[i].recLength);
-        relCache[i].recPerPg=*(unsigned*)(rec2+offset);offset+=4;
-        relCache[i].numPgs=*(unsigned*)(rec2+offset);offset+=4;
-        relCache[i].numRecs=*(unsigned*)(rec2+offset);offset+=4;
-        relCache[i].numAttrs=*(unsigned short*)(rec2+offset);offset+=2;
-        attrcatRid.pid=*(unsigned*)(rec2+offset);offset+=4;
-        attrcatRid.slotnum=*(unsigned*)(rec2+offset);offset+=4;
-        relCache[i].attr0Rid.pid=attrcatRid.pid;
-        relCache[i].attr0Rid.slotnum=attrcatRid.slotnum;
-            
+            int offset=0;
+            strncpy(relCache[i].relName,rec2,32);offset+=32;
+            relCache[i].recLength=*(unsigned*)(rec2+offset);offset+=4;
+            printf("reclen%d\n",relCache[i].recLength);
+            relCache[i].recPerPg=*(unsigned*)(rec2+offset);offset+=4;
+            relCache[i].numPgs=*(unsigned*)(rec2+offset);offset+=4;
+            relCache[i].numRecs=*(unsigned*)(rec2+offset);offset+=4;
+            relCache[i].numAttrs=*(unsigned short*)(rec2+offset);offset+=2;
+            relCache[i].attr0Rid.pid=*(unsigned*)(rec2+offset);offset+=4;;
+            relCache[i].attr0Rid.slotnum=*(unsigned*)(rec2+offset);offset+=4;;
+            relCache[i].Rid.pid=foundRid1.pid;
+            relCache[i].Rid.slotnum=foundRid1.slotnum;
         }
-           
+        relCache[i].relFile=NULL;
+        relCache[i].dirty='c';
+        relCache[i].valid='i';//Read a page;
+
+
         startRid1.slotnum=foundRid1.slotnum+1;
         startRid1.pid=foundRid1.pid;
         if(startRid1.slotnum>=relCache[0].recPerPg){
@@ -180,7 +185,7 @@ void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
         }
         int attrcat_index=0;
         struct recidArray RidArray[relCache[i].numAttrs];
-        getSlots2(1,&RidArray[0],attrcatRid,relCache[i].numAttrs);
+        getSlots2(1,&RidArray[0],relCache[i].attr0Rid,relCache[i].numAttrs);
         
          char rec[relCache[1].recLength];
         for(int j=0;j<relCache[i].numAttrs;j++){
@@ -200,23 +205,20 @@ void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
             relCache[i].attrHead.push_back(obj);
         }
         //relCache[i].attrHead=attrListHead;
-        relCache[i].Rid.pid=0;
-        relCache[i].Rid.slotnum=i;
-        relCache[i].relFile=NULL;
-        relCache[i].dirty='c';
-        relCache[i].valid='i';//Read a page;
+        
+        
         //printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[i].relName,relCache[i].recLength,relCache[i].recPerPg,relCache[i].numPgs,relCache[i].numRecs,relCache[i].numAttrs,relCache[i].Rid.pid,relCache[i].Rid.slotnum,relCache[i].dirty);
         relCacheIndex++;
     }
-     /*   
-    for(int j=0;j<relCache[0].numRecs;j++){
+      
+    for(int j=0;j<howmuchRec;j++){
         for(int i=0;i<relCache[j].numAttrs;i++){
             printf("%s %s %u %u \n",relCache[j].relName,relCache[j].attrHead[i].attrName,relCache[j].attrHead[i].offset,relCache[j].attrHead[i].length,relCache[j].attrHead[i].type);
         }printf("\n");}
       
-    for(int i=0;i<relCache[0].numRecs;i++) 
+    for(int i=0;i<howmuchRec;i++) 
     printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[i].relName,relCache[i].recLength,relCache[i].recPerPg,relCache[i].numPgs,relCache[i].numRecs,relCache[i].numAttrs,relCache[i].Rid.pid,relCache[i].Rid.slotnum,relCache[i].dirty);
-*/
+
 }
 
 void OpenCats(void )
@@ -235,8 +237,10 @@ void OpenCats(void )
     d=strcat(d,MR_CURR_DB);
     c=strcat(c,"/catalog/relcat");
     d=strcat(d,"/catalog/attrcat");
-    FILE *relcatFile=fopen(c,"rb");
-    FILE *attrcatFile=fopen(d,"rb");
+    chmod(c,S_IWUSR|S_IRUSR);
+    chmod(d,S_IWUSR|S_IRUSR);
+    FILE *relcatFile=fopen(c,"rb+");
+    FILE *attrcatFile=fopen(d,"rb+");
     if(relcatFile!=NULL && attrcatFile!=NULL){
         /*buffer=(unsigned int*)malloc(PAGESIZE/sizeof(unsigned int));
         fread(buffer,sizeof(unsigned int),PAGESIZE/sizeof(unsigned int),relcatFile);

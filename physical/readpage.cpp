@@ -103,9 +103,7 @@ relCache[1].attrHead;
 
                     //showPageContent(relNum);
                   }
-           //       printf("\n\n1st Byte Of rel %d is %c",relNum,gPgTable[relNum].contents[1]);
-                
-                
+           //       printf("\n\n1st Byte Of rel %d is %c",relNum,gPgTable[relNum].contents[1]);                
                 }
                 else{
 

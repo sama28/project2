@@ -68,6 +68,6 @@ void GetSlots(struct recidArray* ridArray,int count,int relNum){
     }
     
     //for(int i=0;i<count;i++)
-    //printf("a\t%d\t%d\n",(ridArray+i)->Rid.slotnum,(ridArray+i)->Rid.pid);
+    //printf("a\t%d\t%d\n",(ridArray+i)->Rid.slotnum,(ridArray+i)->Rid.pid);    
     return;
 }
