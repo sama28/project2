@@ -3,6 +3,8 @@
 #define FNCTN
 
 void getPath(char* path,char* filename);
+int Create (int argc,char** argv);
+void cnvrtTypeNumToStr(int num,char *str,int len);
 unsigned int bread_int(unsigned char* buffer,int size,int* init);
 void clearCacheEntry(int relNum);
 void bread_string(unsigned char* buffer,int size,int* init,unsigned char* tmp);

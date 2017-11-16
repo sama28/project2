@@ -12,7 +12,6 @@
 int Select (int argc, char ** argv)
 {
     /* print command line arguments */
-#if 0
     short	k;		/* iteration counter	    */
     printf ("%s:\n", argv[0]);
     for (k = 1 ; k < argc; ++k)
@@ -23,7 +22,7 @@ int Select (int argc, char ** argv)
 
 
      //1.0Create New Relation
-        crtNewRelAsOld();
+       // crtNewRelAsOld();
 
 
      return (OK);  /* all's fine */
@@ -35,7 +34,7 @@ int crtNewRelAsOld(char * newRelName,char *oldRelName )
     int oldRelNum=-1,newRelNum=-1,i;
     oldRelNum=OpenRel(oldRelName);
     int argc;
-    char **argv[relCache[2*oldRelNum].numAttrs+3];//two for 0.create,1 newRelName, Last NULL,
+    char *argv[relCache[2*oldRelNum].numAttrs+3];//two for 0.create,1 newRelName, Last NULL,
     char type[relCache[oldRelNum].numAttrs+1][8];
     char typestr[8];
     argv[0]="create";
@@ -72,7 +71,7 @@ void cnvrtTypeNumToStr(int num,char *str,int len)
 
         case DTUNSIGNED_CHAR:
             str[0]='k';
-            str[1]='';
+            str[1]='\0';
             str[2]='\0';
         break;
 
@@ -119,5 +118,5 @@ void cnvrtTypeNumToStr(int num,char *str,int len)
         break;
 
     }
-    #endif
+    
 }
