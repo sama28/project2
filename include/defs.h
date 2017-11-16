@@ -1,9 +1,3 @@
-    /* 
-	This is the basic definition file.
-    */
-/*************************************************************
-		CONSTANTS
-*************************************************************/
 #ifndef DEF
 #define DEF
 #include<stdio.h>
@@ -17,13 +11,13 @@
 #include<vector>
 using namespace std;
 
-#define PAGESIZE			512			/* number of bytes in a page */
+#define PAGESIZE			2137				/* number of bytes in a page */
 #define BITMS_NUM           (PAGESIZE/128)		//assuming a record is atleat 4 byte and one bitmap 												slot is of 4byte 
 #define	MAXRECORD			(32*BITMS_NUM) 	//since one bitmap slot can corresponds to 32 records
 #define PGTAIL_SPACE		4 				//sapce always left blanks for safety
 
 #define RELNAME		32	/* max length of a relation name */
-#define MAXOPEN		20  /* max number of files that can be open
+#define MAXOPEN		8  /* max number of files that can be open
 										   at the same time */
 										   
 //#define MR_MAXBUFPG 1024	
@@ -40,8 +34,8 @@ using namespace std;
 #define RELCAT		"relcat"   /* name of the relation catalog file */
 #define ATTRCAT		"attrcat"  /* name of the attribute catalog file */
 
-#define NUM_RELCACHE_ENTRY ((PAGESIZE-PGTAIL_SPACE-(BITMS_NUM*sizeof(unsigned int)))/MR_RELCATENTRYSIZE)
-
+#define NUM_RELCACHE_ENTRY 20//((PAGESIZE-PGTAIL_SPACE-(BITMS_NUM*sizeof(unsigned int)))/MR_RELCATENTRYSIZE)
+#define MR_FIRST_USR_RLTN_IND 2
 //************************************************************
 //----------this part depends on where you deploy this project
 //***********************************************************
@@ -58,16 +52,13 @@ using namespace std;
 *************************************************************/
 
 /* Rid structure */
-
 typedef struct recid {
 	unsigned 	pid;
 	unsigned 	slotnum;
 } Rid;
-
 struct recidArray{
 	struct recid Rid;
 };
-
 /* Page Structure */
 typedef struct ps {
 //	unsigned  char slotmap[BITMS_NUM];
@@ -77,6 +68,7 @@ typedef struct ps {
 typedef struct gtps {
 		//	unsigned  char slotmap[BITMS_NUM];
 			unsigned 	pid;
+			int dirty;
 			unsigned char contents [PAGESIZE+1];
 			} GtPage;
 
@@ -136,3 +128,4 @@ struct buffCat
 
 //int FlushPage(int relNum,unsigned pgid);
 #endif
+

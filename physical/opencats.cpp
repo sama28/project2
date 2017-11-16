@@ -30,6 +30,7 @@ void getSlots2(int relNum,struct recidArray* RidArray,Rid attrcat0,int count){
 }
 
 
+
 void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     int relcat_index=0,attrcat_index=0,fsize=fileSize(relcatFile);
     unsigned int offset,length;
@@ -39,113 +40,30 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     fread(gPgTable[1].contents,PAGESIZE,1,attrcatFile);
     gPgTable[0].pid=0;
     gPgTable[1].pid=0;
-    //for (int i=0;i<PAGESIZE/4;i++)
-      //  printf("%x",relcat_page[i]);
+    for (int i=0;i<PAGESIZE;i++)
+        printf("%02x",gPgTable[0].contents[i]);
     relcat_index+=MR_RELCAT_BITMS_NUM;
     unsigned char tmp[32];
     bread_string((unsigned char*)gPgTable[0].contents,32,&relcat_index,tmp);
-    strcpy(relCache[relCacheIndex].relName,(char*)tmp);
-    relCache[relCacheIndex].recLength=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].recPerPg=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].numPgs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].numRecs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].numAttrs=bread_int((unsigned char*)gPgTable[0].contents,2,&relcat_index);
-    struct recid attrcatRid;
-    attrcatRid.pid=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    attrcatRid.slotnum=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].attr0Rid.pid=attrcatRid.pid;
-    relCache[relCacheIndex].attr0Rid.slotnum=attrcatRid.slotnum;
-    relCache[relCacheIndex].Rid.pid=0;
-    relCache[relCacheIndex].Rid.slotnum=0;
-    relCache[relCacheIndex].relFile=relcatFile;
-    relCache[relCacheIndex].dirty='c';
-    relCache[relCacheIndex].valid='v';
-    //printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
-    relCacheIndex++;
-
-    bread_string((unsigned char*)gPgTable[0].contents,32,&relcat_index,tmp);
-    strcpy(relCache[relCacheIndex].relName,(char*)tmp);
-    relCache[relCacheIndex].recLength=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].recPerPg=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].numPgs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].numRecs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    relCache[relCacheIndex].numAttrs=bread_int((unsigned char*)gPgTable[0].contents,2,&relcat_index);
-    relCache[relCacheIndex].attr0Rid.pid=attrcatRid.pid;
-    relCache[relCacheIndex].attr0Rid.slotnum=attrcatRid.slotnum;
-    relCache[relCacheIndex].Rid.pid=0;
-    relCache[relCacheIndex].Rid.slotnum=1;
-    relCache[relCacheIndex].relFile=attrcatFile;
-    relCache[relCacheIndex].dirty='c';
-    relCache[relCacheIndex].valid='v';
-    //printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty);
-    
-/*
-    struct recidArray RidArray[relCache[0].numAttrs];
-    getSlots2(1,&RidArray[0],attrcatRid,relCache[0].numAttrs);
-    Rid startRid,foundRid;
-    startRid.pid=attrcatRid.pid;
-    startRid.slotnum=attrcatRid.slotnum;
-    //for(int i=0;i<8;i++)
-    //printf("%d\t%d\n",(RidArray+i)->Rid.pid,(RidArray+i)->Rid.slotnum);
-    unsigned char* rec;
-    //for(int i=0;i<relCache[0].numAttrs;i++){
-        attrcat_index=0;
-        GetNextRec(1,&startRid,&foundRid,(char*)rec);
-        bread_string(rec,32,&attrcat_index,tmp);
-        strcpy(attrName,(char*)tmp);
-        offset=bread_int(rec,4,&attrcat_index);
-        length=bread_int(rec,4,&attrcat_index);
-        type=bread_int(rec,2,&attrcat_index);
-        printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
-    //}*/
-    
-    fseek(attrcatFile,attrcatRid.pid*PAGESIZE,SEEK_SET);
-    fread(gPgTable[1].contents,sizeof(gPgTable[1].contents),1,attrcatFile);
-    attrcat_index+=MR_ATTRCAT_BITMS_NUM+attrcatRid.slotnum*relCache[1].recLength;
-    for(int j=0;j<2;j++){
-        struct attrList* attrListHead=NULL;
-        for(int i=0;i<relCache[j].numAttrs;i++){
-            bread_string((unsigned char*)gPgTable[1].contents,32,&attrcat_index,tmp);
-            strcpy(attrName,(char*)tmp);
-            offset=bread_int((unsigned char*)gPgTable[1].contents,4,&attrcat_index);
-            length=bread_int((unsigned char*)gPgTable[1].contents,4,&attrcat_index);
-            type=bread_int((unsigned char*)gPgTable[1].contents,2,&attrcat_index);
-            //printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
-            //attrListHead=addAttrListNode(attrListHead,attrName,offset,length,type);
-            struct attrList obj;
-            strcpy(obj.attrName,attrName);
-            obj.offset=offset;
-            obj.length=length;
-            obj.type=type;
-            relCache[j].attrHead.push_back(obj);
-        }
-    }
-    /* //Print attribute cache
-    for(int j=0;j<2;j++){
-        for(int i=0;i<relCache[j].numAttrs;i++){
-            printf("qwert %s %u %u \n",relCache[j].attrHead[i].attrName,relCache[j].attrHead[i].offset,relCache[j].attrHead[i].length,relCache[j].attrHead[i].type);
-        }printf("\n");}*/
-    
-    attrcatRid.pid=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    attrcatRid.slotnum=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
-    //printf("%d",relcat_index);
-    int howmuchRec;
-    relCacheIndex++;
-    
-    if(relCache[0].numRecs<20){
-        howmuchRec=relCache[0].numRecs;
-    }
-    else{
-        howmuchRec=20;
-    }
-    //for(int k=0;k<512;k++)
-    //printf("%02x",gPgTable[0].contents[k]);
-    Rid startRid1,foundRid1;gPgTable[0].pid=1;
-    startRid1.pid=0;startRid1.slotnum=2;
-    for (int i=2;i<howmuchRec;i++){
-        //printf("%d\t%d\n",startRid1.pid,startRid1.slotnum);
-        relCacheIndex++;
-        char rec2[relCache[0].recLength+1];
+    strcpy(relCache[0].relName,(char*)tmp);
+    relCache[0].recLength=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[0].recPerPg=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[0].numPgs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[0].numRecs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[0].numAttrs=bread_int((unsigned char*)gPgTable[0].contents,2,&relcat_index);
+    relCache[0].attr0Rid.pid=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[0].attr0Rid.slotnum=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[0].Rid.pid=0;
+    relCache[0].Rid.slotnum=0;
+    relCache[0].relFile=relcatFile;
+    relCache[0].dirty='c';
+    relCache[0].valid='v';
+    /*int i=0;
+    struct recid startRid1,foundRid1;
+    char rec2[58];
+    for(int i=0;i<2;i++){
+        startRid1.pid=0;
+        startRid1.slotnum=i;
         if(GetNextRec(0,&startRid1,&foundRid1,rec2)){
         int offset=0;
         strncpy(relCache[i].relName,rec2,32);offset+=32;
@@ -155,37 +73,121 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
         relCache[i].numPgs=*(unsigned*)(rec2+offset);offset+=4;
         relCache[i].numRecs=*(unsigned*)(rec2+offset);offset+=4;
         relCache[i].numAttrs=*(unsigned short*)(rec2+offset);offset+=2;
-        attrcatRid.pid=*(unsigned*)(rec2+offset);offset+=4;
-        attrcatRid.slotnum=*(unsigned*)(rec2+offset);offset+=4;
-        relCache[i].attr0Rid.pid=attrcatRid.pid;
-        relCache[i].attr0Rid.slotnum=attrcatRid.slotnum;
-            
+        relCache[i].attr0Rid.pid=*(unsigned*)(rec2+offset);offset+=4;
+        relCache[i].attr0Rid.slotnum=*(unsigned*)(rec2+offset);offset+=4;
+        relCache[i].Rid.pid=0;
+        relCache[i].Rid.slotnum=1;
+        //relCache[1].relFile=attrcatFile;
+        relCache[i].dirty='c';
+        relCache[i].valid='v';
         }
-           
+    }*/
+    
+
+    printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty);
+    
+
+    bread_string((unsigned char*)gPgTable[0].contents,32,&relcat_index,tmp);
+    strcpy(relCache[1].relName,(char*)tmp);
+    relCache[1].recLength=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[1].recPerPg=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[1].numPgs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[1].numRecs=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[1].numAttrs=bread_int((unsigned char*)gPgTable[0].contents,2,&relcat_index);
+    relCache[1].attr0Rid.pid=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[1].attr0Rid.slotnum=bread_int((unsigned char*)gPgTable[0].contents,4,&relcat_index);
+    relCache[1].Rid.pid=0;
+    relCache[1].Rid.slotnum=1;
+    relCache[1].relFile=attrcatFile;
+    relCache[1].dirty='c';
+    relCache[1].valid='v';
+    //printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty);
+
+    
+    char rec[relCache[1].recLength];
+    
+    for(int j=0;j<2;j++){
+        struct recidArray RidArray[relCache[j].numAttrs];
+        getSlots2(1,&RidArray[0],relCache[j].attr0Rid,relCache[j].numAttrs);
+        for(int i=0;i<relCache[j].numAttrs;i++){
+            int attrcat_index=0;
+            Rid startRid,foundRid;
+            startRid.pid=(RidArray+i)->Rid.pid;
+            startRid.slotnum=(RidArray+i)->Rid.slotnum;
+            GetNextRec(1,&startRid,&foundRid,rec);
+            
+            //printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
+            struct attrList obj;
+            strncpy(obj.attrName,rec,32);attrcat_index+=32;
+            obj.offset=*(unsigned*)(rec+attrcat_index);attrcat_index+=4;
+            obj.length=*(unsigned*)(rec+attrcat_index);attrcat_index+=4;
+            obj.type=*(unsigned short*)(rec+attrcat_index);attrcat_index+=2;
+            relCache[j].attrHead.push_back(obj);
+        }
+        printf("pid%d\t%d\n",relCache[j].attr0Rid.pid,relCache[j].attr0Rid.slotnum);
+    }
+    /* //Print attribute cache
+    for(int j=0;j<2;j++){
+        for(int i=0;i<relCache[j].numAttrs;i++){
+            printf("qwert %s %u %u \n",relCache[j].attrHead[i].attrName,relCache[j].attrHead[i].offset,relCache[j].attrHead[i].length,relCache[j].attrHead[i].type);
+        }printf("\n");}*/
+    
+    
+    //printf("%d",relcat_index);
+    
+    
+    relCacheIndex=2;
+}
+
+void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
+    int howmuchRec;
+    if(relCache[0].numRecs<MAXOPEN){
+        howmuchRec=relCache[0].numRecs;
+    }
+    else{
+        howmuchRec=MAXOPEN;
+    }
+
+    printf("howmuch%d\n",relCache[0].numRecs);
+    //for(int k=0;k<512;k++)
+    //printf("%02x",gPgTable[0].contents[k]);
+    Rid startRid1,foundRid1,attrcatRid;
+    int offset;
+    startRid1.pid=0;startRid1.slotnum=2;
+    for (int i=2;i<howmuchRec;i++){
+        //printf("%d\t%d\n",startRid1.pid,startRid1.slotnum);
+        
+        char rec2[relCache[0].recLength+1];
+        if(GetNextRec(0,&startRid1,&foundRid1,rec2)){
+            int offset=0;
+            strncpy(relCache[i].relName,rec2,32);offset+=32;
+            relCache[i].recLength=*(unsigned*)(rec2+offset);offset+=4;
+            printf("reclen%d\n",relCache[i].recLength);
+            relCache[i].recPerPg=*(unsigned*)(rec2+offset);offset+=4;
+            relCache[i].numPgs=*(unsigned*)(rec2+offset);offset+=4;
+            relCache[i].numRecs=*(unsigned*)(rec2+offset);offset+=4;
+            relCache[i].numAttrs=*(unsigned short*)(rec2+offset);offset+=2;
+            relCache[i].attr0Rid.pid=*(unsigned*)(rec2+offset);offset+=4;;
+            relCache[i].attr0Rid.slotnum=*(unsigned*)(rec2+offset);offset+=4;;
+            relCache[i].Rid.pid=foundRid1.pid;
+            relCache[i].Rid.slotnum=foundRid1.slotnum;
+        }
+        relCache[i].relFile=NULL;
+        relCache[i].dirty='c';
+        relCache[i].valid='i';//Read a page;
+
+
         startRid1.slotnum=foundRid1.slotnum+1;
         startRid1.pid=foundRid1.pid;
         if(startRid1.slotnum>=relCache[0].recPerPg){
             startRid1.pid++;
             startRid1.slotnum=0;
         }
-        /*
-        bread_string(gPgTable[0].contents,32,&relcat_index,tmp);
-        strcpy(relCache[i].relName,(char*)tmp);
-        relCache[i].recLength=bread_int(gPgTable[0].contents,4,&relcat_index);
-        relCache[i].recPerPg=bread_int(gPgTable[0].contents,4,&relcat_index);
-        relCache[i].numPgs=bread_int(gPgTable[0].contents,4,&relcat_index);
-        relCache[i].numRecs=bread_int(gPgTable[0].contents,4,&relcat_index);
-        relCache[i].numAttrs=bread_int(gPgTable[0].contents,2,&relcat_index);
-        attrcatRid.pid=bread_int(gPgTable[0].contents,4,&relcat_index);
-        attrcatRid.slotnum=bread_int(gPgTable[0].contents,4,&relcat_index);
-        relCache[i].attr0Rid.pid=attrcatRid.pid;
-        relCache[i].attr0Rid.slotnum=attrcatRid.slotnum;
-        */
-        attrcat_index=0;
+        int attrcat_index=0;
         struct recidArray RidArray[relCache[i].numAttrs];
-        getSlots2(1,&RidArray[0],attrcatRid,relCache[i].numAttrs);
+        getSlots2(1,&RidArray[0],relCache[i].attr0Rid,relCache[i].numAttrs);
         
-        unsigned char rec[relCache[1].recLength];
+         char rec[relCache[1].recLength];
         for(int j=0;j<relCache[i].numAttrs;j++){
             //printf("rid of alpha%d in attrcat%d\t%d\n",j+1,(RidArray+j)->Rid.pid,(RidArray+j)->Rid.slotnum);
             int attrcat_index=0;
@@ -193,37 +195,30 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
             startRid.pid=(RidArray+j)->Rid.pid;
             startRid.slotnum=(RidArray+j)->Rid.slotnum;
             GetNextRec(1,&startRid,&foundRid,(char*)rec);
-            bread_string(rec,32,&attrcat_index,tmp);
-            strcpy(attrName,(char*)tmp);
-            offset=bread_int(rec,4,&attrcat_index);
-            length=bread_int(rec,4,&attrcat_index);
-            type=bread_int(rec,2,&attrcat_index);
+            
             //printf("/nattrcat dataread is:-%s %u %u %u\n",attrName,offset,length,type);
             struct attrList obj;
-            strcpy(obj.attrName,attrName);
-            obj.offset=offset;
-            obj.length=length;
-            obj.type=type;
+            strncpy(obj.attrName,rec,32);attrcat_index+=32;
+            obj.offset=*(unsigned*)(rec+attrcat_index);attrcat_index+=4;
+            obj.length=*(unsigned*)(rec+attrcat_index);attrcat_index+=4;
+            obj.type=*(unsigned short*)(rec+attrcat_index);attrcat_index+=2;
             relCache[i].attrHead.push_back(obj);
         }
         //relCache[i].attrHead=attrListHead;
-        relCache[i].Rid.pid=0;
-        relCache[i].Rid.slotnum=i;
-        relCache[i].relFile=NULL;
-        relCache[i].dirty='c';
-        relCache[i].valid='i';//Read a page;
+        
+        
         //printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[i].relName,relCache[i].recLength,relCache[i].recPerPg,relCache[i].numPgs,relCache[i].numRecs,relCache[i].numAttrs,relCache[i].Rid.pid,relCache[i].Rid.slotnum,relCache[i].dirty);
-    
+        relCacheIndex++;
     }
-    /*    
-    for(int j=0;j<relCache[0].numRecs;j++){
+      
+    for(int j=0;j<howmuchRec;j++){
         for(int i=0;i<relCache[j].numAttrs;i++){
             printf("%s %s %u %u \n",relCache[j].relName,relCache[j].attrHead[i].attrName,relCache[j].attrHead[i].offset,relCache[j].attrHead[i].length,relCache[j].attrHead[i].type);
         }printf("\n");}
-      */
-    for(int i=0;i<relCache[0].numRecs;i++) 
+      
+    for(int i=0;i<howmuchRec;i++) 
     printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[i].relName,relCache[i].recLength,relCache[i].recPerPg,relCache[i].numPgs,relCache[i].numRecs,relCache[i].numAttrs,relCache[i].Rid.pid,relCache[i].Rid.slotnum,relCache[i].dirty);
-    
+
 }
 
 void OpenCats(void )
@@ -242,8 +237,10 @@ void OpenCats(void )
     d=strcat(d,MR_CURR_DB);
     c=strcat(c,"/catalog/relcat");
     d=strcat(d,"/catalog/attrcat");
-    FILE *relcatFile=fopen(c,"rb");
-    FILE *attrcatFile=fopen(d,"rb");
+    chmod(c,S_IWUSR|S_IRUSR);
+    chmod(d,S_IWUSR|S_IRUSR);
+    FILE *relcatFile=fopen(c,"rb+");
+    FILE *attrcatFile=fopen(d,"rb+");
     if(relcatFile!=NULL && attrcatFile!=NULL){
         /*buffer=(unsigned int*)malloc(PAGESIZE/sizeof(unsigned int));
         fread(buffer,sizeof(unsigned int),PAGESIZE/sizeof(unsigned int),relcatFile);
@@ -254,6 +251,7 @@ void OpenCats(void )
         //fread(&slot_buffer,BITMS_NUM*sizeof(unsigned int),1,relcatFile);
         
         cachePopulate1(relcatFile,attrcatFile);
+        cachePopulate2(relcatFile,attrcatFile);
     }
     else if(errno){
         printf("%s",strerror(errno));

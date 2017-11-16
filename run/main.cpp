@@ -1,4 +1,3 @@
-
 /**
  ** main function for MINIREL
  **/
@@ -18,6 +17,14 @@ unsigned int relCacheIndex;
 struct relList relCache[NUM_RELCACHE_ENTRY];
 unsigned char relcat_page[PAGESIZE+1];
 unsigned char attrcat_page[PAGESIZE+1];
+
+
+//------------------------------------------
+//only For Whom To Replace Functio
+//WARNING DONT USE IT ENYWHERE ELSE
+int relCacheRplcmntInd=MR_FIRST_USR_RLTN_IND;
+//---------------------------------------
+
 int parser();
 
 main()

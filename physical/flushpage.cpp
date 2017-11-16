@@ -23,7 +23,7 @@ int FlushPage(int relNum,unsigned pgid)
     }
     else{
 
-        printf("\n\nflushpage():->there is problem in flushing the page");
+        printf("\n\nflushpage():->there is problem in flushing the page\t\n",ferror(relCache[relNum].relFile));
     }
     return 0;
 }

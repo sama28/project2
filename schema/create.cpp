@@ -73,11 +73,7 @@ int isInputValid(int num,char **string){
     strcpy(seen[i],string[i]);
     char path[MAX_PATH_LENGTH];
     getPath(path,string[1]);
-    if(doesFileExist(path)){
-        printf("Relation File Already Exists.\n");
-        return (NOTOK);
-    }
-    if(strlen(string[1])<=RELNAME && !doesFileExist(path)){//Add provision for checking if relation already exists.
+    if(strlen(string[1])<=RELNAME){//Add provision for checking if relation already exists.
         valid=valid & 1;
     }
     else{
@@ -85,8 +81,8 @@ int isInputValid(int num,char **string){
     }
     for(int i=2;i<num;i=i+2){
         if(strlen(string[i])<=ATTRLEN){
-            if((string[i+1][0]=='i' && strlen(string[i+1])) || (string[i+1][0]=='f' && strlen(string[i+1]))){
-                valid=valid & 1;
+            if(((string[i+1][0]=='i' || string[i+1][0]=='I') && strlen(string[i+1])==1) || ((string[i+1][0]=='f' || string[i+1][0]=='F') && strlen(string[i+1])==1) || (string[i+1][0]=='u' && string[i+1][1]=='i' && strlen(string[i+1])==2) || (string[i+1][0]=='u' && string[i+1][1]=='s' && strlen(string[i+1])==2) || (string[i+1][0]=='u' && string[i+1][1]=='c' && strlen(string[i+1])==2) || (string[i+1][0]=='c' && strlen(string[i+1])==1) ){
+                 valid=valid & 1;
             }
             else if(string[i+1][0]=='S' || string[i+1][0]=='s'){
                 if(strlen(string[i+1])<=3 && string[i+1][1]<58 && string[i+1][1]>48 && (string[i+1][2]==0 || (string[i+1][2]>47 && string[i+1][2]<58))){
@@ -119,14 +115,26 @@ int isInputValid(int num,char **string){
     }
     //printf("%d",strlen(string[2]));
     if(valid){
-        FILE* fp=fopen(path,"ab");
-        if(fp){
-            //printf("ban gayi");
-            fclose(fp);
+        struct stat st={0};
+        if(stat(path,&st)==-1){
+            int status=mkdir(path,0700);
+            if(status==0){
+                strcat(path,"/");
+                strcat(path,string[1]);
+                FILE* fp=fopen(path,"ab");
+                if(fp){
+                    fclose(fp);
+                }
+                else if(errno){
+                    printf("%s",strerror(errno));
+                    valid=valid & 0;
+                }
+            }
+            else{
+                valid=valid & 0;
+            }
         }
-        else if(errno){
-            printf("%s",strerror(errno));
-        }
+        
     }
     return valid;
 }
@@ -139,11 +147,16 @@ int Create (int argc,char** argv)
     //sanitize(&record,relCache[1].recLength+1);
     struct recidArray RidArray[attrCount];
     //printf("%d\n",attrCount);
-    
+    char path[MAX_PATH_LENGTH];
+    getPath(path,argv[1]);
+    printf("%s",path);
+    if(doesFileExist(path)){
+        printf("Relation already exists.\n");
+        return (NOTOK);
+    }
     if(isInputValid(argc,argv)){
         //printf("Valid");
         GetSlots(&RidArray[0],attrCount,1);
-        struct attrList* tmp=(struct attrList*) malloc(sizeof(struct attrList)) ;
         for(int i=2;i<argc;i=i+2){
             offset=0;
             sanitize(record,relCache[1].recLength+1);
@@ -182,13 +195,35 @@ int Create (int argc,char** argv)
                 recLength+=sum;
                 //printf("string");
             }
+            else if(argv[i+1][0]=='u'){
+                if(argv[i+1][1]=='i'){
+                    bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                    bwrite_int(record,DTUNSIGNED_INT,sizeof(short),&offset);
+                    recLength+=sizeof(int);
+                }
+                else if(argv[i+1][1]=='s'){
+                    bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                    bwrite_int(record,DTUNSIGNED_SHORT,sizeof(short),&offset);
+                    recLength+=sizeof(int);
+                }
+                else if(argv[i+1][1]=='c'){
+                    bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                    bwrite_int(record,DTUNSIGNED_CHAR,sizeof(short),&offset);
+                    recLength+=sizeof(int);
+                }
+            }
+            else if(argv[i+1][0]=='c'){
+                bwrite_int(record,sizeof(int),sizeof(int),&offset);
+                bwrite_int(record,DTCHAR,sizeof(short),&offset);
+                recLength+=sizeof(int);
+            }
             //for(int k=0;k<42;k++)
             //printf("%x",record[k]);
-            //int t=0;
-            //unsigned char q[32];
-            //bread_string(record,32,&t,q);
-            //int a1=bread_int(record,4,&t);int a2=bread_int(record,4,&t);int a3=bread_int(record,2,&t);
-            //printf("\n%s\n%d\n%d\n%d",q,a1,a2,a3);
+            int t=0;
+            unsigned char q[32];
+            bread_string(record,32,&t,q);
+            int a1=bread_int(record,4,&t);int a2=bread_int(record,4,&t);int a3=bread_int(record,2,&t);
+            printf("\n%s\n%d\n%d\n%d",q,a1,a2,a3);
             //printf("\nrids\t%d\t%d\n",(RidArray+count)->Rid.slotnum,(RidArray+count)->Rid.pid);
             Rid temp;
             temp.pid=RidArray[count].Rid.pid;
@@ -219,18 +254,16 @@ int Create (int argc,char** argv)
         //for(int k=0;k<relCache[0].recLength;k++)
        // printf("%x",record2[k]);
 
-        int t=0;
+        /*int t=0;
         unsigned char q[32];
         bread_string(record2,32,&t,q);
         int a1=bread_int(record2,4,&t);int a2=bread_int(record2,4,&t);int a3=bread_int(record2,4,&t);
         int a4=bread_int(record2,4,&t);int a5=bread_int(record2,2,&t);int a6=bread_int(record2,4,&t);
         int a7=bread_int(record2,4,&t);
-        printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);
+        printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);*/
         InsertRec(0,record2);
-        free(tmp);
         relCache[0].dirty='d';
         relCache[1].dirty='d';
-        relCache[0].numRecs++;
         relCache[1].numRecs+=attrCount;
         printf("Relation Successfully Created\n");
         

@@ -7,14 +7,21 @@
 
 int CloseDB (int argc,char ** argv)
 {
+    if(MR_CURR_DB[0]==0){
+        printf("No database currently opened.\n");
+        return NO_DB_OPEN;
+    }
 
-    /* print command line arguments */
-    short	k;		/* iteration counter	    */
-    printf ("%s:\n", argv[0]);
-    for (k = 1 ; k < argc; ++k)
-	printf ("\targv[%d] = %s\n", k, argv[k]);
-
-     printf("CloseDB \n");
+    
+    
+    /* FLush all dirty global pages.
+    for(int i=0;i<20;i++){
+        if(gPgTable[i].dirty=='d'){
+            FlushPage(i,gPgTable[i].pid);
+        }
+    }*/
+    CloseCats();
+    MR_CURR_DB[0]=0;
      return (OK);  /* all's fine */
 }
 

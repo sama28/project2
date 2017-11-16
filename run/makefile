@@ -8,7 +8,7 @@
 
 # where to look for the files
 
-HOME = /home/samadhan/Desktop/git/minirel
+HOME = /home/ameya/project/project2
 
 INCLUDE  = $(HOME)/include
 
@@ -58,7 +58,7 @@ FES.o :
 
 minirel : $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSER)/FES.o $(OBJ) 
 	@echo generating $@
-	@cc -std=c++11 $(CFLAGS) $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSER)/FES.o $(OBJ) -o $@
+	g++ -std=c++11 $(CFLAGS) $(ALGEBRA)/ALGEBRA.o $(SCHEMA)/SCHEMA.o $(PHYSICAL)/PHYSICAL.o $(PARSER)/FES.o $(OBJ) -o $@
 
 
 $(OBJ) :  $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/mrdtypes.h $(INCLUDE)/fncn.h

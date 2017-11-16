@@ -2,6 +2,7 @@
 #include "../include/error.h"
 #include "../include/globals.h"
 #include "../include/fncn.h"
+#include "../include/mrdtypes.h"
 #include <stdio.h> 
 
 #include<errno.h>
@@ -17,47 +18,50 @@ void testReadFile(void);
 
 int OpenDB(int argc,char ** argv)
 {
-  int flag=1,p;
-  struct dirent *dp;
-  char path[MAX_PATH_LENGTH],*c;
-
-	strcpy(path,HOME_MINIREL);
-	c=strcat(path,"/data/");
-	strcpy(path,c);
-  DIR *dir= opendir(path);
-  if (dir){
-    while((dp =readdir(dir))!=NULL && flag){
-      if(!(p=strcmp(dp->d_name,argv[1])))
-        flag=0;
+  if(MR_CURR_DB[0]==0){
+    int flag=1,p;
+    struct dirent *dp;
+    char path[MAX_PATH_LENGTH],*c;
+    strcpy(path,HOME_MINIREL);
+    c=strcat(path,"/data/");
+    strcpy(path,c);
+    printf("%s",path);
+    DIR *dir= opendir(path);
+    if (dir){
+      while((dp =readdir(dir))!=NULL && flag){
+        if(!(p=strcmp(dp->d_name,argv[1])))
+          flag=0;
+      }
+      if(flag==0){
+        strcpy(MR_CURR_DB,argv[1]);
+        printf("\n---------------------------------------------------\n");
+        printf("Database %s is opened successfully.---------------------\n",MR_CURR_DB);
+        printf("\n---------------------------------------------------\n");
+        
+        OpenCats();
+        unsigned char a[59]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
+        
+        //InsertRec(0,a);InsertRec(0,a);FlushPage(0,0);
+        //for(int i=0;i<512;i++)
+        //printf("%02x",gPgTable[0].contents[i]);
+        //testMain();
+      }
+      else{
+        printf("\n---------------------------------------------------\n");
+        printf("Database not found.----------------------------------\n");
+        printf("\n---------------------------------------------------\n");
+      }
     }
-    if(flag==0){
-      strcpy(MR_CURR_DB,argv[1]);
-      printf("\n---------------------------------------------------\n");
-      printf("Database %s is opened successfully.---------------------\n",MR_CURR_DB);
-      printf("\n---------------------------------------------------\n");
-      
-      OpenCats();
-      unsigned char a[59]="absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
-      
-      //InsertRec(0,a);InsertRec(0,a);FlushPage(0,0);
-      //for(int i=0;i<512;i++)
-      //printf("%02x",gPgTable[0].contents[i]);
-      //testMain();
+    else if (errno){
+        printf("\n---------------------------------------------------\n");
+        printf("Error opening database.\n%s---------------------------\n",strerror(errno));
+        printf("\n-------------------------------------------------------\n");
     }
-    else{
-      printf("\n---------------------------------------------------\n");
-      printf("Database not found.----------------------------------\n");
-      printf("\n---------------------------------------------------\n");
-    }
+    return 0;
   }
-  else if (errno){
-      printf("\n---------------------------------------------------\n");
-      printf("Error opening database.\n%s---------------------------\n",strerror(errno));
-      printf("\n-------------------------------------------------------\n");
+  else{
+    printf("db already open.");
   }
-  return 0;
-  printf("");
-  return 0;
 }
 void testMain()
 {
@@ -75,7 +79,17 @@ void testMain()
       startRid.slotnum =0;
       char record[MR_RELCAT_REC_SIZE];
       char record1[MR_ATTRCAT_REC_SIZE];//attrcat rec size
-      
+
+      //--------------------------------------------
+      //data to test findRec-----------------------
+      int a_type=relCache[0].attrHead[0].type;
+      int a_size=relCache[0].attrHead[0].length;
+      int a_offset=relCache[0].attrHead[0].offset;
+      int a_compOp=LT;
+      char a_vptr[100]="b";
+      //unsigned val=3;
+      //strcpy(a_vptr,(char*)&val);
+
      //ReadPage(rln,0);
       //testReadFile();
       //relCacheTest();
@@ -92,15 +106,23 @@ void testMain()
 
       rln=1;
       startRid.slotnum=0;
-      GetNextRec(rln, &startRid, &foundRid, record1);
+
+      //GetNextRec(rln, &startRid, &foundRid, record1);
+      printf("\n\n-----------------\n\nBefore FindRec...value of att=%s",relCache[1].attrHead[2].attrName);
+      printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].offset);
+      printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].length);
+      printf("\n\n-----------------\n\nBefore FindRec...value of att=%d",relCache[1].attrHead[2].type);
+      FindRec(rln,&startRid,&foundRid,record1,a_type,a_size,a_offset,a_vptr,a_compOp);
       shwAttrCatRec((unsigned char*)record1);
+  
+      /*
       for(int i=0;i<11;i++)
       {
       startRid.slotnum=foundRid.slotnum+1;
       GetNextRec(rln, &startRid, &foundRid, record1);
       shwAttrCatRec((unsigned char *)record1);
       }
-
+*/
 
             
            /* printf("\n\nInside opendb\testMain\n\nTesting ReadPage");
@@ -178,26 +200,22 @@ void shwAttrCatRec(unsigned char recptr[])
 
 void relCacheTest(void )
 {
+  printf("\n\ninside RelCache Test.....");
 
-
-printf("\n\ninside RelCache Test.....");
-
-printf("RelCacheIndex %d",relCacheIndex);
-if(relCache[0].relFile!=NULL)
-{
-  printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty,relCache[0].valid);
-}
-if(relCache[1].relFile!=NULL)
-{
-  printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty,relCache[1].valid);
-}
+  printf("RelCacheIndex %d",relCacheIndex);
+  if(relCache[0].relFile!=NULL)
+  {
+     printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty,relCache[0].valid);
+  }
+  if(relCache[1].relFile!=NULL)
+  {
+     printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty,relCache[1].valid);
+  }
 
 }
-
-
 void testReadFile(void)
 {
-printf("\n\nIN TESTREADFILE");
+  printf("\n\nIN TESTREADFILE");
   FILE*fd ,*fda; 
   fd =relCache[0].relFile; //fopen(path,"rb+");
   fda =relCache[1].relFile; //fopen(path1,"rb+");
@@ -302,6 +320,5 @@ printf("\n\nIN TESTREADFILE");
   {
     printf("file can not be oppened fd %d errno %d",fd,errno);//debug code	
   }
-
 
 }

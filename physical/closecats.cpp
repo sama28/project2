@@ -8,12 +8,17 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 void sanitize(unsigned char* a,int num);
+void clearCacheEntry(int relNum);
+
 void CloseCats(void)
 {
+    printf("%d",relCacheIndex);
     unsigned char record[relCache[0].recLength+1];
     int offset=0;
-    for(int i=0;i<20;i++){
-        if(relCache[i].dirty=='d'){
+    
+    for(int i=0;i<MAXOPEN;i++){
+        
+        if(relCache[i].dirty=='d' && relCache[i].valid=='v'){
             offset=0;
             //printf("%d\t%d\n",relCache[i].Rid.pid,relCache[i].Rid.slotnum);
             sanitize(record,relCache[0].recLength);
@@ -33,7 +38,7 @@ void CloseCats(void)
             for(int k=0;k<relCache[0].recLength;k++)
             printf("%02x",record[k]);
             printf("\n");
-            
+            /*
             int t=0;
             unsigned char q[32];
             bread_string(record,32,&t,q);
@@ -41,10 +46,18 @@ void CloseCats(void)
             int a4=bread_int(record,4,&t);int a5=bread_int(record,2,&t);int a6=bread_int(record,4,&t);
             int a7=bread_int(record,4,&t);
             printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);
-            
+            */
             WriteRec(0,record,&relCache[i].Rid);
         }
     }
-    fclose(relCache[0].relFile);
-    fclose(relCache[1].relFile);
+    for(int i=0;i<MAXOPEN;i++){
+        if(gPgTable[i].dirty=='d'){
+            printf("flushing page %d",i);
+            FlushPage(i,gPgTable[i].pid);
+            gPgTable[i].dirty='c';
+        }
+    }
+    for(int i=0;i<20;i++)
+        clearCacheEntry(i);
+    relCacheIndex=0;
 }

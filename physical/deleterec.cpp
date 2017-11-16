@@ -71,11 +71,13 @@ void DeleteRec(int relNum,Rid* rid){
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
         fflush(relCache[relNum].relFile);
         relCache[relNum].numRecs--;
+        relCache[relNum].dirty='d';
+        /*
         if(isOnlyRec && relCache[relNum].numPgs==1){
             relCache[relNum].numPgs--;
-        }
+        }*/
         printf("numpgs%dn",relCache[relNum].numPgs);
-        if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
+       /* if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
             struct stat st;
             mode_t mode;
             stat(path, &st);
@@ -84,7 +86,7 @@ void DeleteRec(int relNum,Rid* rid){
             // modify mode
             mode &= ~(S_IWUSR);    // Clear this bit 
             chmod(path, mode);
-        }
+        }*/
     }
     else if(errno){
         printf("%s\n",strerror(errno));

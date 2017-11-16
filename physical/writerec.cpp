@@ -61,7 +61,7 @@ void WriteRec(int relNum,unsigned char* rec,Rid* rid){
         fseek(relCache[relNum].relFile,PAGESIZE*rid->pid,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
         fflush(relCache[relNum].relFile);
-        if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
+        /*if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
             struct stat st;
             mode_t mode;
             stat(path, &st);
@@ -70,7 +70,7 @@ void WriteRec(int relNum,unsigned char* rec,Rid* rid){
             // modify mode
             mode &= ~(S_IWUSR);    // Clear this bit 
             chmod(path, mode);
-        }
+        }*/
     }
     else if(errno){
         printf("%s\n",strerror(errno));
