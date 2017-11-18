@@ -30,17 +30,22 @@ int doesFileExist(char* path){
         //printf("File does not exist.");
         return 0;
     }
-    }
+}
+
+void bwrite_float(unsigned char* tmp,float num,int size,int* init){
+    unsigned char const* p=reinterpret_cast<unsigned char const *>(&num);
+    for(int i=0;i<size;i++)
+        tmp[*init+i]=p[i];
+    *init+=size;
+}
 
 void bwrite_int(unsigned char* tmp,int num,int size,int* init){
-    int binArray[size*8],base,sum;
+    unsigned char const* p=reinterpret_cast<unsigned char const *>(&num);
+    for(int i=0;i<size;i++)
+        tmp[*init+i]=p[i];
+    /*int binArray[size*8],base,sum;
     getSizedBin(binArray,num,size);
-    /*for(int i=0;i<size;i++){
-    	for(int j=0;j<8;j++){
-    		printf("%d",binArray[j+i*8]);
-    	}
-    	printf("\t");
-    }*/
+    
     for(int i=size-1;i>-1;i--){
     	sum=0;
     	base=1;
@@ -51,7 +56,7 @@ void bwrite_int(unsigned char* tmp,int num,int size,int* init){
     	tmp[*init+size-1-i]=sum;
         //printf("\n%d",sum);
         
-    }
+    }*/
     *init+=size;
 }
 
@@ -143,6 +148,7 @@ int Create (int argc,char** argv)
 {
     //printf("%d%s\n",argc,argv[1]);
     int attrCount=(argc-2)/2,offset=0,count=0,recLength=0;
+    unsigned char const * p,*q;
     unsigned char record[relCache[1].recLength+1];
     //sanitize(&record,relCache[1].recLength+1);
     struct recidArray RidArray[attrCount];
@@ -170,19 +176,19 @@ int Create (int argc,char** argv)
             
             bwrite_int(record,count,4,&offset);
             
-            if(argv[i+1][0]=='i'){
-                bwrite_int(record,sizeof(int),sizeof(int),&offset);
+            if(argv[i+1][0]=='i' || argv[i+1][0]=='I'){
+                bwrite_int(record,sizeof(unsigned int),sizeof(unsigned int),&offset);
                 bwrite_int(record,DTINT,sizeof(short),&offset);
                 recLength+=sizeof(int);
                 //printf("int");
             }
-            else if(argv[i+1][0]=='f'){
+            else if(argv[i+1][0]=='f' || argv[i+1][0]=='F'){
                 bwrite_int(record,sizeof(float),sizeof(float),&offset);
                 bwrite_int(record,DTFLOAT,sizeof(short),&offset);
                 recLength+=sizeof(float);
                 //printf("float");
             }
-            else if(argv[i+1][0]=='s'){
+            else if(argv[i+1][0]=='s' || argv[i+1][0]=='S'){
                 int sum=0;
                 if(argv[i+1][2]!=0){
                     sum=argv[i+1][2]-48+10*(argv[i+1][1]-48);
@@ -190,9 +196,9 @@ int Create (int argc,char** argv)
                 else{
                     sum=argv[i+1][1]-48;
                 }
-                bwrite_int(record,sum,sizeof(int),&offset);
+                bwrite_int(record,sum+1,sizeof(int),&offset);
                 bwrite_int(record,DTSTRING,sizeof(short),&offset);
-                recLength+=sum;
+                recLength+=sum+1;
                 //printf("string");
             }
             else if(argv[i+1][0]=='u'){

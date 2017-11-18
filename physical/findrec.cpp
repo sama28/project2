@@ -12,46 +12,52 @@ int shortcomp(short a,short b,int compOp);
 int unsignshortcomp(unsigned short a,unsigned short b,int compOp);
 int strncomp(char* a,char* b,int len,int compOp);int floatcomp(float a,float b,int compOp);
 
-int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
+int FindRec(int relNum,Rid*startRid1,Rid *foundRid1,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
 {
- //printf("FindRec \n ");
+ printf("FindRec :relNum=%d value =%s compOp=%d\n ",relNum,valuePtr,compOp);
 int status,flag=1;      
 //GetNextRec(int relNum,recid * startRid,recid* foundRid,void * recPtr)
-
-status=GetNextRec(relNum,startRid,foundRid,recPtr);
-//find record start from startRid
-    while(flag==1)
+Rid startRid,foundRid;
+startRid.pid=startRid1->pid;
+startRid.slotnum=startRid1->slotnum;
+    if(relCache[relNum].relFile!=NULL)
     {
-        if(status==1)//if record is found sucessfully
+        if(relCache[relNum].attrHead[offset].type==attrType && relCache[relNum].attrHead[offset].length==attrSize)
         {
-            //find attr with Given offset
-            //returnAttrNode(struct attrList* attrListHead,int offset,struct attrList* source)
-        
-            // returnAttrNode(relCache[relNum].attrHead,offset,&source);
-
-            if(relCache[relNum].attrHead[offset].type==attrType && relCache[relNum].attrHead[offset].length==attrSize)
+            flag=1;
+            status=GetNextRec(relNum,&startRid,&foundRid,recPtr);
+            //find record start from startRid
+        while(flag==1)
+        {
+            if(status==1)//if record is found sucessfully
             {
+                //find attr with Given offset
+                //returnAttrNode(struct attrList* attrListHead,int offset,struct attrList* source)
+        
+                // returnAttrNode(relCache[relNum].attrHead,offset,&source);
+            
                 if(isRecRight(relNum,recPtr,offset,valuePtr,compOp))
                 {
                     printf("In FindRec: record Found....");
+                    foundRid1->pid=foundRid.pid;
+                    foundRid1->slotnum=foundRid.slotnum;
                      return 1;
                 }
                 else
                 {
                     printf("\n\nIn FindRec: Comparision Returns False");
-                }
+                }      
             }
-             else{
+            else{
 
-                printf("\n\nIn FindRec: attrType Or attrlength mismatch with disired attr..");
-            }        
-        }
-         else{
+                printf("\n\nIn FindRec: GetNext Fail In Finding Rec");
+                flag=0;
+                return 0;
+            }
+        startRid.slotnum=foundRid.slotnum+1;
+        status=GetNextRec(relNum,&startRid,&foundRid,recPtr);
 
-            printf("\n\nIn FindRec: GetNext Fail In Finding Rec");
-            flag=0;
-            return 0;
-        }
+        /*
         if(foundRid->slotnum < relCache[relNum].numRecs-1)//-1 is Important foundRid shows the Rid Of
         {                                                 // Found Rec and That is Not Desired
 
@@ -63,8 +69,19 @@ status=GetNextRec(relNum,startRid,foundRid,recPtr);
             startRid->slotnum=0;
         }
         status=GetNextRec(relNum,startRid,foundRid,recPtr);
-    }
-    return 0;
+        *///old code
+        }
+    } 
+    else{
+            printf("\n\nIn FindRec: attrType Or attrlength mismatch with disired attr..");
+        }  
+
+   }
+   else
+   {
+       printf("\n\nIN FINDREC: FILE IS NOT OPENED...");
+   }
+return 0;
 }
 int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp )
 {   //checkes if Record Conforms To The Desired Test Parameter As Provided In Arguments 
@@ -120,6 +137,7 @@ int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp )
                 return 1;
             }
         break;
+        
         
         case DTFLOAT:
             if(floatcomp(*((float *)(recPtr+bOfst)),*(float *)valuePtr,compOp))

@@ -11,19 +11,19 @@
 #include<vector>
 using namespace std;
 
-#define PAGESIZE			2137				/* number of bytes in a page */
-#define BITMS_NUM           (PAGESIZE/128)		//assuming a record is atleat 4 byte and one bitmap 												slot is of 4byte 
-#define	MAXRECORD			(32*BITMS_NUM) 	//since one bitmap slot can corresponds to 32 records
+#define PAGESIZE			237			/* number of bytes in a page */
+//#define BITMS_NUM           (PAGESIZE/128)		//assuming a record is atleat 4 byte and one bitmap 												slot is of 4byte 
+//#define	MAXRECORD			(32*BITMS_NUM) 	//since one bitmap slot can corresponds to 32 records
 #define PGTAIL_SPACE		4 				//sapce always left blanks for safety
 
 #define RELNAME		32	/* max length of a relation name */
-#define MAXOPEN		8  /* max number of files that can be open
+#define MAXOPEN		20  /* max number of files that can be open
 										   at the same time */
 										   
 //#define MR_MAXBUFPG 1024	
 
 #define MR_PGPERREL 10
-#define	OK			0		/* return codes */
+#define	OK			0	/* return codes */
 #define NOTOK		-1
 
 #define MR_RELCAT_BITMS_NUM   (((PAGESIZE-PGTAIL_SPACE)/(8*MR_RELCAT_REC_SIZE+1))+1) 
@@ -34,7 +34,7 @@ using namespace std;
 #define RELCAT		"relcat"   /* name of the relation catalog file */
 #define ATTRCAT		"attrcat"  /* name of the attribute catalog file */
 
-#define NUM_RELCACHE_ENTRY 20//((PAGESIZE-PGTAIL_SPACE-(BITMS_NUM*sizeof(unsigned int)))/MR_RELCATENTRYSIZE)
+#define NUM_RELCACHE_ENTRY 20 //MAXOPEN//((PAGESIZE-PGTAIL_SPACE-(BITMS_NUM*sizeof(unsigned int)))/MR_RELCATENTRYSIZE)
 #define MR_FIRST_USR_RLTN_IND 2
 //************************************************************
 //----------this part depends on where you deploy this project
@@ -75,13 +75,13 @@ typedef struct gtps {
 typedef struct psrelcat {
 		
 			unsigned char slotmap[MR_RELCAT_BITMS_NUM];//
-			char contents [MAXRECORD];
+			char contents [MR_RELCAT_BITMS_NUM*32];
 			} PageRelCat;
 
 typedef struct psattrcat {
 				
 					unsigned char slotmap[MR_ATTRCAT_BITMS_NUM];//
-					char contents [MAXRECORD];
+					char contents [MR_ATTRCAT_BITMS_NUM*32];
 } PageAttrCat;
 /*****************************************************************/
 struct attrList{

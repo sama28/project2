@@ -6,7 +6,7 @@
                 "name": "(gdb) Launch",
                 "type": "cppdbg",
                 "request": "launch",
-                "program": "/home/samadhan/Desktop/git/minirel/run/a.out",
+                "program": "/home/ameya/project/project2/run/minirel",
                 "args": [],
                 "stopAtEntry": false,
                 "cwd": "${workspaceRoot}",
@@ -20,12 +20,6 @@
                         "ignoreFailures": true
                     }
                 ]
-            },
-            {
-                "type": "node",
-                "request": "launch",
-                "name": "Launch Program",
-                "program": "${file}"
             }
         ]
     }

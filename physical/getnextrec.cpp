@@ -17,7 +17,7 @@ void ReadPage(int relNum,unsigned pid);
 
 int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
 {
- printf("GetNextRec \n ");
+ //printf("GetNextRec \n ");
 
  int bitmapByteNum;
  int bitmapbitnum;
@@ -27,16 +27,16 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
  foundRid->pid=startRid->pid;
  foundRid->slotnum=startRid->slotnum;     
  //------------------------------------------------
-  if (relCache[relNum].relFile!=NULL)
+  if (relCache[relNum].relFile!=NULL && relCache[relNum].valid=='v')
   { //relation is open and entries are there in relCache
         while(foundRid->pid < relCache[relNum].numPgs)
-        {
+        {       
                 ReadPage(relNum, foundRid->pid);
                  //1. Read the Required Page In gPgTable
                 //2.If Page Is Read Successfully And Available In gPgTable
                 if (gPgTable[relNum].pid == foundRid->pid)
                 {
-                        while(foundRid->slotnum < relCache[relNum].numRecs)
+                        while(foundRid->slotnum < relCache[relNum].recPerPg)
                         {
                          //pid is valid and not the outside of the page range                   
                           bitmapByteNum = foundRid->slotnum / 8;
@@ -44,7 +44,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                           cmprtr1 = 0x80;
                           cmprtr1 = cmprtr1 >> bitmapbitnum;
                           cmprtr2 = gPgTable[relNum].contents[bitmapByteNum];
-                          //printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
+                          printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
                           if ((cmprtr1 & cmprtr2) != 0x00)
                           { //slot is valid so record exists
 
@@ -60,16 +60,17 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                                   printf("\n\nInGetnextRec : Rec Copied SuccessFully...");
                                   return 1;
                           }
-                             //printf("\n\nIN GetNextRec There Is No Rec At Given Slot No");
+                             printf("\n\nIN GetNextRec There Is No Rec At Given Slot No");
                             foundRid->slotnum++;
                         }        
                 }
-                else{
-                      printf("\n\nIn GetnextRec Failed To Bring The Required Page");
+                else
+                {
+                         printf("\n\nIn GetnextRec Failed To Bring The Required Page");
                       return -3;
-                  }
-                  foundRid->pid++;
-                  foundRid->slotnum=0;
+                }
+                foundRid->pid++;
+                foundRid->slotnum=0;
         }
         return -2;
         printf("\n\nIN GetNextRec RECORD NOT FOUND...");
@@ -97,7 +98,7 @@ int nextRec(int relNum, Rid* startRid, char *recPtr)
         if (relCache[relNum].relFile!=NULL)
         { //relation is open and entries are there in relCache
 
-                if (startRid->pid < relCache[relNum].numPgs && startRid->slotnum < relCache[relNum].numRecs)
+                if (startRid->pid < relCache[relNum].numPgs && startRid->slotnum < relCache[relNum].recPerPg)
                 { //pid is valid and not the outside of the page range
 
                         
