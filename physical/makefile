@@ -15,6 +15,7 @@ INCLUDE = ../include
 
 DFLAG =
 CFLAGS = -g $(DFLAG) -I$(INCLUDE)
+#CXXFLAGS = -std=c++11 -g $(DFLAG) -I$(INCLUDE)
 # -g to generate symbolic info. used by
 #    the debugger.
 # DFLAG can be used to turn specific debug
@@ -24,16 +25,11 @@ CFLAGS = -g $(DFLAG) -I$(INCLUDE)
 SRCS = \
 	getslots.cpp error.cpp createcats.cpp filesize.cpp opencats.cpp closecats.cpp openrel.cpp closerel.cpp findrelnum.cpp \
 	readpage.cpp flushpage.cpp writerec.cpp findrec.cpp getnextrec.cpp insertrec.cpp deleterec.cpp \
-	buffmanage.cpp bread_string.cpp bread_int.cpp getslots.cpp
+	buffmanage.cpp bread_string.cpp bread_int.cpp 
 
 OBJ = \
-<<<<<<< HEAD
-	error.o createcats.o filesize.o opencats.o closecats.o openrel.o closerel.o findrelnum.o \
-	readpage.o flushpage.o writerec.o findrec.o getnextrec.o insertrec.o deleterec.o buffmanage.o bread_string.o bread_int.o getslots.o
-=======
 	getslots.o error.o createcats.o filesize.o opencats.o closecats.o openrel.o closerel.o findrelnum.o \
 	readpage.o flushpage.o writerec.o findrec.o getnextrec.o insertrec.o deleterec.o buffmanage.o bread_string.o bread_int.o
->>>>>>> f3f3b1399efc1d0ba65c3ee303626aa2e017f706
 
 #############################################################
 # 	stuff to build the executables

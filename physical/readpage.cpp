@@ -58,7 +58,7 @@ relCache[1].attrHead;
     //temporary testing code must remove
 
 
-    relCache[relNum].valid='v';//must remove BUG
+   // relCache[relNum].valid='v';//must remove BUG
     //-------------------------
 
    // printf("relCacheIndex =%d relCache%d.valid=%c",relCacheIndex,relNum,relCache[relNum].valid);
@@ -87,7 +87,7 @@ relCache[1].attrHead;
                 fseek(relCache[relNum].relFile,PAGESIZE*pid,SEEK_SET);
                 //if(fread(tempbuff,1,PAGESIZE*3,relCache[relNum].relFile) > 0)
                 len=fread(gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
-     //           printf("number of byte read %u",len);
+                //printf("number of byte read %u",len);
                 if(!ferror(relCache[relNum].relFile))
                 {
                     gPgTable[relNum].pid=pid;
@@ -95,15 +95,15 @@ relCache[1].attrHead;
                    
                   int lwrlm=0;
                   int uprlm=PAGESIZE;
-       //           printf("\n\nreadPage:content of the whole file.... %s\n",strerror(errno));
-                  for(i=lwrlm;i<uprlm;i++)//read the content from lower limit to upper limit
-                  {
-         //           printf("%x",gPgTable[relNum].contents[i]);
+                  //printf("\n\nreadPage:content of the whole file.... %s\n",strerror(errno));
+                 // for(i=lwrlm;i<uprlm;i++)//read the content from lower limit to upper limit
+                 // {
+                //    printf("%x",gPgTable[relNum].contents[i]);
                     //printf("%c",tempbuff[i]);
 
                     //showPageContent(relNum);
-                  }
-           //       printf("\n\n1st Byte Of rel %d is %c",relNum,gPgTable[relNum].contents[1]);                
+                 // }
+                  //printf("\n\n1st Byte Of rel %d is %c",relNum,gPgTable[relNum].contents[1]);                
                 }
                 else{
 
@@ -113,12 +113,12 @@ relCache[1].attrHead;
             }
             else
             {
-               // printf("\n\nIn raedPage Page Is In Buffer...");
+                printf("\n\nIn raedPage Page relNum=%d Is In Buffer...",relNum);
             }       
         }
         else//(relNum is not in cache)
         {
-       //     printf("\n\nOPEN THE RELATION FIRST.....");
+            printf("\n\nInRead PAge OPEN THE RELATION FIRST.....");
         }
        //fclose(relCache[relNum].relFile);
 // printf("ReadPage \n ");

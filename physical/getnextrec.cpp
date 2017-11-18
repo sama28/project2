@@ -27,10 +27,10 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
  foundRid->pid=startRid->pid;
  foundRid->slotnum=startRid->slotnum;     
  //------------------------------------------------
-  if (relCache[relNum].relFile!=NULL)
+  if (relCache[relNum].relFile!=NULL && relCache[relNum].valid=='v')
   { //relation is open and entries are there in relCache
         while(foundRid->pid < relCache[relNum].numPgs)
-        {
+        {       
                 ReadPage(relNum, foundRid->pid);
                  //1. Read the Required Page In gPgTable
                 //2.If Page Is Read Successfully And Available In gPgTable
@@ -44,7 +44,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                           cmprtr1 = 0x80;
                           cmprtr1 = cmprtr1 >> bitmapbitnum;
                           cmprtr2 = gPgTable[relNum].contents[bitmapByteNum];
-                          //printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
+                          printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
                           if ((cmprtr1 & cmprtr2) != 0x00)
                           { //slot is valid so record exists
 
@@ -57,10 +57,10 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                                       recPtr[i]=gPgTable[relNum].contents[fstrecind+i];
                                   }
                                   //memcpy(recPtr, &gPgTable[relNum].contents[fstrecind],relCache[relNum].recLength);
-                                 // printf("\n\nInGetnextRec : Rec Copied SuccessFully...");
+                                  printf("\n\nInGetnextRec : Rec Copied SuccessFully...");
                                   return 1;
                           }
-                             //printf("\n\nIN GetNextRec There Is No Rec At Given Slot No");
+                             printf("\n\nIN GetNextRec There Is No Rec At Given Slot No");
                             foundRid->slotnum++;
                         }        
                 }

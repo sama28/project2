@@ -5,18 +5,18 @@
 #include "../include/mrdtypes.h"
 #include <stdio.h>
 #include <string.h>
-int bringInRelCache(char * relCatEntry,Rid *foundRid);
-int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid);
-int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid);
- void makeRelCatRec(unsigned char *cacheEntry,int indexLoc);
- int makeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength);
- int flushRelCacheEntry(int Loc);
+int bringInRelCache(char *,Rid *);
+int findRecInRelcat(char * ,char *,Rid *);
+int makeRelCacheEntry(char *,int ,Rid *);
+ void makeRelCatRec(unsigned char *,int );
+ int makeAttrCacheEntry(int ,Rid ,unsigned short ,unsigned );
+ int flushRelCacheEntry(int );
  int entryWhere();
  int whomToReplace(void);
 int OpenRel(char * relName)
 {
 
-    printf("\n\nOpenRel..... \n ");
+     printf("\n\nOpenRel..... \n ");
      int status,indexLoc,entryAt=0;
      int rltnExist;
      Rid foundRid;
@@ -24,7 +24,7 @@ int OpenRel(char * relName)
 
      status=FindRelNum(relName);//check if relation is in cache
 
-    if(status>=0 && relCache[status].valid == 'v')
+    if( status >= 0 )
     {  //relation is already in the cache 
         return status;
     }
@@ -33,29 +33,35 @@ int OpenRel(char * relName)
         //relation is NOT in the Cache;
         //Bring The Relation In The Cache
         //FindRec In RelCat
-        rltnExist=findRecInRelcat(relName,relCatEntry,&foundRid);
-
-        if(rltnExist)
+        if(relCache[0].relFile != NULL && relCache[1].relFile != NULL)
         {
-           entryAt=bringInRelCache(relCatEntry,&foundRid);
-            if(entryAt>=MR_FIRST_USR_RLTN_IND)
+           rltnExist=findRecInRelcat(relName,relCatEntry,&foundRid);
+            if(rltnExist)
             {
-                //compulSorily bring One Page Of New relaTion
-                gPgTable[entryAt].pid=1;//this Entry There For Forced Read
-                gPgTable[entryAt].dirty='c';
-                ReadPage(entryAt,0);
-                return entryAt;
+               entryAt=bringInRelCache(relCatEntry,&foundRid);
+                if(entryAt>=MR_FIRST_USR_RLTN_IND)
+                {
+                    //compulSorily bring One Page Of New relaTion
+                    gPgTable[entryAt].pid=1;//this Entry There For Forced Read
+                    gPgTable[entryAt].dirty='c';
+                    ReadPage(entryAt,0);
+                    return entryAt;
+                }
+                else
+                {
+                    //
+                    return -1;
+                }
             }
             else
             {
-                printf("\n\nERROR SYSTEM CATALOG(RELCAT/ATTRCAT) ENTRY IN CACHE IS REPLACED BY OPENREL...");
-                return -1;
+                return -2;
+                printf("\n\nIN OPENREL :- RELATION DOESN'T EXISTS....");
             }
         }
         else
         {
-            return -2;
-            printf("\n\nIN OPENREL :- RELATION DOESN'T EXISTS....");
+            printf("\IN OPENREL :- OPEN THE DATABASE ....");
         }
     }
     return -3;
@@ -68,13 +74,22 @@ int bringInRelCache(char * relCatEntry,Rid *foundRid)
 
     printf("bringInRelCache(char * relCatEntry=%s,Rid *foundRid(pid ,slotnum)(%u %u))",relCatEntry,foundRid->pid,foundRid->slotnum);
     int loc,flushed,entrymade=0;
-    loc=entryWhere();
+    loc=relCacheRplcmntInd;//entryWhere();
     flushed=flushRelCacheEntry(loc);
     if(flushed==1)
     {
-        if(loc<19)
+        if(loc<NUM_RELCACHE_ENTRY-1)
         {
-           relCacheRplcmntInd=loc+1;
+
+            if(loc>=MR_FIRST_USR_RLTN_IND)
+            {
+                relCacheRplcmntInd=loc+1;
+                
+            }
+           else{
+                printf("\n\nERROR SYSTEM CATALOG(RELCAT/ATTRCAT) ENTRY IN CACHE IS REPLACED BY OPENREL...");
+               //relCacheRplcmntInd=MR_FIRST_USR_RLTN_IND;
+           }
         }
         else
         {
@@ -91,7 +106,7 @@ int bringInRelCache(char * relCatEntry,Rid *foundRid)
 int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid)
 {
     //for Refferences...
-    //int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
+    //int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )rltnExist=findRecInRelcat(relName,relCatEntry,&foundRid);
     printf("findRecInRelcat(char * relName =%s,char *recPtr= %s,Rid *foundRid(pid,slotnum)=%u %u )",relName,recPtr,foundRid->pid,foundRid->slotnum);
     int status;
     Rid startRid;
@@ -181,8 +196,13 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
             return 0;
             
         } 
+        //-----------------------
         //open New Relation File
+       
         getPath(path,relCache[indexLoc].relName);
+        strcat(path,"/");
+        strcat(path,relCache[indexLoc].relName);
+        //printf("\n\nmakeRelCahceEntry relName=%s RelNum=%d path %s",relCache[indexLoc].relName,indexLoc,path);
         relCache[indexLoc].relFile=fopen(path,"rb+");
         if(relCache[indexLoc].relFile == NULL)
         {
@@ -219,24 +239,31 @@ void makeRelCatRec(unsigned char *cacheEntry,int indexLoc)
     offset=offset+4;
     *(unsigned *)(cacheEntry+offset)=relCache[indexLoc].attr0Rid.slotnum;
 }
-int makeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength)
+int makeAttrCacheEntry(int Loc,Rid start_Rid,unsigned short numAttrs,unsigned recLength)
 {   
-    //Rid startRid;
-    int status=0,i,offset;
-    Rid foundRid;
+    int status=0,offset;
+    Rid foundRid,startRid;
     char recPtr[recLength];
     struct attrList attrHead;
-    //startRid.pid=*(unsigned *)relCatEntry+attr0pidIndInRec;
-    //startRid.slotnum=*(unsigned *)(relCatEntry+attr0pidIndInRec+4);
-    //int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp );
-    
-    //int nextRec(int relNum, Rid* startRid, char *recPtr)
+    unsigned short i,numOfAttrs;
+    unsigned tpid;
+    unsigned tslotnum;
 
-    printf("\n\nmakeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength)");
+    //functions Arguments Are Behaving UnPredictabllY In this Function So Copying Them
+    tpid=start_Rid.pid;
+    tslotnum=start_Rid.slotnum;
+    numOfAttrs=numAttrs;
+
+    printf("\n\nmakeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength) numAttrs %u",numAttrs);
     relCache[Loc].attrHead.clear();
-    //status=nextRec(1,&startRid,recPtr);
-   for(i=0;i<numAttrs;i++)
+   
+    i=0;
+   while(i < numOfAttrs)
     {
+        //printf(" \n\ni ->%d,numattrs %d",i,numOfAttrs);
+        startRid.pid=tpid;
+        startRid.slotnum=tslotnum;
+
         //WARNING RIGHT THING TO DO IS COMPARE OFFSET ORDERRING OF ATTRIBUTE....
         status=nextRec(1,&startRid,recPtr);
         if(status==1)
@@ -244,29 +271,30 @@ int makeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength
             offset=0;
             strncpy(attrHead.attrName,recPtr,ATTRLEN);
             offset=ATTRLEN;
-            attrHead.offset=*(unsigned *)(recPtr+offset);
+            attrHead.offset=*((unsigned *)(recPtr+offset));
             offset=offset+4;
-            attrHead.length=*(unsigned *)(recPtr+offset);
+            attrHead.length=*((unsigned *)(recPtr+offset));
             offset=offset+4;
-            attrHead.type=*(short *)(recPtr+offset);    
-            printf("\n\nENTRY MADE IN ATTRCACHE %s %u %u %d",attrHead.attrName,attrHead.offset,attrHead.length,attrHead.type);
+            attrHead.type=*((short *)(recPtr+offset));    
+            printf("\n\nENTRY MADE IN ATTRCACHE at loc %d %s %u %u %d",Loc,attrHead.attrName,attrHead.offset,attrHead.length,attrHead.type);
       
             relCache[Loc].attrHead.push_back(attrHead);
       
-            startRid.slotnum++;
-            if(startRid.slotnum >= relCache[1].numRecs)
+            tslotnum++;
+            if(tslotnum >= relCache[1].recPerPg)
             {
-               startRid.pid++;
-                startRid.slotnum=0;
+                tpid++;
+                tslotnum=0;
             }
         }
         else
         {
             break;
-            i=numAttrs+1;//just to break loop
+            //i=numAttrs+1;//just to break loop
         }
+     i++;   
     }
-    if(i==numAttrs)
+    if(i==numOfAttrs)
     {
         return 1;
     }
@@ -321,7 +349,7 @@ int flushRelCacheEntry(int Loc)
 }
 int entryWhere()
 {
-    if(relCacheIndex < 20)//relCacheIndex<MAX_RELCACHE_ENTRY
+    if(relCacheIndex < NUM_RELCACHE_ENTRY)//relCacheIndex<MAX_RELCACHE_ENTRY
     {
         printf("\n\nint entryWhere()=%d",relCacheIndex);
         return relCacheIndex;
@@ -339,11 +367,11 @@ int whomToReplace(void)
     int count,i;
     count=0;
     i=relCacheRplcmntInd;
-    while(count<20)
+    while(count<(NUM_RELCACHE_ENTRY-2)/3)
     {
-        if(i<20)
+        if(i<NUM_RELCACHE_ENTRY)
         {
-            if(gPgTable[i].dirty=='c')
+            if(gPgTable[i].dirty=='c'||relCache[i].valid=='i')
             {
                 //relCacheRplcmntInd=i+1;
                 return i; 

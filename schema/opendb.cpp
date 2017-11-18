@@ -17,6 +17,8 @@ void relCacheTest(void);
 void testReadFile(void);
 void findRelNumTest(void);
 void openRelTest(void);
+void readRelation(void);
+void parseRecord(int relNum,char* record);
 
 int OpenDB(int argc,char ** argv)
 {
@@ -47,6 +49,7 @@ int OpenDB(int argc,char ** argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
+        readRelation();
       }
       else{
         printf("\n---------------------------------------------------\n");
@@ -72,7 +75,7 @@ void testMain()
       //InsertRec(0,&a);
       //testing purpuse not part of original caode
       //relCache[1].dirty=1;
-      int lwrlm=0;
+      int lwrlm=0,status;
       int uprlm=PAGESIZE;
       int rln = 0;
       Rid foundRid, startRid;
@@ -96,46 +99,55 @@ void testMain()
      //ReadPage(rln,0);
       //testReadFile();
       //relCacheTest();
-      //GetNextRec(rln, &startRid, &foundRid, record);
-      //shwRelCatRec(record);
+  /*
+      GetNextRec(0, &startRid, &foundRid, record);
+      shwRelCatRec((unsigned char *)record);
 
-      //startRid.slotnum =1;
-      //GetNextRec(rln, &startRid, &foundRid, record);
+       startRid.slotnum =1;
+      GetNextRec(rln, &startRid, &foundRid, record);
      
       //printf("relFile=%d atrFile%d",relCache[0].relFile,relCache[1].relFile);
-      printf("\n\nRecord Of RelCat Is");
+      //printf("\n\nRecord Of RelCat Is");
      // printf("\n\n%x", record); 
-      //shwRelCatRec(record);
-
+      shwRelCatRec((unsigned char *)record);
+    
       rln=1;
       startRid.slotnum=0;
-      //GetNextRec(rln, &startRid, &foundRid, record1);
+      GetNextRec(rln, &startRid, &foundRid, record1);
+      /*
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%s",relCache[1].attrHead[2].attrName);
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].offset);
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%u",relCache[1].attrHead[2].length);
       printf("\n\n-----------------\n\nBefore FindRec...value of att=%d",relCache[1].attrHead[2].type);
       FindRec(rln,&startRid,&foundRid,record1,a_type,a_size,a_offset,a_vptr,a_compOp);
-      shwAttrCatRec((unsigned char*)record1);
   
-      /*
-      for(int i=0;i<11;i++)
+      shwAttrCatRec((unsigned char*)record1);
+      */
+      for(int i=0;i<100;i++)
       {
-      
-      GetNextRec(1, &startRid, &foundRid, record1);
-      shwAttrCatRec((unsigned char *)record1);
+      printf("\n\n------------%d",i);
+      status=GetNextRec(1, &startRid, &foundRid, record1);
+        if(status==1)
+        {
+            shwAttrCatRec((unsigned char *)record1);
+        }
       startRid.slotnum=foundRid.slotnum+1;
+      startRid.pid=foundRid.pid;
       }
       startRid.pid=0;
       startRid.slotnum=0;
-      for(int i=0;i<5;i++)
+      for(int i=0;i<100;i++)
       {
-      
-      GetNextRec(0, &startRid, &foundRid, record);
-      shwRelCatRec((unsigned char *)record);
-      startRid.slotnum=foundRid.slotnum+1;
+      printf("\n\n------------%d",i);
+      status=GetNextRec(0, &startRid, &foundRid, record);
+      if(status==1)
+      {
+         shwRelCatRec((unsigned char *)record);
       }
-*/
-
+     
+       startRid.slotnum=foundRid.slotnum+1;
+      startRid.pid=foundRid.pid;
+      }
             
            /* printf("\n\nInside opendb\testMain\n\nTesting ReadPage");
             //printf("\n\ncontent of the whole file\n");
@@ -341,4 +353,72 @@ void openRelTest(void)
   printf("\n\n\n\nrelNum  =%d",OpenRel("ss1"));
   printf("\n\n\n\nrelNum  =%d",OpenRel("ss2"));
     printf("\n\n\n\nrelNum  =%d",OpenRel("ss1"));
+}
+void readRelation(void)
+{
+      int status,i,relNum;
+      Rid foundRid, startRid;
+      gPgTable[0].pid=3;
+      gPgTable[1].pid=10;
+      startRid.pid = 0;
+      startRid.slotnum =0;
+      char record[MR_RELCAT_REC_SIZE];
+      char record1[MR_ATTRCAT_REC_SIZE];//attrcat rec size
+
+ if(relCache[0].relFile!=NULL &&relCache[1].relFile!=NULL)
+{
+      for(int i=0;i<relCache[1].numRecs+5;i++)
+      {
+        printf("\n\n------------%d",i);
+        status=GetNextRec(1, &startRid, &foundRid, record1);
+        if(status==1)
+        {
+            shwAttrCatRec((unsigned char *)record1);
+            parseRecord(1,record1);
+        }
+        startRid.slotnum=foundRid.slotnum+1;
+        startRid.pid=foundRid.pid;
+      }
+      startRid.pid=0;
+      startRid.slotnum=0;
+      for(int i=0;i<relCache[1].numRecs+5;i++)
+      {
+      printf("\n\n------------%d",i);
+      status=GetNextRec(0, &startRid, &foundRid, record);
+      if(status==1)
+      {
+         shwRelCatRec((unsigned char *)record);
+          parseRecord(0,record);
+      }
+     
+       startRid.slotnum=foundRid.slotnum+1;
+      startRid.pid=foundRid.pid;
+      }
+
+      relNum=OpenRel("trel3");
+      startRid.pid=0;
+      startRid.slotnum=0;
+      if(relCache[relNum].relFile!=NULL && relNum>1)
+      {
+        for(int i=0;i<relCache[relNum].numRecs+5;i++)
+      {
+         printf("\n\n------------%d",i);
+         status=GetNextRec(0, &startRid, &foundRid, record);
+         if(status==1)
+          {
+            parseRecord(0,record);
+          }
+     
+       startRid.slotnum=foundRid.slotnum+1;
+      startRid.pid=foundRid.pid;
+      }
+      }
+
+
+}
+else
+{
+
+  printf("\n\nDATABASE IS NOT OPENED....");
+} 
 }

@@ -20,20 +20,21 @@ int status,flag=1;
 Rid startRid,foundRid;
 startRid.pid=startRid1->pid;
 startRid.slotnum=startRid1->slotnum;
-
-if(relCache[relNum].attrHead[offset].type==attrType && relCache[relNum].attrHead[offset].length==attrSize)
-{
-    flag=1;
-    status=GetNextRec(relNum,&startRid,&foundRid,recPtr);
-    //find record start from startRid
-    while(flag==1)
+    if(relCache[relNum].relFile!=NULL)
     {
-        if(status==1)//if record is found sucessfully
+        if(relCache[relNum].attrHead[offset].type==attrType && relCache[relNum].attrHead[offset].length==attrSize)
         {
-            //find attr with Given offset
-            //returnAttrNode(struct attrList* attrListHead,int offset,struct attrList* source)
+            flag=1;
+            status=GetNextRec(relNum,&startRid,&foundRid,recPtr);
+            //find record start from startRid
+        while(flag==1)
+        {
+            if(status==1)//if record is found sucessfully
+            {
+                //find attr with Given offset
+                //returnAttrNode(struct attrList* attrListHead,int offset,struct attrList* source)
         
-            // returnAttrNode(relCache[relNum].attrHead,offset,&source);
+                // returnAttrNode(relCache[relNum].attrHead,offset,&source);
             
                 if(isRecRight(relNum,recPtr,offset,valuePtr,compOp))
                 {
@@ -46,13 +47,13 @@ if(relCache[relNum].attrHead[offset].type==attrType && relCache[relNum].attrHead
                 {
                     printf("\n\nIn FindRec: Comparision Returns False");
                 }      
-        }
-         else{
+            }
+            else{
 
-            printf("\n\nIn FindRec: GetNext Fail In Finding Rec");
-            flag=0;
-            return 0;
-        }
+                printf("\n\nIn FindRec: GetNext Fail In Finding Rec");
+                flag=0;
+                return 0;
+            }
         startRid.slotnum=foundRid.slotnum+1;
         status=GetNextRec(relNum,&startRid,&foundRid,recPtr);
 
@@ -69,13 +70,18 @@ if(relCache[relNum].attrHead[offset].type==attrType && relCache[relNum].attrHead
         }
         status=GetNextRec(relNum,startRid,foundRid,recPtr);
         *///old code
-    }
-} 
-else{
+        }
+    } 
+    else{
+            printf("\n\nIn FindRec: attrType Or attrlength mismatch with disired attr..");
+        }  
 
-    printf("\n\nIn FindRec: attrType Or attrlength mismatch with disired attr..");
-    }  
-    return 0;
+   }
+   else
+   {
+       printf("\n\nIN FINDREC: FILE IS NOT OPENED...");
+   }
+return 0;
 }
 int isRecRight(int relNum,char *recPtr,int offset,char *valuePtr,int compOp )
 {   //checkes if Record Conforms To The Desired Test Parameter As Provided In Arguments 
