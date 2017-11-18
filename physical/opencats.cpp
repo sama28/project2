@@ -141,19 +141,11 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
 
 void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
     int howmuchRec;
-<<<<<<< HEAD
-    if(relCache[0].numRecs<8){
-        howmuchRec=relCache[0].numRecs;
-    }
-    else{
-        howmuchRec=8;
-=======
     if(relCache[0].numRecs<MAXOPEN){
         howmuchRec=relCache[0].numRecs;
     }
     else{
         howmuchRec=MAXOPEN;
->>>>>>> f3f3b1399efc1d0ba65c3ee303626aa2e017f706
     }
 
     printf("howmuch%d\n",relCache[0].numRecs);
@@ -233,7 +225,7 @@ void OpenCats(void )
 {
     printf("reached opencat");
     int flag=1,size; 
-    unsigned int slot_buffer[BITMS_NUM*sizeof(unsigned int)],*buffer;
+//    unsigned int slot_buffer[BITMS_NUM*sizeof(unsigned int)],*buffer;
     char path1[MAX_PATH_LENGTH],*c,*d,path2[MAX_PATH_LENGTH];
     
 
