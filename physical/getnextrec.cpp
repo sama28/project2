@@ -9,7 +9,6 @@
 //unsigned firstRecSlotInd(int relNum);
 //int isPgInBuff(int relNum, unsigned pgid);
 unsigned int i;
-
 //-------------------------------------------
 int nextRec(int relNum, Rid* startRid, char *recPtr);
 unsigned firstRecSlotInd(int relNum);
@@ -34,7 +33,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                 ReadPage(relNum, foundRid->pid);
                  //1. Read the Required Page In gPgTable
                 //2.If Page Is Read Successfully And Available In gPgTable
-                if (gPgTable[relNum].pid == foundRid->pid)
+                if (gPgTable[relNum].pid == foundRid->pid && gPgTable[relNum].valid=='v')
                 {
                         while(foundRid->slotnum < relCache[relNum].recPerPg)
                         {
@@ -44,7 +43,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                           cmprtr1 = 0x80;
                           cmprtr1 = cmprtr1 >> bitmapbitnum;
                           cmprtr2 = gPgTable[relNum].contents[bitmapByteNum];
-                          printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
+                          //printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
                           if ((cmprtr1 & cmprtr2) != 0x00)
                           { //slot is valid so record exists
 
@@ -106,7 +105,7 @@ int nextRec(int relNum, Rid* startRid, char *recPtr)
                         //1. Read the Required Page In gPgTable
                         
                         //2.If Page Is Read Successfully And Available In gPgTable
-                        if (gPgTable[relNum].pid == startRid->pid)
+                        if (gPgTable[relNum].pid == startRid->pid && gPgTable[relNum].valid=='v')
                         {
                                 bitmapByteNum = startRid->slotnum / 8;
                                 bitmapbitnum = startRid->slotnum % 8;

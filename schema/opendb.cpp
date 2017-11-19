@@ -19,7 +19,8 @@ void findRelNumTest(void);
 void openRelTest(void);
 void readRelation(void);
 void parseRecord(int relNum,char* record);
-
+void chacheTest(int relNum);
+int AddPage(int relNum);
 int OpenDB(int argc,char ** argv)
 {
   if(MR_CURR_DB[0]==0){
@@ -49,7 +50,9 @@ int OpenDB(int argc,char ** argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
-        readRelation();
+        //readRelation();
+        //chacheTest(0);
+        //openRelTest();
       }
       else{
         printf("\n---------------------------------------------------\n");
@@ -79,8 +82,8 @@ void testMain()
       int uprlm=PAGESIZE;
       int rln = 0;
       Rid foundRid, startRid;
-      gPgTable[0].pid=3;
-      gPgTable[1].pid=10;
+      //gPgTable[0].pid=3;
+      //gPgTable[1].pid=10;
       startRid.pid = 0;
       startRid.slotnum =0;
       char record[MR_RELCAT_REC_SIZE];
@@ -96,7 +99,8 @@ void testMain()
       //unsigned val=3;
       //strcpy(a_vptr,(char*)&val);
 
-     //ReadPage(rln,0);
+      
+      //ReadPage(,1);
       //testReadFile();
       //relCacheTest();
   /*
@@ -123,6 +127,8 @@ void testMain()
   
       shwAttrCatRec((unsigned char*)record1);
       */
+
+      /*
       for(int i=0;i<100;i++)
       {
       printf("\n\n------------%d",i);
@@ -231,6 +237,7 @@ void relCacheTest(void )
   {
      printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty,relCache[0].valid);
   }
+  
   if(relCache[1].relFile!=NULL)
   {
      printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[1].relName,relCache[1].recLength,relCache[1].recPerPg,relCache[1].numPgs,relCache[1].numRecs,relCache[1].numAttrs,relCache[1].Rid.pid,relCache[1].Rid.slotnum,relCache[1].dirty,relCache[1].valid);
@@ -337,8 +344,7 @@ void testReadFile(void)
       fread(&g,2,1,fda);
       printf("/nattrcat dataread is:-%s %u %u %u\n",d,e,f,g);
     }
-    
-
+  
   }
   else
   {
@@ -350,9 +356,28 @@ void openRelTest(void)
 {
   //relCache[1].valid='i';
   //gPgTable[2].dirty='d';
-  printf("\n\n\n\nrelNum  =%d",OpenRel("ss1"));
-  printf("\n\n\n\nrelNum  =%d",OpenRel("ss2"));
-    printf("\n\n\n\nrelNum  =%d",OpenRel("ss1"));
+  printf("\n\n\n\nOPENRELTEST");
+
+  int n1=OpenRel("rel5");
+  printf("numpage of relNum %d=%u",n1,relCache[n1].numPgs);
+  AddPage(n1);
+  printf("after adding new page numpage of relNum %d=%u",n1,relCache[n1].numPgs);
+  //ReadPage(n1,0);
+  //gPgTable[n1].dirty='d';
+  //relCache[n1].dirty='d';
+  //ReadPage(n1,1);
+  //int n2=OpenRel("rel2");
+  //relCache[n1].dirty='d';
+
+  //ReadPage(n1,0);
+  //gPgTable[n1].dirty='d';
+ 
+  //int n3=OpenRel("rel3");
+ // ReadPage(n2,1);
+
+   //int n3=OpenRel("trel");
+  // ReadPage(n2,0);
+ /// relCache[n3].dirty='d';
 }
 void readRelation(void)
 {
@@ -373,7 +398,7 @@ void readRelation(void)
         status=GetNextRec(1, &startRid, &foundRid, record1);
         if(status==1)
         {
-            shwAttrCatRec((unsigned char *)record1);
+            //shwAttrCatRec((unsigned char *)record1);
             parseRecord(1,record1);
         }
         startRid.slotnum=foundRid.slotnum+1;
@@ -387,12 +412,12 @@ void readRelation(void)
       status=GetNextRec(0, &startRid, &foundRid, record);
       if(status==1)
       {
-         shwRelCatRec((unsigned char *)record);
+          //shwRelCatRec((unsigned char *)record);
           parseRecord(0,record);
       }
      
        startRid.slotnum=foundRid.slotnum+1;
-      startRid.pid=foundRid.pid;
+       startRid.pid=foundRid.pid;
       }
 
       relNum=OpenRel("trel3");
@@ -410,15 +435,75 @@ void readRelation(void)
           }
      
        startRid.slotnum=foundRid.slotnum+1;
-      startRid.pid=foundRid.pid;
+       startRid.pid=foundRid.pid;
       }
-      }
-
-
+  }
+  
 }
 else
 {
-
   printf("\n\nDATABASE IS NOT OPENED....");
 } 
+}
+void chacheTest(int relNum)
+{
+  printf("\n\n<<<<RELCAHCE TEST>>>>");
+if(relCache[relNum].relFile!=NULL)
+  {   
+     printf("\n%s\n%u\n%u\n%u\n%u\n%u\n%u\n%u\n%c%c\n",relCache[0].relName,relCache[0].recLength,relCache[0].recPerPg,relCache[0].numPgs,relCache[0].numRecs,relCache[0].numAttrs,relCache[0].Rid.pid,relCache[0].Rid.slotnum,relCache[0].dirty,relCache[0].valid);
+     printf("gPgTable[%d] valid %c,dirty %c pid %u",relNum,gPgTable[relNum].valid,gPgTable[relNum].dirty,gPgTable[relNum].pid);
+     for(int i=0;i<relCache[relNum].numAttrs;i++)
+     {
+       printf("\n\n");
+       printf("attrName=%s  ,",relCache[relNum].attrHead[i].attrName);
+     printf("offset=%u   ,",relCache[relNum].attrHead[i].offset);
+     printf("length=%u   ,",relCache[relNum].attrHead[i].length);
+     printf("tpe=%d  ,",relCache[relNum].attrHead[i].type);
+     }
+  }
+}
+int AddPage(int relNum)
+{
+  printf("\n\nInADD PAGE ...");
+  
+  int status=0;
+    FlushPage(relNum,gPgTable[relNum].pid);
+    unsigned char rec[MR_RELCAT_REC_SIZE];
+    for(int i=0;i<PAGESIZE;i++)
+    {
+        gPgTable[relNum].contents[i]='\0';
+    }
+    gPgTable[relNum].dirty='d';
+    gPgTable[relNum].pid=relCache[relNum].numPgs;
+    gPgTable[relNum].valid='v';
+
+    
+    relCache[relNum].numPgs=relCache[relNum].numPgs+1;
+    relCache[relNum].dirty='d';
+    flushRelCacheEntry(relNum);
+
+    //---------temporaray---------
+    /*
+    //ALTERNATIVE TO ABOVE FULSH RELCACHE ENTRY IMMEDIATE FLUSH  
+    relCache[relNum].numPgs=relCache[relNum].numPgs+1;
+    relCache[relNum].dirty='d';
+    unsigned offset;
+    ReadPage(0,relCache[relNum].Rid.pid);
+    makeRelCatRec(rec,relNum);
+    if(gPgTable[0].pid==relCache[relNum].Rid.pid)
+    {
+      printf("Writing RelCache To Buffer");
+      offset=MR_RELCAT_BITMS_NUM+relCache[0].recLength*relCache[relNum].Rid.slotnum;
+      //shwRelCatRec(rec);
+      //shwRelCatRec(&gPgTable[0].contents[offset]);
+      for(int i=0;i<relCache[0].recLength;i++)
+      {
+        gPgTable[0].contents[offset+i]=rec[i];
+      }
+      //shwRelCatRec(&gPgTable[0].contents[offset]);
+      gPgTable[0].dirty='d';
+      relCache[relNum].dirty='c';
+    }
+    FlushPage(0,gPgTable[0].pid);
+    */ 
 }

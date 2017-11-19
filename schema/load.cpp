@@ -14,17 +14,19 @@ int Load (int argc,char ** argv)
     char rel[RELNAME],data[50],recPtr[100];
     strcpy(rel,argv[1]);
     strcpy(data,argv[2]);
-    int relNum=OpenRel(rel);
+    int relNum=2;//=OpenRel(rel);
+
+
     //-----------------------
     //--testing code must remove bug
     if(relNum>=0)
     {
-    relCacheRplcmntInd=2;
+    //relCacheRplcmntInd=2;
     relCache[relNum].dirty='d';
     gPgTable[relNum].dirty='d';
     
-    printf("\n\nopening the same relation again");
-    relNum=OpenRel("trel1");
+    //printf("\n\nopening the same relation again");
+    relNum=OpenRel(rel);
     }
     //-------------------
     printf("%s\t%s\t%d\n",rel,data,relNum);

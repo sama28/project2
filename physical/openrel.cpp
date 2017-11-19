@@ -13,6 +13,7 @@ int makeRelCacheEntry(char *,int ,Rid *);
  int flushRelCacheEntry(int );
  int entryWhere();
  int whomToReplace(void);
+ void shwRelCatRec(unsigned char recptr[]);
 int OpenRel(char * relName)
 {
 
@@ -42,9 +43,9 @@ int OpenRel(char * relName)
                 if(entryAt>=MR_FIRST_USR_RLTN_IND)
                 {
                     //compulSorily bring One Page Of New relaTion
-                    gPgTable[entryAt].pid=1;//this Entry There For Forced Read
-                    gPgTable[entryAt].dirty='c';
-                    ReadPage(entryAt,0);
+                    //gPgTable[entryAt].pid=1;//this Entry There For Forced Read
+                    //gPgTable[entryAt].dirty='c';
+                    //ReadPage(entryAt,0);
                     return entryAt;
                 }
                 else
@@ -186,7 +187,7 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
         relCache[indexLoc].valid='v';
 
        
-        printf("\n\nEntry In RelCahce:-\n%s %u %u %u %u %d %u %u",relCache[indexLoc].relName,relCache[indexLoc].recLength,relCache[indexLoc].recPerPg,relCache[indexLoc].numRecs,relCache[indexLoc].numAttrs,relCache[indexLoc].attr0Rid.pid,relCache[indexLoc].attr0Rid.slotnum);
+        printf("\n\nEntry In RelCahce:-\n%s %u %u %u %u %d %u %u",relCache[indexLoc].relName,relCache[indexLoc].recLength,relCache[indexLoc].recPerPg,relCache[indexLoc].numPgs,relCache[indexLoc].numRecs,relCache[indexLoc].numAttrs,relCache[indexLoc].attr0Rid.pid,relCache[indexLoc].attr0Rid.slotnum);
         //POPULATE attrHead
         //relCache[indexLoc].attrHead[]
         attrCatEntryMade=makeAttrCacheEntry(indexLoc,relCache[indexLoc].attr0Rid,relCache[indexLoc].numAttrs,relCache[indexLoc].recLength);
@@ -202,7 +203,7 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
         getPath(path,relCache[indexLoc].relName);
         strcat(path,"/");
         strcat(path,relCache[indexLoc].relName);
-        //printf("\n\nmakeRelCahceEntry relName=%s RelNum=%d path %s",relCache[indexLoc].relName,indexLoc,path);
+        printf("\n\nmakeRelCahceEntry relName=%s RelNum=%d path %s",relCache[indexLoc].relName,indexLoc,path);
         relCache[indexLoc].relFile=fopen(path,"rb+");
         if(relCache[indexLoc].relFile == NULL)
         {
@@ -311,11 +312,12 @@ int flushRelCacheEntry(int Loc)
     printf("\n\nint flushRelCacheEntry(int Loc)=%d",Loc);
     int gPgFlushed=0;
     unsigned char cacheEntry[MR_RELCAT_REC_SIZE];
+    unsigned offset;
 
     //check Befor Flshing Cache That Corresponding Page In gPgTable Is Not Dirty Or Flushed That Page 1st
     if(gPgTable[Loc].dirty=='d' && relCache[Loc].valid=='v')
     {
-        printf("\n\nint flushRelCacheEntry(int Loc)=%d",Loc);
+        printf("\n\nflushRelCacheEntry(int Loc)....Calling FLUSH=%d",Loc);
         gPgFlushed=FlushPage(Loc,gPgTable[Loc].pid);
     }
     else{
@@ -329,7 +331,7 @@ int flushRelCacheEntry(int Loc)
 
     //---------------------------------------------
 
-    
+    printf("flushRelCacheEntry(int Loc) gPg Flushed %d---relcahe[loc].dirty=%c",gPgFlushed,relCache[Loc].dirty);    
     if(gPgFlushed==1)//after success fully dealling with gPgTable
     {
         //Check if Cache Entry Is Dirty Or Not Corresponding To The Location That Is To Be Replaced
@@ -338,7 +340,31 @@ int flushRelCacheEntry(int Loc)
             //write this entry into relation and attribute Catalog
             //insert A Record At Particular Place
             makeRelCatRec(cacheEntry,Loc);//put the Cache Content in cacheEntry Rec
+            printf("\n\n Printing RelCat Record that IS PREPAREd cahceEntry....");
+            shwRelCatRec(cacheEntry);
             WriteRec(0,cacheEntry,&(relCache[Loc].Rid));//bug remove code with write checking
+            
+                //------------alTerNative Of ablove WriteRec -------------------
+                //----------Quick Update--To Use Just CMNT ABOVE WriteRec and UNCMNT BELOVE PART----------
+            /*
+               ReadPage(0,relCache[Loc].Rid.pid);
+                if(gPgTable[0].pid==relCache[Loc].Rid.pid)
+                {
+                 printf("Writing RelCache To Buffer");
+                offset=MR_RELCAT_BITMS_NUM+relCache[0].recLength*relCache[Loc].Rid.slotnum;
+                //shwRelCatRec(rec);
+                //shwRelCatRec(&gPgTable[0].contents[offset]);
+                for(int i=0;i<relCache[0].recLength;i++)
+                {
+                    gPgTable[0].contents[offset+i]=cacheEntry[i];
+                }
+                //shwRelCatRec(&gPgTable[0].contents[offset]);
+                    gPgTable[0].dirty='d';
+                    relCache[Loc].dirty='c';
+                }
+                 FlushPage(0,gPgTable[0].pid);
+                //-----------------------------------
+            */
             return 1;
         }
         else{
