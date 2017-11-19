@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 void testMain();
+void cnvrtTypeNumToStr(int num,char *str,int len);
+void testOfstInRelCache(void);
 void shwRelCatRec(unsigned char recptr[]);
 void shwAttrCatRec(unsigned char recptr[]);
 void relCacheTest(void);
@@ -21,6 +23,7 @@ void readRelation(void);
 void parseRecord(int relNum,char* record);
 void chacheTest(int relNum);
 int AddPage(int relNum);
+int offsetInAttrCache(int relNum,char * attrName);
 int OpenDB(int argc,char ** argv)
 {
   if(MR_CURR_DB[0]==0){
@@ -50,9 +53,7 @@ int OpenDB(int argc,char ** argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
-        //readRelation();
-        //chacheTest(0);
-        //openRelTest();
+         //crtNewRelAsOld("rel","rel1");
       }
       else{
         printf("\n---------------------------------------------------\n");
@@ -506,4 +507,17 @@ int AddPage(int relNum)
     }
     FlushPage(0,gPgTable[0].pid);
     */ 
+}
+void testOfstInRelCache( void)
+{
+  char str[8];
+  printf("relcat Attribut relName ofst %d",offsetInAttrCache(1,"attrName"));
+  cnvrtTypeNumToStr(DTFLOAT,str,1);
+  printf("\n\nfloat=%s",str);
+  cnvrtTypeNumToStr(DTSTRING,str,10);
+  printf("\n\nstring=%s",str);
+  
+  cnvrtTypeNumToStr(DTINT,str,4);
+  printf("\n\nint=%s",str);
+  
 }

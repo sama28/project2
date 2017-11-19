@@ -9,9 +9,12 @@
 //int	argc;
 //char	**argv;
 //extern "C" int Select(int ,char **);
+int crtNewRelAsOld(char * newRelName,char *oldRelName );
+void cnvrtTypeNumToStr(int num,char *str,int len);
+void readRecInNewRel(int newRelNum,int oldRelNum,char attrName[],char value[],int compOp);
+int offsetInAttrCache(int relNum,char * attrName);
 int Select (int argc, char ** argv)
 {
-#if 0 
     /* print command line arguments */
     short	k;		/* iteration counter	    */
     printf ("%s:\n", argv[0]);
@@ -21,22 +24,30 @@ int Select (int argc, char ** argv)
      printf("Select c++ ......fine....\n");
 
 
-    int newRelNum;
+    int newRelNum,oldRelNum;
     Rid startRid,foundRid;
-    
+    char recPtr[relCache[newRelNum].recLength];
+    int oprtr;
+
      //1.0Create New Relation
        crtNewRelAsOld(argv[1],argv[2]);
 
     //2.OpenNew Relation
         newRelNum=OpenRel(argv[1]);
-
-    char recPtr[relCache[newRelNum].recLength];
+        oldRelNum=OpenRel(argv[2]);
 
     //3.Read Record In New Relation That Satiesfies The Condition
-        readRecInNewRel()
-
-
-     return (OK);  /* all's fine */
+       if(newRelNum >1 && oldRelNum > 1)
+       {
+            oprtr=atoi(argv[4]);
+            readRecInNewRel(newRelNum,oldRelNum,argv[3],argv[5],oprtr);
+            return (OK);  /* all's fine */
+       }
+       else
+       {
+           printf("%s CAN NOT BE CREATED",argv[1]);
+       }
+     
 }
 int crtNewRelAsOld(char * newRelName,char *oldRelName )
 {   //create New Relation As Old One 
@@ -64,6 +75,7 @@ int crtNewRelAsOld(char * newRelName,char *oldRelName )
             argv[2*i+3]=type[i];
             i++;
         }
+        argc=relCache[oldRelNum].numAttrs*2+2;
         Create(argc,argv);
     }
     
@@ -120,6 +132,7 @@ void cnvrtTypeNumToStr(int num,char *str,int len)
             str[1]='\0';
             strcat(str,slen);
         break;
+
         case DTFLOAT:
 
             str[0]='f';
@@ -131,114 +144,93 @@ void cnvrtTypeNumToStr(int num,char *str,int len)
     }
     
 }
-readRecInNewRel(int newRelNum,int oldRelNum,char attrName[],char value[],int compOp)
+void readRecInNewRel(int newRelNum,int oldRelNum,char attrName[],char value[],int compOp)
 {
     char recPtr[relCache[oldRelNum].recLength];
     Rid startRid,foundRid;
     startRid.pid=0;
     startRid.slotnum=0;
     int recFound=0,count=0,attrOfst;
-   
+    float fvalue;
+     int ivalue=atoi(value);
    // char attrValue[]
-
-
     //function return the offset of attribute in relCache[RelNUM].AttrHead[...offset ??..]
     attrOfst=offsetInAttrCache(oldRelNum,attrName);
-    if(attrOfst>0)
+    if(attrOfst>=0)
     {
         unsigned short attrType;
         unsigned attrSz;
         //char attrValPtr[relCache[oldRelNum].recLength];
         attrType=relCache[oldRelNum].attrHead[attrOfst].type;
         attrSz=relCache[oldRelNum].attrHead[attrOfst].length;
-        switch(relCache[relNum].attrHead[offset].type)
-        {
-            case DTCHAR:
-                //
-                char attrValPtr;
-                attrValPtr=value[0];
-                //sprintf(attrValPtr,"%c",value);
-                startRid.pid=0;
-                startRid.slotnum=0;
-                count=0;
-                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,attrValPtr,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
-                while(recFound==1)
-                {   
-           
-                    count++;//found is true so count Rec
-                    InsertRec(newRelNum,(unsigned char*)recPtr);
-                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
-                    recfound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,attrValPtr,compOp);
-                }   
-                
-            break;
-
-            case DTUNSIGNED_CHAR:
-                //
-                char attrValPtr;
-                attrValPtr=value[0];
-                startRid.pid=0;
-                startRid.slotnum=0;
-                count=0;
-                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,attrValPtr,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
-                while(recFound==1)
-                {   
-           
-                    count++;//found is true so count Rec
-                    InsertRec(newRelNum,(unsigned char*)recPtr);
-                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
-                    recfound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,attrValPtr,compOp);
-                }   
-
-            break;
-
-            case DTSHORT:
-                //
-                short attrValPtr;
-
-
-            break;
-
-            case DTUNSIGNED_SHORT:
-                //      
-            break;  
-
+        
+        switch(attrType)
+        {            
             case DTINT:
-                //
+               
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)&ivalue,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)&ivalue,compOp);
+                }  
+                
             break;  
-
-            case DTUNSIGNED_INT:
-                //
-            break;
 
             case DTSTRING:
-                //
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,value,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,value,compOp);
+                }
+                
             break;
-        
-        
+            
             case DTFLOAT:
-                //
+
+                fvalue=atof(value);
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)&fvalue,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)&fvalue,compOp);
+                }
+                
             break;
-        }
-
-        
-        startRid.pid=0;
-        startRid.slotnum=0;
-        count=0;
-        recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,attrValPtr,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
-        while(recFound==1)
-        {   
-           
-            count++;//found is true so count Rec
-            InsertRec(newRelNum,(unsigned char*)recPtr);
-            startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
-            recfound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,attrValPtr,compOp);
-        }   
-
+        }        
     }
-#endif
 }
+int offsetInAttrCache(int relNum,char * attrName)
+{
+    for(int i=0;i<relCache[relNum].numAttrs;i++)
+    {
+        if(!strcmp(attrName,relCache[relNum].attrHead[i].attrName))
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 /*
+//switch case code...
  switch(relCache[relNum].attrHead[offset].type)
         {
             case DTCHAR:
@@ -275,4 +267,144 @@ readRecInNewRel(int newRelNum,int oldRelNum,char attrName[],char value[],int com
             break;
         }
         
-        */
+*/
+#if 0
+switch(attrType)
+        {
+            case DTCHAR:
+                /*startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)value,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                 recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)value,compOp);
+                }   
+                */
+                printf("DTCHAR");
+            break;
+            case DTUNSIGNED_CHAR:
+                /*
+                unsigned char ucvalue;
+                ucvalue=(unsigned char*)vlaue[0];
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char *)ucvalue,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+           
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char *)ucvalue,compOp);
+                } */  
+            break;
+            case DTSHORT:
+                /*short svalue;
+                svalue=(short )atoi(value); 
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char *)svalue,compOp);
+                while(recFound==1)
+                {   
+           
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char *)svalue,compOp);
+                } 
+                */  
+            break;
+            
+            case DTUNSIGNED_SHORT:
+                /*
+                unsigned short usvalue;
+                usvalue=(unsigned short)atoi(value); 
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char *)usvalue,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+           
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char *)usvalue,compOp);
+                }*/ 
+            break;  
+            
+            case DTINT:
+                int ivalue=atoi(value);
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)ivalue,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                   recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)ivalue,compOp);
+                }  
+            break;  
+
+            case DTUNSIGNED_INT:
+                
+                /*unsigned  uivalue;
+                uivalue=(unsigned)atoi(value);
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)uivalue,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                   recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)uivalue,compOp);
+                }  
+                */
+
+            break;
+            
+            case DTSTRING:
+                
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,value,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,value,compOp);
+                }
+
+            break;
+            
+            case DTFLOAT:
+
+                float fvalue;
+                fvalue=atof(value);
+                startRid.pid=0;
+                startRid.slotnum=0;
+                count=0;
+                recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)fvalue,compOp);//GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+                while(recFound==1)
+                {   
+                    count++;//found is true so count Rec
+                    InsertRec(newRelNum,(unsigned char*)recPtr);
+                    startRid.slotnum=foundRid.slotnum+1;//Find Rec WIll Not Give Error If slotNum >recPerPg 
+                    recFound=FindRec(oldRelNum,&startRid,&foundRid,recPtr,attrType,attrSz,attrOfst,(char*)fvalue,compOp);
+                }
+
+            break;
+        }        
+#endif

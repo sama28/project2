@@ -34,5 +34,6 @@ int OpenRel(char * relName);
 void getSlots2(int relNum,struct recidArray* RidArray,Rid attrcat0,int count);
 void makeRelCatRec(unsigned char *,int );
 int flushRelCacheEntry(int );
+int crtNewRelAsOld(char * newRelName,char *oldRelName );
 
 #endif

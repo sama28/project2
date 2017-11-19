@@ -308,6 +308,10 @@ int makeAttrCacheEntry(int Loc,Rid start_Rid,unsigned short numAttrs,unsigned re
 }
 int flushRelCacheEntry(int Loc)
 {   //ONLY FLUSHES RELCHACHE ENTRY TO THE RELCAT AND DOESNT DO ENYTHING FOR ATTRCAT
+
+
+
+
     //IF UPDATE COMMAND CHANGES THE ATTRIBUTE COULD CREATE PROBLEM
     printf("\n\nint flushRelCacheEntry(int Loc)=%d",Loc);
     int gPgFlushed=0;

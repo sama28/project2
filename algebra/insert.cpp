@@ -19,5 +19,3 @@ int Insert (int argc, char **argv)
      printf("Insert \n");
      return (OK);  /* all's fine */
 }
-
-
