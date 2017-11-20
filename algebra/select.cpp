@@ -10,7 +10,6 @@
 //char	**argv;
 //extern "C" int Select(int ,char **);
 int crtNewRelAsOld(char * newRelName,char *oldRelName );
-void cnvrtTypeNumToStr(int num,char *str,int len);
 void readRecInNewRel(int newRelNum,int oldRelNum,char attrName[],char value[],int compOp);
 int offsetInAttrCache(int relNum,char * attrName);
 int Select (int argc, char ** argv)

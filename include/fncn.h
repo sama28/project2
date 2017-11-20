@@ -15,6 +15,7 @@ int FlushPage(int relNum,unsigned pgid);
 int isPgInBuff(int relNum,unsigned pgid );
 int isPgInBuff(int relNum,unsigned pgid );
 void showPageContent(int relNum);
+void testOfstInRelCache( void);
 void ReadPage(int relNum,unsigned pid);
 int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr);
 int fileSize(FILE *fp);
