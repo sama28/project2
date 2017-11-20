@@ -68,27 +68,29 @@ int Project (int argc, char **argv)
     int count=0;
 
     printf("%d\n",2*argc-3);
-    *string[0]="create";
-    *string[1]=argv[1];
-    for(int i=3;i<2*argc;i+=2){
-        *string[i-1]=argv[i];
-        switch (relCache[relNum].attrHead[order[i-3]].type){
+    string[0]="create";
+    string[1]=(char*)malloc(strlen(argv[1]));
+    strcpy(string[1],argv[1]);
+    for(int i=3;i<argc;i++){
+        string[2*i-4]=(char*)malloc(strlen(argv[1]));
+        strcpy(string[2*i-4],argv[i]);
+        switch (relCache[relNum].attrHead[order[i-2]].type){
             case DTINT:{
-                *string[i]="i";
+                string[2*i-3]="i";
             }break;
 
             case DTFLOAT:{
-                *string[i]="f";
+                string[2*i-3]="f";
             }break;
 
             case DTSTRING:{
-                *string[i]="s";
+                string[2*i-3]="s";
             }break;
         }
     }
-
-    for(int i=1;i<2*argc;i+=2){
-        printf("%s\t%s\n",string[i-1],string[i]);
+printf("aaaa\n");
+    for(int i=0;i<2*argc-3;i++){
+        printf("%s\n",string[i]);
     }
     return (OK);
 }
