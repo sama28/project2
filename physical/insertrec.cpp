@@ -42,10 +42,10 @@ void InsertRec(int relNum,unsigned char *rec){
                 gPgTable[relNum].pid=relCache[relNum].numPgs;   
             }
             else{
-                /*fseek(fp,pagenum*PAGESIZE,SEEK_SET);
+                fseek(fp,pagenum*PAGESIZE,SEEK_SET);
                 fread(&gPgTable[relNum].contents,1,PAGESIZE,fp);
-                gPgTable[relNum].pid=pagenum;*/
-                ReadPage(relNum,pagenum);   
+                gPgTable[relNum].pid=pagenum;
+                //ReadPage(relNum,pagenum);   
             }
             //for(int j=0;j<PAGESIZE;j++)
             //printf("%02x",gPgTable[relNum].contents[j]);
@@ -94,11 +94,11 @@ void InsertRec(int relNum,unsigned char *rec){
         for(int j=0;j<PAGESIZE;j++)
         printf("%02x",gPgTable[relNum].contents[j]);
         //printf("pagenum%d",pagenum);
-        /*
+        
         fseek(fp,PAGESIZE*pagenum,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,fp);
         fflush(fp);
-        */
+        
         gPgTable[relNum].dirty='d';
         relCache[relNum].numRecs++;
         relCache[relNum].dirty='d';

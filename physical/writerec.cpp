@@ -33,9 +33,10 @@ void WriteRec(int relNum,unsigned char* rec,Rid* rid){
         unsigned int slotArray[8];
         unsigned char write_this_slot;
         if(gPgTable[relNum].pid!=rid->pid){
-            /*fseek(relCache[relNum].relFile,rid->pid*PAGESIZE,SEEK_SET);
-            fread(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);*/
-            ReadPage(relNum,rid->pid);
+            fseek(relCache[relNum].relFile,rid->pid*PAGESIZE,SEEK_SET);
+            fread(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
+            gPgTable[relNum].pid=rid->pid;
+            //ReadPage(relNum,rid->pid);
         }
         //for(int j=0;j<PAGESIZE;j++)
         //printf("%02x",gPgTable[relNum].contents[j]);
@@ -60,11 +61,11 @@ void WriteRec(int relNum,unsigned char* rec,Rid* rid){
         printf("writerec\n");    
         for(int j=0;j<PAGESIZE;j++)
         printf("%02x",gPgTable[relNum].contents[j]);
-        /*
+        
         fseek(relCache[relNum].relFile,PAGESIZE*rid->pid,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
         fflush(relCache[relNum].relFile);
-        */
+        
 
         gPgTable[relNum].dirty='d';
         /*if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){

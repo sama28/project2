@@ -121,11 +121,6 @@ int isInputValid(int num,char **string){
     //printf("%d",strlen(string[2]));
     if(valid){
         struct stat st={0};
-        if(stat(path,&st)==-1){
-            int status=mkdir(path,0700);
-            if(status==0){
-                strcat(path,"/");
-                strcat(path,string[1]);
                 FILE* fp=fopen(path,"ab");
                 if(fp){
                     fclose(fp);
@@ -134,11 +129,7 @@ int isInputValid(int num,char **string){
                     printf("%s",strerror(errno));
                     valid=valid & 0;
                 }
-            }
-            else{
-                valid=valid & 0;
-            }
-        }
+        
         
     }
     return valid;

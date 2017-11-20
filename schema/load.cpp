@@ -28,15 +28,18 @@ int Load (int argc,char ** argv)
     //ReadPage(relNum,0);
     int recLength=relCache[relNum].recLength;
 	int recPrPg=PAGESIZE/recLength,numRecs=fileSize(dataFile)/recLength;
-    int a,off=0,recRead=0,NPAGESIZE=recPrPg*recLength,numPgs=fileSize(dataFile)/NPAGESIZE;
+    int a,off=0,recRead=0,NPAGESIZE=recPrPg*recLength,numPgs=fileSize(dataFile)/NPAGESIZE,recCount=0;
     float s;char d[35];
     char data[NPAGESIZE+1];
     unsigned char record[recLength+1];
+    if(fileSize(dataFile) % NPAGESIZE != 0)
+        numPgs++;
 	if(relCache[relNum].numRecs==0){
         for(int j=0;j<numPgs;j++){
+            printf("page\t%d",numPgs);
             fseek(dataFile,NPAGESIZE*j,SEEK_SET);
             fread(&data,NPAGESIZE,1,dataFile);
-            for(int i=0;i<NPAGESIZE/recLength;i++){
+            for(int i=0;i<NPAGESIZE/recLength && recCount<numRecs;i++){
                 off=0;
                 memcpy((char*)record,data+i*recLength,recLength);
                 /*a=*(int*)(record+off);off+=4;
@@ -45,6 +48,7 @@ int Load (int argc,char ** argv)
                 printf("%d\t%f\t%s\n",a,s,d);
                 recRead+=recLength;*/
                 InsertRec(relNum,record);
+                recCount++;
             }
         }
     }

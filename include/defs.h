@@ -11,7 +11,7 @@
 #include<vector>
 using namespace std;
 
-#define PAGESIZE			237			/* number of bytes in a page */
+#define PAGESIZE			590			/* number of bytes in a page */
 //#define BITMS_NUM           (PAGESIZE/128)		//assuming a record is atleat 4 byte and one bitmap 												slot is of 4byte 
 //#define	MAXRECORD			(32*BITMS_NUM) 	//since one bitmap slot can corresponds to 32 records
 #define PGTAIL_SPACE		4 				//sapce always left blanks for safety
