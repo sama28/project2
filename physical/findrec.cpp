@@ -183,7 +183,7 @@ int charcomp(char a,char b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -214,7 +214,7 @@ int unsigncharcomp(unsigned char a,unsigned char b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -245,7 +245,7 @@ int intcomp(int a,int b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -276,7 +276,7 @@ int unsignintcomp(unsigned int a,unsigned int b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -307,7 +307,7 @@ int shortcomp(short a,short b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -338,7 +338,7 @@ int unsignshortcomp(unsigned short a,unsigned short b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -349,7 +349,7 @@ int unsignshortcomp(unsigned short a,unsigned short b,int compOp)
 }
 int strncomp(char* a,char* b,int len,int compOp)
 {
-
+     printf("\n\nstrncomp :-called with a=%s b=%s",a,b);
     switch(compOp)
     {
         case EQ:
@@ -401,7 +401,7 @@ int floatcomp(float a,float b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:

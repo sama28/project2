@@ -34,16 +34,17 @@ int Select(int argc, char **argv)
          char recPtr[relCache[0].recLength];
         printf("Select c++ ......fine....\n");
         //making sure that temporary relation->argv[1] doesnot exist and relation argv[2] exist
-        /*status1=FindRelNum(*argv[1]);
+        status1=FindRelNum(argv[1]);
         if(status1 <0 )
         {   
             startRid.pid=0;
             startRid.slotnum=0;
-            status = findRecInRelcat(*argv[1], recPtr, &startRid);
+            status = findRecInRelcat(argv[1], recPtr, &startRid);
         }
         else
         {
             status=1;//relation already exists
+            printf("\n\nIN SELECT :- RELATION %s ALREADY EXISTS....",argv[1]);
         }
         if(status !=1)
         {
@@ -51,9 +52,9 @@ int Select(int argc, char **argv)
             if(oldRelNum < 0)
             {
                 status=1;
+                printf("\n\nIN SELECT :- RELATION %s DOES NOT EXISTS....",argv[2]);
             }
         }
-        */
         //relation Does not exists then 
         if (status != 1)
         {
@@ -76,7 +77,6 @@ int Select(int argc, char **argv)
                 printf("%s CAN NOT BE CREATED", argv[1]);
             }
         }
-        
     }
     else
     {
@@ -204,7 +204,7 @@ void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[]
             startRid.slotnum = 0;
             count = 0;
             recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&ivalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
-            while (recFound == 1 && relCache[oldRelNum].numRecs)
+            while (recFound == 1)
             {
                 printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n");
                 count++; //found is true so count Rec
@@ -222,7 +222,7 @@ void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[]
             startRid.slotnum = 0;
             count = 0;
             recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, value, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
-            while (recFound == 1 && count < relCache[oldRelNum].numRecs)
+            while (recFound == 1)
             {
                 count++; //found is true so count Rec
                 InsertRec(newRelNum, (unsigned char *)recPtr);
@@ -240,7 +240,7 @@ void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[]
             startRid.slotnum = 0;
             count = 0;
             recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&fvalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
-            while (recFound == 1 && relCache[oldRelNum].numRecs)
+            while (recFound == 1)
             {
                 count++; //found is true so count Rec
                 InsertRec(newRelNum, (unsigned char *)recPtr);
