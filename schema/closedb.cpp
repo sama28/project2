@@ -12,8 +12,6 @@ int CloseDB (int argc,char ** argv)
         return NO_DB_OPEN;
     }
 
-    
-    
     /* FLush all dirty global pages.
     for(int i=0;i<20;i++){
         if(gPgTable[i].dirty=='d'){
@@ -22,7 +20,8 @@ int CloseDB (int argc,char ** argv)
     }*/
     CloseCats();
     MR_CURR_DB[0]=0;
-     return (OK);  /* all's fine */
+    
+    return (OK);  /* all's fine */
 }
 
 

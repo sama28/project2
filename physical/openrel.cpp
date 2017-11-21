@@ -308,10 +308,6 @@ int makeAttrCacheEntry(int Loc,Rid start_Rid,unsigned short numAttrs,unsigned re
 }
 int flushRelCacheEntry(int Loc)
 {   //ONLY FLUSHES RELCHACHE ENTRY TO THE RELCAT AND DOESNT DO ENYTHING FOR ATTRCAT
-
-
-
-
     //IF UPDATE COMMAND CHANGES THE ATTRIBUTE COULD CREATE PROBLEM
     printf("\n\nint flushRelCacheEntry(int Loc)=%d",Loc);
     int gPgFlushed=0;
@@ -347,10 +343,10 @@ int flushRelCacheEntry(int Loc)
             printf("\n\n Printing RelCat Record that IS PREPAREd cahceEntry....");
             shwRelCatRec(cacheEntry);
             WriteRec(0,cacheEntry,&(relCache[Loc].Rid));//bug remove code with write checking
-            
-                //------------alTerNative Of ablove WriteRec -------------------
+           
+         /*      //------------alTerNative Of ablove WriteRec -------------------
                 //----------Quick Update--To Use Just CMNT ABOVE WriteRec and UNCMNT BELOVE PART----------
-            /*
+            
                ReadPage(0,relCache[Loc].Rid.pid);
                 if(gPgTable[0].pid==relCache[Loc].Rid.pid)
                 {

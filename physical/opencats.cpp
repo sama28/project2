@@ -110,6 +110,9 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     for(int j=0;j<2;j++){
         struct recidArray RidArray[relCache[j].numAttrs];
         getSlots2(1,&RidArray[0],relCache[j].attr0Rid,relCache[j].numAttrs);
+        for(int i=0;i<relCache[j].numAttrs;i++)
+            printf("\nslotsattrcache\t%d\t%d\n",(RidArray+i)->Rid.pid,(RidArray+i)->Rid.slotnum);
+        
         for(int i=0;i<relCache[j].numAttrs;i++){
             int attrcat_index=0;
             Rid startRid,foundRid;
@@ -124,6 +127,7 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
             obj.length=*(unsigned*)(rec+attrcat_index);attrcat_index+=4;
             obj.type=*(unsigned short*)(rec+attrcat_index);attrcat_index+=2;
             relCache[j].attrHead.push_back(obj);
+            //printf("attrcacheloc\t%d\t%d\n",foundRid.pid,foundRid.slotnum);
         }
         printf("pid%d\t%d\n",relCache[j].attr0Rid.pid,relCache[j].attr0Rid.slotnum);
     }
@@ -192,7 +196,8 @@ void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
         int attrcat_index=0;
         struct recidArray RidArray[relCache[i].numAttrs];
         getSlots2(1,&RidArray[0],relCache[i].attr0Rid,relCache[i].numAttrs);
-        
+        for(int j=0;j<relCache[i].numAttrs;j++)
+            printf("\nslotsattrcache\t%d\t%d\n",(RidArray+j)->Rid.pid,(RidArray+j)->Rid.slotnum);
          char rec[relCache[1].recLength];
         for(int j=0;j<relCache[i].numAttrs;j++){
             //printf("rid of alpha%d in attrcat%d\t%d\n",j+1,(RidArray+j)->Rid.pid,(RidArray+j)->Rid.slotnum);
@@ -209,6 +214,7 @@ void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
             obj.length=*(unsigned*)(rec+attrcat_index);attrcat_index+=4;
             obj.type=*(unsigned short*)(rec+attrcat_index);attrcat_index+=2;
             relCache[i].attrHead.push_back(obj);
+            printf("attrcacheloc\t%d\t%d\n",foundRid.pid,foundRid.slotnum);
         }
         //relCache[i].attrHead=attrListHead;
         
@@ -223,7 +229,7 @@ void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
         }printf("\n");}
       
     for(int i=0;i<howmuchRec;i++) 
-    printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\n",relCache[i].relName,relCache[i].recLength,relCache[i].recPerPg,relCache[i].numPgs,relCache[i].numRecs,relCache[i].numAttrs,relCache[i].Rid.pid,relCache[i].Rid.slotnum,relCache[i].dirty);
+    printf("Relname\t%s\nreclength\t%x\nrecprpg\t%x\nnumpgs\t%x\nnumrecs\t%x\nnumattr\t%x\npid\t%x\nslotnum\t%x\ndirty\t%c\nattr0 %d %d\n",relCache[i].relName,relCache[i].recLength,relCache[i].recPerPg,relCache[i].numPgs,relCache[i].numRecs,relCache[i].numAttrs,relCache[i].Rid.pid,relCache[i].Rid.slotnum,relCache[i].dirty,relCache[i].attr0Rid.pid,relCache[i].attr0Rid.slotnum);
 
 }
 
@@ -231,7 +237,6 @@ void OpenCats(void )
 {
     printf("reached opencat");
     int flag=1,size; 
-//    unsigned int slot_buffer[BITMS_NUM*sizeof(unsigned int)],*buffer;
     char path1[MAX_PATH_LENGTH],*c,*d,path2[MAX_PATH_LENGTH];
     
 

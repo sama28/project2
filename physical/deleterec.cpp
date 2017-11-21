@@ -3,6 +3,7 @@
 #include "../include/globals.h"
 #include "../include/fncn.h"
 #include <string.h>
+
 void DeleteRec(int relNum,Rid* rid){
     //printf("%d\n%d ",rid->pid,rid->slotnum);
     int count=0,isOnlyRec=0,offset,newslot,tmp,slotByte,slotIndex,slot,slotArray[8],maxRec,NUM_SLOTS=(((PAGESIZE-PGTAIL_SPACE)/(8*relCache[relNum].recLength+1))+1);
@@ -32,6 +33,7 @@ void DeleteRec(int relNum,Rid* rid){
             fseek(relCache[relNum].relFile,rid->pid*PAGESIZE,SEEK_SET);
             fread(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
             gPgTable[relNum].pid=rid->pid;
+            //ReadPage(relNum,rid->pid);
         }
         for(int i=0;i<NUM_SLOTS;i++){
             tmp=i;
@@ -67,11 +69,15 @@ void DeleteRec(int relNum,Rid* rid){
             gPgTable[relNum].contents[i+offset]=rec[i];
         //for(int j=0;j<PAGESIZE;j++)
         //printf("%02x",gPgTable[relNum].contents[j]);
+        
         fseek(relCache[relNum].relFile,PAGESIZE*rid->pid,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
         fflush(relCache[relNum].relFile);
+        
+        
         relCache[relNum].numRecs--;
         relCache[relNum].dirty='d';
+        gPgTable[relNum].dirty='d';
         /*
         if(isOnlyRec && relCache[relNum].numPgs==1){
             relCache[relNum].numPgs--;

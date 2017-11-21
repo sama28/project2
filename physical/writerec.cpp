@@ -8,6 +8,7 @@ unsigned int bread_int(unsigned char* buffer,int size,int* init);
 void getBinary(unsigned int* z,unsigned int x);
 int getDecimal(unsigned int* z);
 void GetSlots(struct recidArray* ridArray,int count,int relNum);
+int ReadPage(int,unsigned);
 
 void WriteRec(int relNum,unsigned char* rec,Rid* rid){
     //printf("%d\n%d ",rid->pid,rid->slotnum);
@@ -34,6 +35,8 @@ void WriteRec(int relNum,unsigned char* rec,Rid* rid){
         if(gPgTable[relNum].pid!=rid->pid){
             fseek(relCache[relNum].relFile,rid->pid*PAGESIZE,SEEK_SET);
             fread(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
+            gPgTable[relNum].pid=rid->pid;
+            //ReadPage(relNum,rid->pid);
         }
         //for(int j=0;j<PAGESIZE;j++)
         //printf("%02x",gPgTable[relNum].contents[j]);
@@ -58,9 +61,13 @@ void WriteRec(int relNum,unsigned char* rec,Rid* rid){
         printf("writerec\n");    
         for(int j=0;j<PAGESIZE;j++)
         printf("%02x",gPgTable[relNum].contents[j]);
+        
         fseek(relCache[relNum].relFile,PAGESIZE*rid->pid,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
         fflush(relCache[relNum].relFile);
+        
+
+        gPgTable[relNum].dirty='d';
         /*if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
             struct stat st;
             mode_t mode;

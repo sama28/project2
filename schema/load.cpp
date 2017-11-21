@@ -8,41 +8,54 @@
 #include <string.h>
 int OpenRel(char * relName);
 void CloseRel(int relNum);
+void InsertRec(int,unsigned char*);
 
 int Load (int argc,char ** argv)
 {
-    char rel[RELNAME],data[50],recPtr[100];
-    strcpy(rel,argv[1]);
-    strcpy(data,argv[2]);
-    int relNum=2;//=OpenRel(rel);
-
-
-    //-----------------------
-    //--testing code must remove bug
-    if(relNum>=0)
-    {
-    //relCacheRplcmntInd=2;
-    relCache[relNum].dirty='d';
-    gPgTable[relNum].dirty='d';
+    char dataPath[MAX_PATH_LENGTH],relPath[MAX_PATH_LENGTH];
+    int relNum=OpenRel(argv[1]);
+    relCache[relNum].valid='v';
+    getPath(relPath,argv[1]);strcat(relPath,"/");strcpy(dataPath,relPath);
+    strcat(dataPath,argv[2]);strcat(relPath,argv[1]);
+    printf("%s\n%s",dataPath,relPath);
+    FILE* dataFile=fopen(dataPath,"rb");
     
-    //printf("\n\nopening the same relation again");
-    relNum=OpenRel(rel);
-    }
-    //-------------------
-    printf("%s\t%s\t%d\n",rel,data,relNum);
-/*
-    //printf("realtion opened successfully%s\t%d\t%d\n",relCache[7].relName,relCache[7].attr0Rid.pid,relCache[7].attr0Rid.slotnum);
-    char *dataPath;
-    getPath(dataPath,data);
-    FILE* fp=fopen(dataPath,"rb");
-    /*if(fp==NULL){
+    if(dataFile==NULL || relCache[relNum].relFile==NULL){
         printf("Unable to open data file.\n");
         return 0;
     }
-
-
-    unsigned char datapage[PAGESIZE+1];
-  */  //read
+    //ReadPage(relNum,0);
+    int recLength=relCache[relNum].recLength;
+	int recPrPg=PAGESIZE/recLength,numRecs=fileSize(dataFile)/recLength;
+    int a,off=0,recRead=0,NPAGESIZE=recPrPg*recLength,numPgs=fileSize(dataFile)/NPAGESIZE,recCount=0;
+    float s;char d[35];
+    char data[NPAGESIZE+1];
+    unsigned char record[recLength+1];
+    if(fileSize(dataFile) % NPAGESIZE != 0)
+        numPgs++;
+	if(relCache[relNum].numRecs==0){
+        for(int j=0;j<numPgs;j++){
+            printf("page\t%d",numPgs);
+            fseek(dataFile,NPAGESIZE*j,SEEK_SET);
+            fread(&data,NPAGESIZE,1,dataFile);
+            for(int i=0;i<NPAGESIZE/recLength && recCount<numRecs;i++){
+                off=0;
+                memcpy((char*)record,data+i*recLength,recLength);
+                /*a=*(int*)(record+off);off+=4;
+                s=*(float*)(record+off);off+=4;
+                strncpy(d,(char*)record+off,35);
+                printf("%d\t%f\t%s\n",a,s,d);
+                recRead+=recLength;*/
+                InsertRec(relNum,record);
+                recCount++;
+            }
+        }
+    }
+    else{
+        printf("Relation is not empty.\n");
+    }
+    printf("numrec%d",relCache[relNum].numRecs);
+    //read
     return (OK);  /* all's fine*/
 }
 

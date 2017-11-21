@@ -43,7 +43,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                           cmprtr1 = 0x80;
                           cmprtr1 = cmprtr1 >> bitmapbitnum;
                           cmprtr2 = gPgTable[relNum].contents[bitmapByteNum];
-                          //printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
+                          printf("\n%x===cmprtr1(%x) & cmprtr2(%x)",(cmprtr1 & cmprtr2),cmprtr1,cmprtr2);
                           if ((cmprtr1 & cmprtr2) != 0x00)
                           { //slot is valid so record exists
 

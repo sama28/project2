@@ -55,7 +55,7 @@ int OpenDB(int argc, char **argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
-        //crtNewRelAsOld("rel","rel1");
+        openRelTest();
       }
       else
       {
@@ -76,6 +76,7 @@ int OpenDB(int argc, char **argv)
   {
     printf("db already open.");
   }
+  
 }
 void testMain()
 {
@@ -355,10 +356,30 @@ void openRelTest(void)
   //gPgTable[2].dirty='d';
   printf("\n\n\n\nOPENRELTEST");
 
-  int n1 = OpenRel("rel5");
+
+
+          int newRelNum = OpenRel("tempo8");
+           int  oldRelNum = OpenRel("q");
+
+            //3.Read Record In New Relation That Satiesfies The Condition
+            if (newRelNum > 1 && oldRelNum > 1)
+            {
+             readRecInNewRel(newRelNum,oldRelNum,"a","0",50); 
+            }
+            else{
+              printf("\n\nIN OPEN REL TEST :RElation is Not Opened ");
+            }
+              /*
+  int n1 = OpenRel("ww5");
+  OpenRel("temp1");
+  OpenRel("temp12");
+  OpenRel("temp11");
+  OpenRel("temp9");
+  OpenRel("temp5");
+  OpenRel("temp8");
   printf("numpage of relNum %d=%u", n1, relCache[n1].numPgs);
-  AddPage(n1);
-  printf("after adding new page numpage of relNum %d=%u", n1, relCache[n1].numPgs);
+  //AddPage(n1);
+  printf("after adding new page numpage of relNum %d=%u", n1, relCache[n1].numPgs);*/
   //ReadPage(n1,0);
   //gPgTable[n1].dirty='d';
   //relCache[n1].dirty='d';
@@ -514,3 +535,22 @@ void testOfstInRelCache(void)
   cnvrtTypeNumToStr(DTINT, str, 4);
   printf("\n\nint=%s", str);
 }
+/*
+ins()
+{
+
+  insert into trel(a=1,b=1.1,c="a");
+  insert into trel(a=1,b=1.1,c="b");
+  insert into trel(a=1,b=1.1,c="c");
+  insert into trel(a=1,b=1.1,c="d");
+  insert into trel(a=2,b=1.1,c="a");
+  insert into trel(a=3,b=1.1,c="a");
+  insert into trel(a=4,b=1.1,c="a");
+  insert into trel(a=5,b=1.1,c="a");
+  insert into trel(a=6,b=1.1,c="a");
+  insert into trel(a=1,b=1.2,c="a");
+  insert into trel(a=1,b=1.3,c="a");
+  insert into trel(a=1,b=1.4,c="a");
+  insert into trel(a=1,b=1.5,c="a");
+}
+*/

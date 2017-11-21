@@ -2,6 +2,8 @@
 #ifndef FNCTN
 #define FNCTN
 
+int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid);
+void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[], int compOp);
 int nextRec(int relNum, Rid *startRid, char *recPtr);
 void getPath(char *path, char *filename);
 int Create(int argc, char **argv);
