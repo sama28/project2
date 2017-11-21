@@ -22,7 +22,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
  int bitmapbitnum;
  unsigned char cmprtr1, cmprtr2;
  unsigned fstrecind;
-
+ 
  foundRid->pid=startRid->pid;
  foundRid->slotnum=startRid->slotnum;     
  //------------------------------------------------
