@@ -3,7 +3,7 @@
 #include "../include/error.h"
 #include "../include/globals.h"
 #include "../include/mrdtypes.h"
-#include  <errno.h>
+#include <errno.h>
 #include <string.h>
 #include <stdio.h>
 /*
@@ -14,33 +14,16 @@ int relNum =1;
 int pid=0;
 relCacheEntry relCache[10];
 */
-int FlushPage(int relNum,unsigned pgid);
-int isPgInBuff(int relNum,unsigned pgid );
+int FlushPage(int relNum, unsigned pgid);
+int isPgInBuff(int relNum, unsigned pgid);
 //int isPgInBuff(int relNum,unsigned pgid );
 void showPageContent(int relNum);
-void ReadPage(int relNum,unsigned pid)
+void ReadPage(int relNum, unsigned pid)
 {
-//-------------------------------------
-//temporary---
-//char tempbuff[3*PAGESIZE];
-//printf("\n\ninside read page");
-//-------------------------------------------
-int i;
-unsigned len;
-//gPgTable[relNum].pid=1;
-//relCache[1].dirty=0;
 
-//gPgTable[relNum].pid=0;
-//relCache[1].dirty=1;
-//strcpy(gPgTable[relNum].contents,"this is the old content of page 1 of relation relnum 1");
-//relCache[1].valid=1;
-//relCache[1].relFile=fopen("/home/samadhan/Desktop/git/minirel/run/tempread.txt","rb+");
-//if(relCache[1].relFile<=0)
-//{
-//    printf("unble to upen stub file for wb+");
-//}
-
-/*`
+    int i;
+    unsigned len;
+    /*
 relCache[1].relName[RELNAME];
 relCache[1].recLength;
 relCache[1].recPerPg;
@@ -52,107 +35,115 @@ relCache[1].relFile;
 relCache[1].dirty=0;
 relCache[1].attrHead;
 */
-//----------------------------------------
-
-//----------------------------code part-----------------------------
-    //temporary testing code must remove
-
-
-   // relCache[relNum].valid='v';//must remove BUG
-    //-------------------------
-
-   // printf("relCacheIndex =%d relCache%d.valid=%c",relCacheIndex,relNum,relCache[relNum].valid);
-    // correct one//if(relNum < relCacheIndex && relCache[relNum].valid=='v')//relNum is available in relCache) 
-    if(relCache[relNum].valid=='v')//temporaray        
+    //----------------------------------------
+    //----------------------------code part-----------------------------
+    // printf("relCacheIndex =%d relCache%d.valid=%c",relCacheIndex,relNum,relCache[relNum].valid);
+    // correct one//if(relNum < relCacheIndex && relCache[relNum].valid=='v')//relNum is available in relCache)
+    if (relCache[relNum].valid == 'v' && relCache[relNum].relFile != NULL) //temporaray
+    {
+        // findPgInBuff(relNum,pid)//find pid in PGBUFF[relNum])
+        if (gPgTable[relNum].pid != pid) //pid is availble in PGBUFF)
         {
-            
-           // findPgInBuff(relNum,pid)//find pid in PGBUFF[relNum])
-            if (!isPgInBuff(relNum,pid))//pid is not availble in PGBUFF)
+            //check whether dirty bit is set or not and page is valid or not
+            if (gPgTable[relNum].dirty == 'd' && gPgTable[relNum].valid == 'v')
             {
-
-
-                //check whether dirty bit is set or not
-                if(gPgTable[relNum].dirty == 'd')
-                {
-                    //insure that file is open in wb+ mode
-                    //write the dirty page to the disk 1st
-                    FlushPage(relNum,gPgTable[relNum].pid);
-                }
-                //read pid in gPgTable[relNum];
-                //replace page if necessary
-    
-                //-------------------------------------------
-                //--------------------------------------------
-                //fseek(relCache[relNum].relFile,0,SEEK_SET);
-                fseek(relCache[relNum].relFile,PAGESIZE*pid,SEEK_SET);
-                //if(fread(tempbuff,1,PAGESIZE*3,relCache[relNum].relFile) > 0)
-                len=fread(gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
-                //printf("number of byte read %u",len);
-                if(!ferror(relCache[relNum].relFile))
-                {
-                    gPgTable[relNum].pid=pid;
-                    //printf("%s",gPgTable[relNum].contents);
-                   
-                  int lwrlm=0;
-                  int uprlm=PAGESIZE;
-                  //printf("\n\nreadPage:content of the whole file.... %s\n",strerror(errno));
-                 // for(i=lwrlm;i<uprlm;i++)//read the content from lower limit to upper limit
-                 // {
-                //    printf("%x",gPgTable[relNum].contents[i]);
-                    //printf("%c",tempbuff[i]);
-
-                    //showPageContent(relNum);
-                 // }
-                  //printf("\n\n1st Byte Of rel %d is %c",relNum,gPgTable[relNum].contents[1]);                
-                }
-                else{
-
-             //       printf("\nunable to read........");
-                }
-           
+                //insure that file is open in wb+ mode
+                //write the dirty page to the disk 1st
+                FlushPage(relNum, gPgTable[relNum].pid);
             }
-            else
+            //read pid in gPgTable[relNum];
+            //replace page if necessary
+            //-----------------------------------------------
+            if (pid < relCache[relNum].numPgs)
             {
-                printf("\n\nIn raedPage Page relNum=%d Is In Buffer...",relNum);
-            }       
+                fseek(relCache[relNum].relFile, PAGESIZE * pid, SEEK_SET);
+                len = fread(gPgTable[relNum].contents, PAGESIZE, 1, relCache[relNum].relFile);
+                //printf("number of byte read %u",len);
+                if (!ferror(relCache[relNum].relFile))
+                {
+                    gPgTable[relNum].pid = pid;
+                    gPgTable[relNum].valid = 'v';
+                    gPgTable[relNum].dirty = 'c';
+                    //printf("%s",gPgTable[relNum].contents);
+                }
+                else
+                {
+
+                    printf("\nIN READPAGE :-unable to read %u of %s ........", pid, relCache[relNum].relName);
+                }
+            }
         }
-        else//(relNum is not in cache)
+        else//pid is garbage but by considence matched with desired //Garbaged Pid Matched With
         {
-            printf("\n\nInRead PAge OPEN THE RELATION FIRST.....");
+            if (gPgTable[relNum].valid != 'v')
+            {
+                if (pid < relCache[relNum].numPgs)
+                {
+                    fseek(relCache[relNum].relFile, PAGESIZE * pid, SEEK_SET);
+                    len = fread(gPgTable[relNum].contents, PAGESIZE, 1, relCache[relNum].relFile);
+                    //printf("number of byte read %u",len);
+                    if (!ferror(relCache[relNum].relFile))
+                    {
+                        gPgTable[relNum].pid = pid;
+                        gPgTable[relNum].valid = 'v';
+                        gPgTable[relNum].dirty = 'c';
+                        //printf("%s",gPgTable[relNum].contents);
+                    }
+                    else
+                    {
+
+                        printf("\nIN READPAGE :-unable to read %u of %s ........", pid, relCache[relNum].relName);
+                         printf("\n\nIn ReadPage :- relNum=%d Is In Buffer...", relNum);
+                    }
+                }
+            }
+           
         }
-       //fclose(relCache[relNum].relFile);
-// printf("ReadPage \n ");
-
-//printf("\n\nreadPage Exit...");
+    }
+    else //(relNum is not in cache)
+    {
+        printf("\n\nInRead PAge OPEN THE RELATION FIRST.....");
+    }
 }
-
 
 //--------------------------------
 //--buffer management related-----
-//--prototypical instances and implementation so that buffermanagement could be decoupeled 
+//--prototypical instances and implementation so that buffermanagement could be decoupeled
 //--from design perspective
-int isPgInBuff(int relNum,unsigned pgid )
+int isPgInBuff(int relNum, unsigned pgid)
 {
-    if(relNum < relCacheIndex && relCache[relNum].valid=='v')
+    if (relNum < relCacheIndex && relCache[relNum].valid == 'v')
     {
-        if(gPgTable[relNum].pid==pgid)
+        if (gPgTable[relNum].pid == pgid)
         {
-  //          printf("page in gt");
-            
+            //   printf("page in gt");
             return 1;
         }
-        
     }
     //printf("page not in gt");
-    
+
     return 0;
 }
 void showPageContent(int relNum)
 {
-  //  printf("\n\n------------------------------------------------");
+    //  printf("\n\n------------------------------------------------");
     //printf("\n\nRELATION:-%s  PAGE %u",relCache[relNum].relName,gPgTable[relNum].pid);
     //printf("\n\n------------------------------------------------");
-
-
 }
 //currently working on show page content
+/*
+  else if(pid == relCache[relNum].numPgs)
+                {
+                    printf("\nINReadPage :-...NEW PAGE CREATED....for %d",pid);
+                    for(i=0;i<PAGESIZE;i++)
+                    {
+                        gPgTable[pid].contents[i]='\0';
+                        gPgTable[relNum].pid=pid;
+                        gPgTable[relNum].valid='v';
+                        gPgTable[relNum].dirty='c';
+                    }
+                }
+                else{
+                    printf("\n\nPID is Not valid");
+                }
+                */

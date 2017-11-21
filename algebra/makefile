@@ -15,6 +15,7 @@ INCLUDE = ../include
 
 DFLAG = 
 CFLAGS = -g $(DFLAG) -I$(INCLUDE)
+#CXXFLAGS = -std=c++11 -g $(DFLAG) -I$(INCLUDE)
 # -g to generate symbolic info. used by
 #    the debugger.
 # DFLAG can be used to turn specific debug

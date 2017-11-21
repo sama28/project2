@@ -47,13 +47,13 @@ void parseRecord(int relNum,char* record){
 int Print(int argc,char ** argv)
 {
     char relPath[MAX_PATH_LENGTH];
-    int relNum=2;
+    int relNum=OpenRel(argv[1]);
     relCache[relNum].valid='v';
-    getPath(relPath,argv[1]);strcat(relPath,"/");strcat(relPath,argv[1]);
-
-    relCache[relNum].relFile=fopen(relPath,"rb+");
-    gPgTable[relNum].pid=1;
-    ReadPage(relNum,0);
+    //getPath(relPath,argv[1]);strcat(relPath,"/");strcat(relPath,argv[1]);
+    
+    //relCache[relNum].relFile=fopen(relPath,"rb+");
+    //gPgTable[relNum].pid=1;
+    //ReadPage(relNum,0);
     if(relCache[relNum].relFile==NULL){
         printf("Unable to open data file.\n");
         return 0;
@@ -84,5 +84,4 @@ int Print(int argc,char ** argv)
     printf("opened");
      return (OK);  /* all's fine */
 }
-
 

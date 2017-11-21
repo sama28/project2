@@ -14,7 +14,7 @@ int strncomp(char* a,char* b,int len,int compOp);int floatcomp(float a,float b,i
 
 int FindRec(int relNum,Rid*startRid1,Rid *foundRid1,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
 {
- printf("FindRec :relNum=%d value =%s compOp=%d\n ",relNum,valuePtr,compOp);
+printf("FindRec :relNum=%d value =%s compOp=%d\n ",relNum,valuePtr,compOp);
 int status,flag=1;      
 //GetNextRec(int relNum,recid * startRid,recid* foundRid,void * recPtr)
 Rid startRid,foundRid;
@@ -54,6 +54,7 @@ startRid.slotnum=startRid1->slotnum;
                 flag=0;
                 return 0;
             }
+        startRid.pid=foundRid.pid;
         startRid.slotnum=foundRid.slotnum+1;
         status=GetNextRec(relNum,&startRid,&foundRid,recPtr);
 
@@ -182,7 +183,7 @@ int charcomp(char a,char b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -213,7 +214,7 @@ int unsigncharcomp(unsigned char a,unsigned char b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -244,7 +245,7 @@ int intcomp(int a,int b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -275,7 +276,7 @@ int unsignintcomp(unsigned int a,unsigned int b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -306,7 +307,7 @@ int shortcomp(short a,short b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -337,7 +338,7 @@ int unsignshortcomp(unsigned short a,unsigned short b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:
@@ -348,7 +349,7 @@ int unsignshortcomp(unsigned short a,unsigned short b,int compOp)
 }
 int strncomp(char* a,char* b,int len,int compOp)
 {
-
+     printf("\n\nstrncomp :-called with a=%s b=%s",a,b);
     switch(compOp)
     {
         case EQ:
@@ -400,7 +401,7 @@ int floatcomp(float a,float b,int compOp)
         break;
 
         case LTEQ:
-            if(a<+b){return 1;}
+            if(a<=b){return 1;}
         break;
 
         case NE:

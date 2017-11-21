@@ -26,7 +26,7 @@ void getSlots2(int relNum,struct recidArray* RidArray,Rid attrcat0,int count){
         (RidArray+i)->Rid.pid=pagenum;
         (RidArray+i)->Rid.slotnum=slotnum;
         slotnum++;
-    }
+    } 
 }
 
 
@@ -38,8 +38,9 @@ void cachePopulate1(FILE* relcatFile, FILE* attrcatFile){
     char attrName[ATTRLEN];
     fread(gPgTable[0].contents,PAGESIZE,1,relcatFile);
     fread(gPgTable[1].contents,PAGESIZE,1,attrcatFile);
-    gPgTable[0].pid=0;
-    gPgTable[1].pid=0;
+    //-----------samadhan addition---------
+    gPgTable[0].pid=0;gPgTable[0].valid='v';gPgTable[0].dirty='c';
+    gPgTable[1].pid=0;gPgTable[1].valid='v';gPgTable[1].dirty='c';
     for (int i=0;i<PAGESIZE;i++)
         printf("%02x",gPgTable[0].contents[i]);
     relcat_index+=MR_RELCAT_BITMS_NUM;
@@ -158,7 +159,7 @@ void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
     Rid startRid1,foundRid1,attrcatRid;
     int offset;
     startRid1.pid=0;startRid1.slotnum=2;
-    for (int i=2;i<howmuchRec;i++){
+    for (int i=2;i<8;i++){
         //printf("%d\t%d\n",startRid1.pid,startRid1.slotnum);
         
         char rec2[relCache[0].recLength+1];
@@ -175,10 +176,15 @@ void cachePopulate2(FILE* relcatFile,FILE* attrcatFile){
             relCache[i].attr0Rid.slotnum=*(unsigned*)(rec2+offset);offset+=4;;
             relCache[i].Rid.pid=foundRid1.pid;
             relCache[i].Rid.slotnum=foundRid1.slotnum;
+
         }
         relCache[i].relFile=NULL;
         relCache[i].dirty='c';
         relCache[i].valid='i';//Read a page;
+          //------------samadhan addition-----------
+        gPgTable[i].pid=1;
+        gPgTable[i].valid='i';
+        gPgTable[i].dirty='c';
 
 
         startRid1.slotnum=foundRid1.slotnum+1;

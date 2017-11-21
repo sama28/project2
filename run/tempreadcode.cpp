@@ -1,3 +1,4 @@
+#if 0
 //------cumpulsory header--------------
 #include "../include/defs.h"
 #include "../include/error.h"
@@ -5,13 +6,13 @@
 #include "../include/mrdtypes.h"
 #include <string.h>
 #include <stdio.h>
+
 //---------test stub---------------
 int relCache1Index=2;//temporary definition remove it ones ameya changes reflect
 int relNum =1;
 //int pid=1;
 int pid=0;
 relCacheEntry relCache1[10];
-
 main()
 {
 //-------------------------------------
@@ -146,3 +147,4 @@ FlushPage(int relNum,unsigned pgid)
         printf("\n\nflushpage():->there is problem in flushing the page");
     }
 }
+#endif

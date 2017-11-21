@@ -6,22 +6,23 @@
 #include <string.h>
 #include <stdio.h>
 int FindRelNum(char *relName)
-{
+{   //returns the Relation Number On success Else Returns Falls
   int i;
-    printf("\n\nFindRelNum  \n ");
+    printf("\n\nFindRelNum args:%s  \n ",relName);
         i=0;
-        while(i<=relCacheIndex)
+        while(i < NUM_RELCACHE_ENTRY)
         {
-            if(!strcmp(relName,relCache[i].relName))
-            {   
-                return i;
-            }
-            else
+            printf("\n\n -> %c <- relcache[%d].valid",relCache[i].valid,i);
+            if(relCache[i].valid == 'v')
             {
-                i++;
-                //printf("\n\nname does not match...");
+                //printf("\n\neror traped%d",i);
+                if(!strcmp(relName,relCache[i].relName))
+                {   
+                    return i;
+                }
             }
-
+            i++;
         }
+        printf("\n\nFindRelNum :- Relation is Not in Cache");
         return -1;
 }

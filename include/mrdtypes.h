@@ -1,10 +1,7 @@
-//this header file contains a mapping of dataype to a number that is stored in attrCat under type atribute
-// i.e.  shema=>attrCat(...,...,..,type,..) instance =>attrCat(...,...,..,DTINT,...) => shows atrribute type is int//..
-//(DTINT=5) 
 #ifndef MRDT
 #define MRDT
 
-#define DTCHAR 					1
+#define DTCHAR                  1
 #define DTUNSIGNED_CHAR 		2
 #define DTSHORT 				3
 #define DTUNSIGNED_SHORT		4
@@ -12,9 +9,6 @@
 #define DTUNSIGNED_INT			6
 #define DTSTRING                7
 #define DTFLOAT					8
-
-
-
 #define EQ    501
 #define GTEQ  502
 #define GT    503
@@ -24,8 +18,9 @@
 
 #endif
 
-
-
+//this header file contains a mapping of dataype to a number that is stored in attrCat under type atribute
+// i.e.  shema=>attrCat(...,...,..,type,..) instance =>attrCat(...,...,..,DTINT,...) => shows atrribute type is int//..
+//(DTINT=5) 
 
 //#define DTCHAR_ARRAY            7
 

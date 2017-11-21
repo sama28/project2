@@ -9,7 +9,6 @@
 //unsigned firstRecSlotInd(int relNum);
 //int isPgInBuff(int relNum, unsigned pgid);
 unsigned int i;
-
 //-------------------------------------------
 int nextRec(int relNum, Rid* startRid, char *recPtr);
 unsigned firstRecSlotInd(int relNum);
@@ -23,7 +22,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
  int bitmapbitnum;
  unsigned char cmprtr1, cmprtr2;
  unsigned fstrecind;
-
+ 
  foundRid->pid=startRid->pid;
  foundRid->slotnum=startRid->slotnum;     
  //------------------------------------------------
@@ -34,7 +33,7 @@ int GetNextRec(int relNum,Rid * startRid,Rid* foundRid,char * recPtr)
                 ReadPage(relNum, foundRid->pid);
                  //1. Read the Required Page In gPgTable
                 //2.If Page Is Read Successfully And Available In gPgTable
-                if (gPgTable[relNum].pid == foundRid->pid)
+                if (gPgTable[relNum].pid == foundRid->pid && gPgTable[relNum].valid=='v')
                 {
                         while(foundRid->slotnum < relCache[relNum].recPerPg)
                         {
@@ -106,7 +105,7 @@ int nextRec(int relNum, Rid* startRid, char *recPtr)
                         //1. Read the Required Page In gPgTable
                         
                         //2.If Page Is Read Successfully And Available In gPgTable
-                        if (gPgTable[relNum].pid == startRid->pid)
+                        if (gPgTable[relNum].pid == startRid->pid && gPgTable[relNum].valid=='v')
                         {
                                 bitmapByteNum = startRid->slotnum / 8;
                                 bitmapbitnum = startRid->slotnum % 8;

@@ -15,6 +15,7 @@ INCLUDE = ../include
 
 DFLAG =
 CFLAGS = -g $(DFLAG) -I$(INCLUDE)
+#CXXFLAGS = -std=c++11 -g $(DFLAG) -I$(INCLUDE)
 # -g to generate symbolic info. used by
 #    the debugger.
 # DFLAG can be used to turn specific debug
@@ -24,7 +25,7 @@ CFLAGS = -g $(DFLAG) -I$(INCLUDE)
 SRCS = \
 	getslots.cpp error.cpp createcats.cpp filesize.cpp opencats.cpp closecats.cpp openrel.cpp closerel.cpp findrelnum.cpp \
 	readpage.cpp flushpage.cpp writerec.cpp findrec.cpp getnextrec.cpp insertrec.cpp deleterec.cpp \
-	buffmanage.cpp bread_string.cpp bread_int.cpp
+	buffmanage.cpp bread_string.cpp bread_int.cpp 
 
 OBJ = \
 	getslots.o error.o createcats.o filesize.o opencats.o closecats.o openrel.o closerel.o findrelnum.o \
@@ -38,7 +39,7 @@ PHYSICAL.o : $(OBJ)
 	@echo generating $@
 	@ld -r $(OBJ) -o $@
 
-$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/fncn.h
+$(OBJ) : $(INCLUDE)/globals.h $(INCLUDE)/defs.h $(INCLUDE)/error.h $(INCLUDE)/fncn.h $(INCLUDE)/mrdtypes.h
 
 ###############################################################
 #  misc

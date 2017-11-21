@@ -13,13 +13,12 @@ void InsertRec(int,unsigned char*);
 int Load (int argc,char ** argv)
 {
     char dataPath[MAX_PATH_LENGTH],relPath[MAX_PATH_LENGTH];
-    int relNum=2;
+    int relNum=OpenRel(argv[1]);
     relCache[relNum].valid='v';
     getPath(relPath,argv[1]);strcat(relPath,"/");strcpy(dataPath,relPath);
     strcat(dataPath,argv[2]);strcat(relPath,argv[1]);
-    //printf("%s\n%s",dataPath,relPath);
+    printf("%s\n%s",dataPath,relPath);
     FILE* dataFile=fopen(dataPath,"rb");
-    relCache[relNum].relFile=fopen(relPath,"rb+");
     
     if(dataFile==NULL || relCache[relNum].relFile==NULL){
         printf("Unable to open data file.\n");
