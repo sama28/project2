@@ -5,6 +5,7 @@
 //# include <iostream.h>
 #include<stdio.h>
 #include "../include/defs.h"
+#include<signal.h>
 //extern "C" 
 char MR_CURR_DB[MR_MAX_FILENAME_SIZE];
 //pageBuffer PGBUFF[MR_RELCACHE_SIZE];
@@ -29,6 +30,8 @@ int parser();
 
 main()
 {
+	//signal(SIGINT, SIG_IGN); 
+  	//signal(SIGTSTP,SIG_IGN);
 //	cout << endl << "Welcome to the MINIREL database system" << endl;
 	printf("\n\nwelcome..\n");
 	parser();

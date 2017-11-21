@@ -158,7 +158,7 @@ int Create (int argc,char** argv)
     printf("%s",path);
     if(doesFileExist(path)){
         printf("Relation already exists.\n");
-        return (NOTOK);
+        return -1;
     }
     if(isInputValid(argc,argv)){
         //printf("Valid");
@@ -278,7 +278,7 @@ int Create (int argc,char** argv)
         printf("Invalid parameters for create function.");
     }
 
-    return (OK);
+    return 1;
 }
 
 
