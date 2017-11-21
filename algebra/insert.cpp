@@ -109,7 +109,7 @@ int calcOffset(int relNum,int num){
 
 int recordExist(int relNum,char* record){
     //Remove lines below.
-    {
+    /*{
         char relPath[MAX_PATH_LENGTH];
         relCache[relNum].valid='v';
         getPath(relPath,"q");strcat(relPath,"/");strcat(relPath,"q");
@@ -117,7 +117,7 @@ int recordExist(int relNum,char* record){
         relCache[relNum].relFile=fopen(relPath,"rb+");
         gPgTable[relNum].pid=1;
     }
-    ReadPage(relNum,0);
+    ReadPage(relNum,0);*/
 
     Rid startRid,foundRid;
     startRid.pid=0;
@@ -155,8 +155,17 @@ int Insert (int argc, char **argv)
         printf("No database is currently opened.\n");
         return 0;
     }
-    int relNum=2;//use openrel here.
+    int relNum=OpenRel(argv[1]);//use openrel here.
     int order[relCache[relNum].numAttrs];
+    if(relNum<2 && relNum>=0){
+        printf("You do not have permission to access this relation.\n");
+        return 0;
+    }
+    if(relNum<0){
+        printf("Relation %s not found.\n",argv[1]);
+        return 0;
+    }
+
     if(argCheck(argc,argv,relNum,order)==0){
         return 0;
     }

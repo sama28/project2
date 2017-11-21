@@ -54,15 +54,23 @@ int Project (int argc, char **argv)
         printf("No database currently opened.\n");
         return NO_DB_OPEN;
     }
-    int relNum=2;//call openrel here.
-    {
+    int relNum=OpenRel(argv[2]);//call openrel here.
+    /*{
         char relPath[MAX_PATH_LENGTH];
         relCache[relNum].valid='v';
         getPath(relPath,"q");strcat(relPath,"/");strcat(relPath,"q");
 
         relCache[relNum].relFile=fopen(relPath,"rb+");
         gPgTable[relNum].pid=1;
-    }ReadPage(relNum,0);
+    }ReadPage(relNum,0);*/
+    if(relNum<2 && relNum>=0){
+        printf("You do not have permission to access this relation.\n");
+        return 0;
+    }
+    if(relNum<0){
+        printf("Relation %s not found.\n",argv[1]);
+        return 0;
+    }
 
     int order[argc-3],recLength=0;
     if(!argCheck2(relNum,argc,argv,order)){
@@ -99,16 +107,24 @@ int Project (int argc, char **argv)
     /*for(int i=0;i<2*argc-3;i++){
         printf("%s\n",string[i],strlen(string[i]));
     }*/
-    //Create(2*(argc-3)+2,string);
+    Create(2*(argc-3)+2,string);
 
-    int relNum2=3;
-    {
+    int relNum2=OpenRel(argv[1]);
+    /*{
         char relPath[MAX_PATH_LENGTH];
         relCache[relNum2].valid='v';
         getPath(relPath,"w");strcat(relPath,"/");strcat(relPath,"w");
 
         relCache[relNum2].relFile=fopen(relPath,"rb+");
         gPgTable[relNum2].pid=1;
+    }*/
+    if(relNum2<2 && relNum2>=0){
+        printf("You do not have permission to access this relation.\n");
+        return 0;
+    }
+    if(relNum2<0){
+        printf("Relation %s not found.\n",argv[1]);
+        return 0;
     }
 
     for(int i=3;i<argc;i++){
@@ -152,7 +168,7 @@ int Project (int argc, char **argv)
             strncpy(ch,(char*)(record2),35);
             f=*(float*)(record2+35);
             printf("%s\t%f\t\n",ch,f);
-            //InsertRec(relNum2,record2);
+            InsertRec(relNum2,record2);
             startRid.pid=foundRid.pid;
             startRid.slotnum=foundRid.slotnum+1;
         }

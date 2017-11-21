@@ -15,10 +15,23 @@ int Load (int argc,char ** argv)
     char dataPath[MAX_PATH_LENGTH],relPath[MAX_PATH_LENGTH];
     int relNum=OpenRel(argv[1]);
     relCache[relNum].valid='v';
-    getPath(relPath,argv[1]);strcat(relPath,"/");strcpy(dataPath,relPath);
+    /*getPath(relPath,argv[1]);strcat(relPath,"/");strcpy(dataPath,relPath);
     strcat(dataPath,argv[2]);strcat(relPath,argv[1]);
-    printf("%s\n%s",dataPath,relPath);
-    FILE* dataFile=fopen(dataPath,"rb");
+    printf("%s\n%s",dataPath,relPath);*/
+    FILE* dataFile=fopen(argv[2],"rb");
+
+    if(MR_CURR_DB[0]==0){
+        printf("Please open a database before executing this query.\n");
+        return 0;
+    }
+    if(relNum<2 && relNum>=0){
+        printf("You do not have permission to access this relation.\n");
+        return 0;
+    }
+    if(relNum<0){
+        printf("Relation %s not found.\n",argv[1]);
+        return 0;
+    }
     
     if(dataFile==NULL || relCache[relNum].relFile==NULL){
         printf("Unable to open data file.\n");

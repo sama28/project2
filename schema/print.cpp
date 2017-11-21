@@ -48,6 +48,18 @@ int Print(int argc,char ** argv)
 {
     char relPath[MAX_PATH_LENGTH];
     int relNum=OpenRel(argv[1]);
+    if(MR_CURR_DB[0]==0){
+        printf("Please open a database before executing this query.\n");
+        return 0;
+    }
+    if(relNum<2 && relNum>=0){
+        printf("You do not have permission to access this relation.\n");
+        return 0;
+    }
+    if(relNum<0){
+        printf("Relation %s not found.\n",argv[1]);
+        return 0;
+    }
     relCache[relNum].valid='v';
     //getPath(relPath,argv[1]);strcat(relPath,"/");strcat(relPath,argv[1]);
     

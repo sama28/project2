@@ -147,6 +147,10 @@ int isInputValid(int num,char **string){
 int Create (int argc,char** argv)
 {
     //printf("%d%s\n",argc,argv[1]);
+    if(MR_CURR_DB[0]==0){
+        printf("No database currently opened.\n");
+        return NO_DB_OPEN;
+    }
     int attrCount=(argc-2)/2,offset=0,count=0,recLength=0;
     unsigned char const * p,*q;
     unsigned char record[relCache[1].recLength+1];

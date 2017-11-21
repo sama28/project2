@@ -55,7 +55,7 @@ int OpenDB(int argc, char **argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
-        openRelTest();
+        //openRelTest();
       }
       else
       {
