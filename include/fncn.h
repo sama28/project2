@@ -5,6 +5,7 @@
 void parseRecord(int relNum,char* record);
 void printRelCat(void);
 void printAttrCat(void);
+void updateCat(void);
 int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid);
 void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[], int compOp);
 int nextRec(int relNum, Rid *startRid, char *recPtr);
