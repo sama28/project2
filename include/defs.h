@@ -39,7 +39,7 @@ using namespace std;
 //************************************************************
 //----------this part depends on where you deploy this project
 //***********************************************************
-#define HOME_MINIREL "/home/ameya/project/project2"//location of project root directory
+#define HOME_MINIREL "/home/samadhan/Desktop/git/minirel"//location of project root directory
 #define MAX_PATH_LENGTH 255 						//length of absolute address of any file
 #define ATTRLEN		32
 #define MR_MAX_FILENAME_SIZE 255
@@ -78,13 +78,13 @@ typedef struct gtps {
 typedef struct psrelcat {
 		
 			unsigned char slotmap[MR_RELCAT_BITMS_NUM];//
-			char contents [MR_RELCAT_BITMS_NUM*32];
+			char contents [MR_RELCAT_BITMS_NUM*8];
 			} PageRelCat;
 
 typedef struct psattrcat {
 				
 					unsigned char slotmap[MR_ATTRCAT_BITMS_NUM];//
-					char contents [MR_ATTRCAT_BITMS_NUM*32];
+					char contents [MR_ATTRCAT_BITMS_NUM*8];
 } PageAttrCat;
 /*****************************************************************/
 struct attrList{

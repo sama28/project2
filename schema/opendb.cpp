@@ -214,7 +214,7 @@ memcpy(e,recptr+32+4+4,2);
 
 printf("\n\n%s\n%u\n%u\n%d",(char*)d,(unsigned)e,(unsigned)f,(short)g);
 */
-  printf("\n\n%s %u %u %u %u %u %u %u\n\n", d, e, f, g, h, i, j, k);
+ printf("|%34s|%10u|%10u|%10u|%10u|%10u|%10u|%10u|", d, e, f, g, h, i, j, k);
 }
 void shwAttrCatRec(unsigned char recptr[])
 {
@@ -233,7 +233,7 @@ void shwAttrCatRec(unsigned char recptr[])
   e = bread_int((unsigned char *)recptr, 4, &val);
   f = bread_int((unsigned char *)recptr, 4, &val);
   g = bread_int((unsigned char *)recptr, 2, &val);
-  printf("\n\n%s %u %u %d", d, e, f, g);
+  printf("|%34s|%10u|%10u|%10d|", d, e, f, g);
 }
 
 void relCacheTest(void)
@@ -541,41 +541,84 @@ int AddPage(int relNum)
     startRid.pid = 0;
     startRid.slotnum = 0;
     count = 0;
+    printf("\n\nRELCAT :-");
+    char d[32]="RELNAME",e[10]="RECLEN",f[10]="RECPERPG",g[10]="NUMPAGES";
+    char h[10]="NUMRECS",i[10]="NUMATTRS",j[10]="ATR0PID",k[10]="ATR0SLNUM";
     //recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&ivalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
     recFound = GetNextRec(0, &startRid, &foundRid, recPtr);
+    //printf("|relName,recLength,rcPerPg,numPgs,numRecs,numAttrs,pid,rid")
+    printf("\n\n");
+    for(int lnp=0;lnp<113;lnp++)
+    {
+      printf("_");
+    }
+    printf("\n");
+    printf("|%34s|%10s|%10s|%10s|%10s|%10s|%10s|%10s|", d, e, f, g, h, i, j, k);
+    printf("\n");
+    for(int lnp=0;lnp<113;lnp++)
+    {
+      printf("_");
+    }
     while (recFound == 1)
     {
       //printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n");
       count++; //found is true so count Rec
       //InsertRec(newRelNum, (unsigned char *)recPtr);
+      printf("\n");
       shwRelCatRec((unsigned char *)recPtr);
+      
       startRid.pid = foundRid.pid;
       startRid.slotnum = foundRid.slotnum + 1; //Find Rec WIll Not Give Error If slotNum >recPerPg
-      printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
+      //printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
       recFound = GetNextRec(0, &startRid, &foundRid, recPtr);
     }
+    printf("\n");
+    for(int lnp=0;lnp<113;lnp++)
+    {
+      printf("_");
+    }
+    printf("\n");
   }
   void printAttrCat(void)
   {
     Rid startRid, foundRid;
     int count, recFound;
     char recPtr[MR_RELCAT_REC_SIZE];
+    char d[34]="ATTRNAME",e[10]="OFFSET",f[10]="LENGTH",g[10]="TYPE";
     //ivalue = atoi(value);
     startRid.pid = 0;
     startRid.slotnum = 0;
     count = 0;
     //recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&ivalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+    printf("\n\nATTRCT:-");
+    printf("\n");
+    for(int pln=0;pln<69;pln++)
+    {
+      printf("_");
+    }
+    printf("\n|%34s|%10s|%10s|%10s|\n", d, e, f, g);
+    for(int pln=0;pln<69;pln++)
+    {
+      printf("_");
+    }
+    
     recFound = GetNextRec(1, &startRid, &foundRid, recPtr);
     while (recFound == 1)
     {
       //printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n");
       count++; //found is true so count Rec
       //InsertRec(newRelNum, (unsigned char *)recPtr);
+      printf("\n");
       shwAttrCatRec((unsigned char *)recPtr);
       startRid.pid = foundRid.pid;
       startRid.slotnum = foundRid.slotnum + 1; //Find Rec WIll Not Give Error If slotNum >recPerPg
-      printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
+      //printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
       recFound = GetNextRec(1, &startRid, &foundRid, recPtr);
+    }
+    printf("\n");
+     for(int pln=0;pln<69;pln++)
+    {
+      printf("_");
     }
   }
   /*
