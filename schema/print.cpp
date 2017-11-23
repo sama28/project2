@@ -55,6 +55,12 @@ void parseRecord(int relNum, char *record)
         s=*(float*)(record+off);off+=4;
         strncpy(d,record+off,35);
         printf("%d\t%f\t%s\n",a,s,d);*/
+    }
+    
+int max(int a,int b){
+    if(a<b)
+        return b;
+    return a;
 }
 
 int Print(int argc, char **argv)

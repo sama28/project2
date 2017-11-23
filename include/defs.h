@@ -39,10 +39,12 @@ using namespace std;
 //************************************************************
 //----------this part depends on where you deploy this project
 //***********************************************************
-#define HOME_MINIREL "/home/samadhan/Desktop/git/minirel"//location of project root directory
+#define HOME_MINIREL "/home/ameya/project/project2"//location of project root directory
 #define MAX_PATH_LENGTH 255 						//length of absolute address of any file
 #define ATTRLEN		32
 #define MR_MAX_FILENAME_SIZE 255
+#define MAXFLOATLEN 16
+#define MAXINTLEN 11
 //------------------------------------------------------------------------------------------------
 //------------bit map slot specific----------------------------------------------------------
 
@@ -67,10 +69,10 @@ typedef struct ps {
 
 typedef struct gtps {
 		//	unsigned  char slotmap[BITMS_NUM];
-			char valid='i';
 			unsigned 	pid;
 			char dirty;
 			unsigned char contents [PAGESIZE+1];
+			char valid;
 			} GtPage;
 
 typedef struct psrelcat {

@@ -6,7 +6,7 @@
 
 /**
  **  These declarations were added because the C++ to C translator
- **  required them. All function definitionshave  been changed to
+ **  required them. All function definitions have been changed to
  **  ANSI style definitions.
  **/
 

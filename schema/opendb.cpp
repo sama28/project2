@@ -50,10 +50,15 @@ int OpenDB(int argc, char **argv)
 
         OpenCats();
         unsigned char a[59] = "absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
-
-        //InsertRec(0,a);InsertRec(0,a);FlushPage(0,0);
-        //for(int i=0;i<512;i++)
-        //printf("%02x",gPgTable[0].contents[i]);
+        int rel=OpenRel("q");
+        Rid s;s.pid=3;s.slotnum=11;
+        //DeleteRec(rel,&s);
+        /*for(int i=0;i<100;i++){
+          printf("\ninserting...\n");
+        InsertRec(rel,a);}
+        InsertRec(rel,a);*/
+        //for(int i=0;i<PAGESIZE;i++)
+        //printf("%02x",gPgTable[2].contents[i]);
         //testMain();
         //openRelTest();
         printRelCat();

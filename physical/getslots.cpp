@@ -3,6 +3,7 @@
 #include "../include/globals.h"
 #include "../include/fncn.h"
 #include<string.h>
+int AddPage(int relNum);
 int isSlotEmpty(unsigned char* buffer,int index,int relNum){
     int slotIndex,slotByte,tmp,slotVal,NUM_SLOTS=(((PAGESIZE-PGTAIL_SPACE)/(8*relCache[relNum].recLength+1))+1);
     unsigned int slotArray[8];
@@ -36,15 +37,17 @@ void GetSlots(struct recidArray* ridArray,int count,int relNum){
         //printf("while\n");
         if(pagenum+1>relCache[relNum].numPgs){
             //printf("if new page\n");
-            relCache[relNum].numPgs++;
+            /*relCache[relNum].numPgs++;
             for(int i=0;i<sizeof(gPgTable[relNum].contents);i++)
                     gPgTable[relNum].contents[i]=0;
-                    gPgTable[relNum].pid=pagenum;printf("p\n");
+                    gPgTable[relNum].pid=pagenum;printf("p\n");*/
+            AddPage(relNum);
         }
         else{
             //printf("if old page\n");
-            fseek(fp,pagenum*PAGESIZE,SEEK_SET);
-                fread(&gPgTable[relNum].contents,PAGESIZE,1,fp);
+            /*fseek(fp,pagenum*PAGESIZE,SEEK_SET);
+                fread(&gPgTable[relNum].contents,PAGESIZE,1,fp);*/
+                ReadPage(relNum,pagenum);
         }
         
         for(int i=0;i<relCache[relNum].recPerPg && zeroCount!=count;i++){
@@ -68,6 +71,6 @@ void GetSlots(struct recidArray* ridArray,int count,int relNum){
     }
     
     //for(int i=0;i<count;i++)
-    //printf("a\t%d\t%d\n",(ridArray+i)->Rid.slotnum,(ridArray+i)->Rid.pid);    
+    //printf("a\t%d\t%d\n",(ridArray+i)->Rid.slotnum,(ridArray+i)->Rid.pid);
     return;
 }

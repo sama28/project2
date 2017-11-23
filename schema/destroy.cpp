@@ -16,9 +16,10 @@ int Destroy(int argc,char ** argv)
         printf("No database currently opened.\n");
         return -1;
     }
-    char path[MAX_PATH_LENGTH];
-    int relNum=FindRelNum(argv[1]);
-    if(relNum!=-1){
+
+    int relNum=OpenRel(argv[1]);
+    if(relNum>=0){
+        FlushPage(relNum,gPgTable[relNum].pid);
         Rid tmpRid;
         //printf("%d\n",relNum);
         //printf("%d\t%d\n",relCache[relNum].Rid.pid,relCache[relNum].Rid.slotnum);
@@ -42,16 +43,18 @@ int Destroy(int argc,char ** argv)
         if(!recursive_delete(path,1)){
             printf("Error deleting the relation.\n");
         }
+        printf("path  %s",path);
         relCache[relNum].valid='i';
         relCache[relNum].attrHead.clear();
         /*
         insert code to delete btree indices for the relation*/
         return (OK);
     }
-    else{//relation not in relcache
-        
+    else{
+        printf("Relation %s does not exist.\n",argv[1]);
+        return (NOTOK);
     }
-    return (OK);  /* all's fine */
+     /* all's fine */
 }
 
 

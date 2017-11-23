@@ -69,7 +69,7 @@ relCache[1].attrHead;
                 else
                 {
 
-                    printf("\nIN READPAGE :-unable to read %u of %s ........", pid, relCache[relNum].relName);
+//                    printf("\nIN READPAGE :-unable to read %u of %s ........", pid, relCache[relNum].relName);
                 }
             }
         }
@@ -92,8 +92,8 @@ relCache[1].attrHead;
                     else
                     {
 
-                        printf("\nIN READPAGE :-unable to read %u of %s ........", pid, relCache[relNum].relName);
-                         printf("\n\nIn ReadPage :- relNum=%d Is In Buffer...", relNum);
+    //                    printf("\nIN READPAGE :-unable to read %u of %s ........", pid, relCache[relNum].relName);
+  //                       printf("\n\nIn ReadPage :- relNum=%d Is In Buffer...", relNum);
                     }
                 }
             }
@@ -102,7 +102,7 @@ relCache[1].attrHead;
     }
     else //(relNum is not in cache)
     {
-        printf("\n\nInRead PAge OPEN THE RELATION FIRST.....");
+      //  printf("\n\nInRead PAge OPEN THE RELATION FIRST.....");
     }
 }
 
