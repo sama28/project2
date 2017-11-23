@@ -8,23 +8,26 @@
 void getPath(char* path,char* filename);
 unsigned int bread_int(unsigned char* buffer,int size,int* init);
 */
+int AddPage(int relNum);
+
 void InsertRec(int relNum,unsigned char *rec){
     //printf("reached insertrec");
     FILE *fp;
-    char path[255];
+    fp=relCache[relNum].relFile;
+    /*char path[255];
     getPath(path,relCache[relNum].relName);
     if(!strcmp("relcat",relCache[relNum].relName) || !strcmp("attrcat",relCache[relNum].relName)){
         fp=fopen(path,"rb+");
     }
     else{
         fp=relCache[relNum].relFile;
-    }
+    }*/
     
     if(fp!=NULL){
         
         unsigned int slotArray[8];
         unsigned char write_this_slot;
-        int isNewpage=0,maxRec,newslot,offset=0,slotIndex=-1,slot,tmp=0,slotFound=0,NUM_SLOTS=(((PAGESIZE-PGTAIL_SPACE)/(8*relCache[relNum].recLength+1))+1) ,pagenum=0,slotByte=-1;
+        int a,isNewpage=0,maxRec,newslot,offset=0,slotIndex=-1,slot,tmp=0,slotFound=0,NUM_SLOTS=(((PAGESIZE-PGTAIL_SPACE)/(8*relCache[relNum].recLength+1))+1) ,pagenum=0,slotByte=-1;
         maxRec=(PAGESIZE-PGTAIL_SPACE-NUM_SLOTS)/relCache[relNum].recLength;
         //printf("max%d\n",maxRec);
         
@@ -33,19 +36,30 @@ void InsertRec(int relNum,unsigned char *rec){
             //printf("%d\n",relCache[relNum].numPgs);
             slotIndex=-1;
             slotByte=-1;
-            if(pagenum+1>relCache[relNum].numPgs){
-                relCache[relNum].numPgs++;
+            if(pagenum ==relCache[relNum].numPgs){
+                printf("insertrec:::%d",pagenum);
+                /*relCache[relNum].numPgs++;
                 relCache[relNum].dirty='d';
                 isNewpage=1;
+                FlushPage(relNum,gPgTable[relNum].pid);
                 for(int i=0;i<sizeof(gPgTable[relNum].contents);i++)
-                gPgTable[relNum].contents[i]=0;
-                gPgTable[relNum].pid=relCache[relNum].numPgs;   
+                    gPgTable[relNum].contents[i]=0;
+                gPgTable[relNum].pid=relCache[relNum].numPgs;  
+                gPgTable[relNum].valid='v';*/ ;
+                //printf("\n\nIN INSERTREC :-");
+                //scanf("%d",&a);
+                AddPage(relNum);
+                /*printf("\n\ninsertRec :-afterPageAdd\n");
+                for(int pp=0;pp <PAGESIZE;pp++)
+                {
+                    printf("\n%d => %x",pp,gPgTable[relNum].contents[pp]);
+                }*/
             }
             else{
-                fseek(fp,pagenum*PAGESIZE,SEEK_SET);
+                /*fseek(fp,pagenum*PAGESIZE,SEEK_SET);
                 fread(&gPgTable[relNum].contents,1,PAGESIZE,fp);
-                gPgTable[relNum].pid=pagenum;
-                //ReadPage(relNum,pagenum);   
+                gPgTable[relNum].pid=pagenum;*/
+                ReadPage(relNum,pagenum);   
             }
             //for(int j=0;j<PAGESIZE;j++)
             //printf("%02x",gPgTable[relNum].contents[j]);
@@ -82,6 +96,7 @@ void InsertRec(int relNum,unsigned char *rec){
         //printf("pagenum%d\nslotByte%d\nslotIndex%d\nrecordnum%d\n",pagenum,slotByte,slotIndex,slotByte*8+slotIndex);
         
         //printf("%d\n",NUM_SLOTS+(slotByte*8+slotIndex)*relCache[relNum].recLength);
+        
         newslot=getDecimal((unsigned int*)&slotArray);
         write_this_slot=newslot;
         //printf("%d",write_this_slot);
@@ -95,9 +110,9 @@ void InsertRec(int relNum,unsigned char *rec){
         printf("%02x",gPgTable[relNum].contents[j]);
         //printf("pagenum%d",pagenum);
         
-        fseek(fp,PAGESIZE*pagenum,SEEK_SET);
+        /*fseek(fp,PAGESIZE*pagenum,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,fp);
-        fflush(fp);
+        fflush(fp);*/
         
         gPgTable[relNum].dirty='d';
         relCache[relNum].numRecs++;

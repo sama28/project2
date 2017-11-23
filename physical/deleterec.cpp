@@ -29,11 +29,16 @@ void DeleteRec(int relNum,Rid* rid){
     if(relCache[relNum].relFile!=NULL){
         unsigned int slotArray[8];
         unsigned char write_this_slot;
-        if(gPgTable[relNum].pid!=rid->pid){
+        /*if(gPgTable[relNum].pid!=rid->pid){
             fseek(relCache[relNum].relFile,rid->pid*PAGESIZE,SEEK_SET);
             fread(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
             gPgTable[relNum].pid=rid->pid;
-            //ReadPage(relNum,rid->pid);
+            //
+        }*/
+        ReadPage(relNum,rid->pid);
+        if(gPgTable[relNum].pid!=rid->pid){
+            printf("DeleteRec:Page is not available in buffer\n");
+            return;
         }
         for(int i=0;i<NUM_SLOTS;i++){
             tmp=i;
@@ -69,11 +74,11 @@ void DeleteRec(int relNum,Rid* rid){
             gPgTable[relNum].contents[i+offset]=rec[i];
         //for(int j=0;j<PAGESIZE;j++)
         //printf("%02x",gPgTable[relNum].contents[j]);
-        
+        /*
         fseek(relCache[relNum].relFile,PAGESIZE*rid->pid,SEEK_SET);
         fwrite(&gPgTable[relNum].contents,PAGESIZE,1,relCache[relNum].relFile);
         fflush(relCache[relNum].relFile);
-        
+        */
         
         relCache[relNum].numRecs--;
         relCache[relNum].dirty='d';

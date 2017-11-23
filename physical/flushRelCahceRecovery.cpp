@@ -19,8 +19,6 @@ int flushRelCacheEntry(int Loc)
     //---------------------------------------------
     //CODE FOR FLUSHING ATTRCAT ENTRY SHOLD BE hERE
     //....
-    //....
-
     //---------------------------------------------
 
     printf("flushRelCacheEntry(int Loc) gPg Flushed %d---relcahe[loc].dirty=%c",gPgFlushed,relCache[Loc].dirty);    

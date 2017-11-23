@@ -55,7 +55,8 @@ int OpenDB(int argc, char **argv)
         //for(int i=0;i<512;i++)
         //printf("%02x",gPgTable[0].contents[i]);
         //testMain();
-        openRelTest();
+        //openRelTest();
+        printRelCat();
       }
       else
       {
@@ -76,7 +77,6 @@ int OpenDB(int argc, char **argv)
   {
     printf("db already open.");
   }
-  
 }
 void testMain()
 {
@@ -356,20 +356,19 @@ void openRelTest(void)
   //gPgTable[2].dirty='d';
   printf("\n\n\n\nOPENRELTEST");
 
+  int newRelNum = OpenRel("tempo8");
+  int oldRelNum = OpenRel("q");
 
-
-          int newRelNum = OpenRel("tempo8");
-           int  oldRelNum = OpenRel("q");
-
-            //3.Read Record In New Relation That Satiesfies The Condition
-            if (newRelNum > 1 && oldRelNum > 1)
-            {
-             readRecInNewRel(newRelNum,oldRelNum,"a","0",50); 
-            }
-            else{
-              printf("\n\nIN OPEN REL TEST :RElation is Not Opened ");
-            }
-              /*
+  //3.Read Record In New Relation That Satiesfies The Condition
+  if (newRelNum > 1 && oldRelNum > 1)
+  {
+    readRecInNewRel(newRelNum, oldRelNum, "a", "0", 50);
+  }
+  else
+  {
+    printf("\n\nIN OPEN REL TEST :RElation is Not Opened ");
+  }
+  /*
   int n1 = OpenRel("ww5");
   OpenRel("temp1");
   OpenRel("temp12");
@@ -481,61 +480,100 @@ void chacheTest(int relNum)
 }
 int AddPage(int relNum)
 {
-  printf("\n\nInADD PAGE ...");
-
+  printf("\n\nInADD PAGE to Rel %d...", relNum);
+  unsigned offset,ltstpage;
   int status = 0;
   FlushPage(relNum, gPgTable[relNum].pid);
   unsigned char rec[MR_RELCAT_REC_SIZE];
   for (int i = 0; i < PAGESIZE; i++)
   {
-    gPgTable[relNum].contents[i] = '\0';
+    gPgTable[relNum].contents[i] = 0x00;
   }
   gPgTable[relNum].dirty = 'd';
   gPgTable[relNum].pid = relCache[relNum].numPgs;
+  ltstpage=relCache[relNum].numPgs;
   gPgTable[relNum].valid = 'v';
 
   relCache[relNum].numPgs = relCache[relNum].numPgs + 1;
   relCache[relNum].dirty = 'd';
-  flushRelCacheEntry(relNum);
+  //flushRelCacheEntry(relNum);
 
-  //---------temporaray---------
-  /*
-    //ALTERNATIVE TO ABOVE FULSH RELCACHE ENTRY IMMEDIATE FLUSH  
-    relCache[relNum].numPgs=relCache[relNum].numPgs+1;
-    relCache[relNum].dirty='d';
-    unsigned offset;
+  //
+  /*-----Remove THIS COMMENT FOR IMMEDIATE UPDATE-----
     ReadPage(0,relCache[relNum].Rid.pid);
     makeRelCatRec(rec,relNum);
     if(gPgTable[0].pid==relCache[relNum].Rid.pid)
     {
-      printf("Writing RelCache To Buffer");
       offset=MR_RELCAT_BITMS_NUM+relCache[0].recLength*relCache[relNum].Rid.slotnum;
-      //shwRelCatRec(rec);
-      //shwRelCatRec(&gPgTable[0].contents[offset]);
       for(int i=0;i<relCache[0].recLength;i++)
       {
         gPgTable[0].contents[offset+i]=rec[i];
       }
-      //shwRelCatRec(&gPgTable[0].contents[offset]);
       gPgTable[0].dirty='d';
-      relCache[relNum].dirty='c';
     }
-    FlushPage(0,gPgTable[0].pid);
-    */
+    ReadPage(relNum,ltstpage);
+  */
+  //-------------------------------------------
 }
 
-void testOfstInRelCache(void)
-{
-  char str[8];
-  printf("relcat Attribut relName ofst %d", offsetInAttrCache(1, "attrName"));
-  cnvrtTypeNumToStr(DTFLOAT, str, 1);
-  printf("\n\nfloat=%s", str);
-  cnvrtTypeNumToStr(DTSTRING, str, 10);
-  printf("\n\nstring=%s", str);
-  cnvrtTypeNumToStr(DTINT, str, 4);
-  printf("\n\nint=%s", str);
-}
-/*
+  void testOfstInRelCache(void)
+  {
+    char str[8];
+    printf("relcat Attribut relName ofst %d", offsetInAttrCache(1, "attrName"));
+    cnvrtTypeNumToStr(DTFLOAT, str, 1);
+    printf("\n\nfloat=%s", str);
+    cnvrtTypeNumToStr(DTSTRING, str, 10);
+    printf("\n\nstring=%s", str);
+    cnvrtTypeNumToStr(DTINT, str, 4);
+    printf("\n\nint=%s", str);
+  }
+  void printRelCat(void)
+  {
+    Rid startRid, foundRid;
+    int count, recFound;
+    char recPtr[MR_RELCAT_REC_SIZE];
+    //ivalue = atoi(value);
+    startRid.pid = 0;
+    startRid.slotnum = 0;
+    count = 0;
+    //recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&ivalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+    recFound = GetNextRec(0, &startRid, &foundRid, recPtr);
+    while (recFound == 1)
+    {
+      //printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n");
+      count++; //found is true so count Rec
+      //InsertRec(newRelNum, (unsigned char *)recPtr);
+      shwRelCatRec((unsigned char *)recPtr);
+      startRid.pid = foundRid.pid;
+      startRid.slotnum = foundRid.slotnum + 1; //Find Rec WIll Not Give Error If slotNum >recPerPg
+      printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
+      recFound = GetNextRec(0, &startRid, &foundRid, recPtr);
+    }
+  }
+  void printAttrCat(void)
+  {
+    Rid startRid, foundRid;
+    int count, recFound;
+    char recPtr[MR_RELCAT_REC_SIZE];
+    //ivalue = atoi(value);
+    startRid.pid = 0;
+    startRid.slotnum = 0;
+    count = 0;
+    //recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&ivalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+    recFound = GetNextRec(1, &startRid, &foundRid, recPtr);
+    while (recFound == 1)
+    {
+      //printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n");
+      count++; //found is true so count Rec
+      //InsertRec(newRelNum, (unsigned char *)recPtr);
+      shwAttrCatRec((unsigned char *)recPtr);
+      startRid.pid = foundRid.pid;
+      startRid.slotnum = foundRid.slotnum + 1; //Find Rec WIll Not Give Error If slotNum >recPerPg
+      printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
+      recFound = GetNextRec(1, &startRid, &foundRid, recPtr);
+    }
+  }
+  /*
 ins()
 {
 
@@ -553,4 +591,31 @@ ins()
   insert into trel(a=1,b=1.4,c="a");
   insert into trel(a=1,b=1.5,c="a");
 }
+*/
+/*
+  old Implementation
+   //---------temporaray---------
+/*
+    //ALTERNATIVE TO ABOVE FULSH RELCACHE ENTRY IMMEDIATE FLUSH  
+    relCache[relNum].numPgs=relCache[relNum].numPgs+1;
+    relCache[relNum].dirty='d';
+    unsigned offset;
+    ReadPage(0,relCache[relNum].Rid.pid);
+    makeRelCatRec(rec,relNum);
+    if(gPgTable[0].pid==relCache[relNum].Rid.pid)
+    {
+      printf("Writing RelCache To Buffer");
+      offset=MR_RELCAT_BITMS_NUM+relCache[0].recLength*relCache[relNum].Rid.slotnum;
+      printf("\n\nInAddPage..\n");
+      shwRelCatRec(rec);
+      shwRelCatRec(&gPgTable[0].contents[offset]);
+      for(int i=0;i<relCache[0].recLength;i++)
+      {
+        gPgTable[0].contents[offset+i]=rec[i];
+      }
+      //shwRelCatRec(&gPgTable[0].contents[offset]);
+      gPgTable[0].dirty='d';
+      relCache[relNum].dirty='c';
+    }
+    FlushPage(0,gPgTable[0].pid);
 */

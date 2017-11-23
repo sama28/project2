@@ -11,7 +11,6 @@
 //extern "C" int Select(int ,char **);
 int crtNewRelAsOld(char *newRelName, char *oldRelName);
 void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[], int compOp);
-int offsetInAttrCache(int relNum, char *attrName);
 int Select(int argc, char **argv)
 {
     /* print command line arguments */
@@ -19,7 +18,7 @@ int Select(int argc, char **argv)
     printf("%s:\n", argv[0]);
     for (k = 1; k < argc; ++k)
         printf("\targv[%d] = %s\n", k, argv[k]);
-    printf("\n\nargv[4]=%d",*(int *)argv[4]);
+        printf("\n\nargv[4]=%d",*(int *)argv[4]);
    
     
 //printf("c=%c d=%d", *(int*)argv[4], *(int*)argv[4]);
@@ -185,7 +184,7 @@ void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[]
     int recFound = 0, count = 0, attrOfst;
     float fvalue;
     int ivalue;
-    // char attrValue[]
+    // char attrValue[] 
     //function return the offset of attribute in relCache[RelNUM].AttrHead[...offset ??..]
     attrOfst = offsetInAttrCache(oldRelNum, attrName);
     if (attrOfst >= 0)

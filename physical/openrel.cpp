@@ -157,7 +157,7 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
     int status;
     if(relCache[indexLoc].valid=='v' && relCache[indexLoc].relFile !=NULL )
     {
-        status=fclose(relCache[indexLoc].relFile);
+        status=fclose(relCache[indexLoc].relFile);   
     }
     else{
         status=0;
@@ -215,10 +215,9 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
     else
     {
         relCache[indexLoc].valid='i';
-        printf("\n\nEROR IN CLOSING OLDRELATION FILE.....");
+        printf("\n\nEROR IN CLOSING OLD RELATION FILE \n%.....",strerror(errno));
         return 0;
     }
-
 }
 void makeRelCatRec(unsigned char *cacheEntry,int indexLoc)
 {       //convert relCache Entry Of indexLoc Into relCatRec Formate That Can be stored;
@@ -317,7 +316,7 @@ int flushRelCacheEntry(int Loc)
     //check Befor Flshing Cache That Corresponding Page In gPgTable Is Not Dirty Or Flushed That Page 1st
     if(gPgTable[Loc].dirty=='d' && relCache[Loc].valid=='v')
     {
-        printf("\n\nflushRelCacheEntry(int Loc)....Calling FLUSH=%d",Loc);
+        printf("\n\nflushRelCacheEntry(int Loc)....Calling FLUSH=%d",Loc); 
         gPgFlushed=FlushPage(Loc,gPgTable[Loc].pid);
     }
     else{
