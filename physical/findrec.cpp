@@ -14,7 +14,7 @@ int strncomp(char* a,char* b,int len,int compOp);int floatcomp(float a,float b,i
 
 int FindRec(int relNum,Rid*startRid1,Rid *foundRid1,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )
 {
-printf("FindRec :relNum=%d value =%s compOp=%d\n ",relNum,valuePtr,compOp);
+//printf("FindRec :relNum=%d value =%s compOp=%d\n ",relNum,valuePtr,compOp);
 int status,flag=1;      
 //GetNextRec(int relNum,recid * startRid,recid* foundRid,void * recPtr)
 Rid startRid,foundRid;
@@ -38,19 +38,19 @@ startRid.slotnum=startRid1->slotnum;
             
                 if(isRecRight(relNum,recPtr,offset,valuePtr,compOp))
                 {
-                    printf("In FindRec: record Found....");
+  //                  printf("In FindRec: record Found....");
                     foundRid1->pid=foundRid.pid;
                     foundRid1->slotnum=foundRid.slotnum;
                      return 1;
                 }
                 else
                 {
-                    printf("\n\nIn FindRec: Comparision Returns False");
+    //                printf("\n\nIn FindRec: Comparision Returns False");
                 }      
             }
             else{
 
-                printf("\n\nIn FindRec: GetNext Fail In Finding Rec");
+      //          printf("\n\nIn FindRec: GetNext Fail In Finding Rec");
                 flag=0;
                 return 0;
             }
@@ -74,13 +74,13 @@ startRid.slotnum=startRid1->slotnum;
         }
     } 
     else{
-            printf("\n\nIn FindRec: attrType Or attrlength mismatch with disired attr..");
+        //    printf("\n\nIn FindRec: attrType Or attrlength mismatch with disired attr..");
         }  
 
    }
    else
    {
-       printf("\n\nIN FINDREC: FILE IS NOT OPENED...");
+       //printf("\n\nIN FINDREC: FILE IS NOT OPENED...");
    }
 return 0;
 }
@@ -349,11 +349,11 @@ int unsignshortcomp(unsigned short a,unsigned short b,int compOp)
 }
 int strncomp(char* a,char* b,int len,int compOp)
 {
-     printf("\n\nstrncomp :-called with a=%s b=%s",a,b);
+     //printf("\n\nstrncomp :-called with a=%s b=%s",a,b);
     switch(compOp)
     {
         case EQ:
-            printf("strnEQcalled with a=%s b=%s",a,b);
+       //     printf("strnEQcalled with a=%s b=%s",a,b);
             if(!strncmp(a,b,len)){return 1;}
         break;
         

@@ -80,27 +80,31 @@ int Project (int argc, char **argv)
     char *string[2*(argc-3)+2];
     int count=0;
 
-    printf("%d\n",2*argc-4);
-    string[0]="create";
+    //printf("1a%d\n",2*argc-4);
+    string[0]=(char*)malloc(7);
+    strcpy(string[0],"create");//printf("2a%d\n",2*argc-4);
     string[1]=(char*)malloc(strlen(argv[1]));
-    strcpy(string[1],argv[1]);
+    strcpy(string[1],argv[1]);//printf("3a%d\n",2*argc-4);
    
     for(int i=3;i<argc;i++){
         string[2*i-4]=(char*)malloc(strlen(argv[i]));
-        strcpy(string[2*i-4],argv[i]);
+        strcpy(string[2*i-4],argv[i]);//printf("4a%d\n",2*argc-4);
         switch (relCache[relNum].attrHead[order[i-3]].type){
             case DTINT:{
-                string[2*i-3]="i";
+                string[2*i-3]=(char*)malloc(2);
+                strcat(string[2*i-3],"i");
             }break;
 
             case DTFLOAT:{
-                string[2*i-3]="f";
+                string[2*i-3]=(char*)malloc(2);
+                strcat(string[2*i-3],"f");
             }break;
 
             case DTSTRING:{
-                string[2*i-3]=(char*)malloc(3);
+                string[2*i-3]=(char*)malloc(4);
                 sprintf(string[2*i-3],"s%d",relCache[relNum].attrHead[order[i-3]].length-1);
             }break;
+            //printf("5a%d\n",2*argc-4);
         }
     }
     string[2*(argc-3)+2]='\0';
@@ -108,7 +112,9 @@ int Project (int argc, char **argv)
         printf("%s\n",string[i],strlen(string[i]));
     }*/
     Create(2*(argc-3)+2,string);
-
+    for(int i=0;i<2*argc-3;i++){
+        free(string[i]);//printf("cc%d%d\n",i,2*argc-4);
+    }
     int relNum2=OpenRel(argv[1]);
     /*{
         char relPath[MAX_PATH_LENGTH];

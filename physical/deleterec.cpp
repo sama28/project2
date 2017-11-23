@@ -48,7 +48,7 @@ void DeleteRec(int relNum,Rid* rid){
                 if(slotArray[j]==1)
                     count++;
             }
-        }printf("count%d\n",count);
+        }printf("count%d\tpid%dslot\t%d\n",count,rid->pid,rid->slotnum);
         if(count==1){
             isOnlyRec=1;
         }

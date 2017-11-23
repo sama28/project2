@@ -50,12 +50,18 @@ int OpenDB(int argc, char **argv)
 
         OpenCats();
         unsigned char a[59] = "absdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghjklabsdfghj";
-
-        //InsertRec(0,a);InsertRec(0,a);FlushPage(0,0);
-        //for(int i=0;i<512;i++)
-        //printf("%02x",gPgTable[0].contents[i]);
+        int rel=OpenRel("q");
+        Rid s;s.pid=3;s.slotnum=11;
+        //DeleteRec(rel,&s);
+        /*for(int i=0;i<100;i++){
+          printf("\ninserting...\n");
+        InsertRec(rel,a);}
+        InsertRec(rel,a);*/
+        //for(int i=0;i<PAGESIZE;i++)
+        //printf("%02x",gPgTable[2].contents[i]);
         //testMain();
         //openRelTest();
+        //printRelCat();
       }
       else
       {
@@ -76,7 +82,6 @@ int OpenDB(int argc, char **argv)
   {
     printf("db already open.");
   }
-  
 }
 void testMain()
 {
@@ -356,20 +361,19 @@ void openRelTest(void)
   //gPgTable[2].dirty='d';
   printf("\n\n\n\nOPENRELTEST");
 
+  int newRelNum = OpenRel("tempo8");
+  int oldRelNum = OpenRel("q");
 
-
-          int newRelNum = OpenRel("tempo8");
-           int  oldRelNum = OpenRel("q");
-
-            //3.Read Record In New Relation That Satiesfies The Condition
-            if (newRelNum > 1 && oldRelNum > 1)
-            {
-             readRecInNewRel(newRelNum,oldRelNum,"a","0",50); 
-            }
-            else{
-              printf("\n\nIN OPEN REL TEST :RElation is Not Opened ");
-            }
-              /*
+  //3.Read Record In New Relation That Satiesfies The Condition
+  if (newRelNum > 1 && oldRelNum > 1)
+  {
+    readRecInNewRel(newRelNum, oldRelNum, "a", "0", 50);
+  }
+  else
+  {
+    printf("\n\nIN OPEN REL TEST :RElation is Not Opened ");
+  }
+  /*
   int n1 = OpenRel("ww5");
   OpenRel("temp1");
   OpenRel("temp12");
@@ -481,14 +485,14 @@ void chacheTest(int relNum)
 }
 int AddPage(int relNum)
 {
-  printf("\n\nInADD PAGE ...");
+  printf("\n\nInADD PAGE to Rel %d...", relNum);
 
   int status = 0;
   FlushPage(relNum, gPgTable[relNum].pid);
   unsigned char rec[MR_RELCAT_REC_SIZE];
   for (int i = 0; i < PAGESIZE; i++)
   {
-    gPgTable[relNum].contents[i] = '\0';
+    gPgTable[relNum].contents[i] = 0x00;
   }
   gPgTable[relNum].dirty = 'd';
   gPgTable[relNum].pid = relCache[relNum].numPgs;
@@ -496,7 +500,7 @@ int AddPage(int relNum)
 
   relCache[relNum].numPgs = relCache[relNum].numPgs + 1;
   relCache[relNum].dirty = 'd';
-  flushRelCacheEntry(relNum);
+  //flushRelCacheEntry(relNum);
 
   //---------temporaray---------
   /*
@@ -510,8 +514,9 @@ int AddPage(int relNum)
     {
       printf("Writing RelCache To Buffer");
       offset=MR_RELCAT_BITMS_NUM+relCache[0].recLength*relCache[relNum].Rid.slotnum;
-      //shwRelCatRec(rec);
-      //shwRelCatRec(&gPgTable[0].contents[offset]);
+      printf("\n\nInAddPage..\n");
+      shwRelCatRec(rec);
+      shwRelCatRec(&gPgTable[0].contents[offset]);
       for(int i=0;i<relCache[0].recLength;i++)
       {
         gPgTable[0].contents[offset+i]=rec[i];
@@ -534,6 +539,52 @@ void testOfstInRelCache(void)
   printf("\n\nstring=%s", str);
   cnvrtTypeNumToStr(DTINT, str, 4);
   printf("\n\nint=%s", str);
+}
+void printRelCat(void)
+{
+  Rid startRid, foundRid;
+  int count, recFound;
+  char recPtr[MR_RELCAT_REC_SIZE];
+  //ivalue = atoi(value);
+  startRid.pid = 0;
+  startRid.slotnum = 0;
+  count = 0;
+  //recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&ivalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+  recFound = GetNextRec(0, &startRid, &foundRid, recPtr);
+  while (recFound == 1)
+  {
+    //printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n");
+    count++; //found is true so count Rec
+    //InsertRec(newRelNum, (unsigned char *)recPtr);
+    shwRelCatRec((unsigned char *)recPtr);
+    startRid.pid = foundRid.pid;
+    startRid.slotnum = foundRid.slotnum + 1; //Find Rec WIll Not Give Error If slotNum >recPerPg
+    printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
+    recFound  = GetNextRec(0, &startRid, &foundRid, recPtr);
+  }
+}
+void printAttrCat(void)
+{
+  Rid startRid, foundRid;
+  int count, recFound;
+  char recPtr[MR_RELCAT_REC_SIZE];
+  //ivalue = atoi(value);
+  startRid.pid = 0;
+  startRid.slotnum = 0;
+  count = 0;
+  //recFound = FindRec(oldRelNum, &startRid, &foundRid, recPtr, attrType, attrSz, attrOfst, (char *)&ivalue, compOp); //GetNextRec(oldRelNum,&startRid,&foundRid,recPtr);
+  recFound = GetNextRec(1, &startRid, &foundRid, recPtr);
+  while (recFound == 1)
+  {
+    //printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\\n\n");
+    count++; //found is true so count Rec
+    //InsertRec(newRelNum, (unsigned char *)recPtr);
+    shwAttrCatRec((unsigned char *)recPtr);
+    startRid.pid = foundRid.pid;
+    startRid.slotnum = foundRid.slotnum + 1; //Find Rec WIll Not Give Error If slotNum >recPerPg
+    printf("\n\n printRELCAT->findRec startRid.slotnum ->%u startRid.pid:- %u ", startRid.slotnum, foundRid.pid);
+    recFound  = GetNextRec(1, &startRid, &foundRid, recPtr);
+  }
 }
 /*
 ins()

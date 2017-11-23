@@ -2,6 +2,9 @@
 #ifndef FNCTN
 #define FNCTN
 
+void parseRecord(int relNum,char* record);
+void printRelCat(void);
+void printAttrCat(void);
 int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid);
 void readRecInNewRel(int newRelNum, int oldRelNum, char attrName[], char value[], int compOp);
 int nextRec(int relNum, Rid *startRid, char *recPtr);
@@ -30,6 +33,7 @@ void CloseCats(void);
 void bwrite_int(unsigned char *tmp, int num, int size, int *init);
 int isRecRight(int relNum, char *recPtr, int offset, char *valuePtr, int compOp);
 unsigned attrOfstInRec(char *recPtr, int relNum, int offset);
+int offsetInAttrCache(int relNum, char *attrName);
 int FindRec(int relNum, Rid *startRid, Rid *foundRid, char *recPtr, unsigned short attrType, unsigned attrSize, unsigned offset, char *valuePtr, int compOp);
 int FindRelNum(char *relName);
 int nextRec(int relNum, Rid *startRid, char *recPtr);
@@ -38,5 +42,6 @@ void getSlots2(int relNum, struct recidArray *RidArray, Rid attrcat0, int count)
 void makeRelCatRec(unsigned char *, int);
 int flushRelCacheEntry(int);
 int crtNewRelAsOld(char *newRelName, char *oldRelName);
-
+void DeleteRec(int relNum,Rid* rid);
+int calcOffset(int relNum,int num);
 #endif

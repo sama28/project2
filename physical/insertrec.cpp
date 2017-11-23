@@ -8,6 +8,8 @@
 void getPath(char* path,char* filename);
 unsigned int bread_int(unsigned char* buffer,int size,int* init);
 */
+int AddPage(int relNum);
+
 void InsertRec(int relNum,unsigned char *rec){
     //printf("reached insertrec");
     FILE *fp;
@@ -34,12 +36,16 @@ void InsertRec(int relNum,unsigned char *rec){
             slotIndex=-1;
             slotByte=-1;
             if(pagenum+1>relCache[relNum].numPgs){
-                relCache[relNum].numPgs++;
+                printf("insertrec:::%d",pagenum+1);
+                /*relCache[relNum].numPgs++;
                 relCache[relNum].dirty='d';
                 isNewpage=1;
+                FlushPage(relNum,gPgTable[relNum].pid);
                 for(int i=0;i<sizeof(gPgTable[relNum].contents);i++)
                     gPgTable[relNum].contents[i]=0;
-                gPgTable[relNum].pid=relCache[relNum].numPgs;   
+                gPgTable[relNum].pid=relCache[relNum].numPgs;  
+                gPgTable[relNum].valid='v';*/ 
+                AddPage(relNum);
             }
             else{
                 /*fseek(fp,pagenum*PAGESIZE,SEEK_SET);

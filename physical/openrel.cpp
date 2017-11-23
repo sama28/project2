@@ -17,7 +17,7 @@ int makeRelCacheEntry(char *,int ,Rid *);
 int OpenRel(char * relName)
 {
 
-     printf("\n\nOpenRel..... \n ");
+     //printf("\n\nOpenRel..... \n ");
      int status,indexLoc,entryAt=0;
      int rltnExist;
      Rid foundRid;
@@ -57,12 +57,12 @@ int OpenRel(char * relName)
             else
             {
                 return -2;
-                printf("\n\nIN OPENREL :- RELATION DOESN'T EXISTS....");
+       //         printf("\n\nIN OPENREL :- RELATION DOESN'T EXISTS....");
             }
         }
         else
         {
-            printf("\IN OPENREL :- OPEN THE DATABASE ....");
+         //   printf("\IN OPENREL :- OPEN THE DATABASE ....");
         }
     }
     return -3;
@@ -73,7 +73,7 @@ int bringInRelCache(char * relCatEntry,Rid *foundRid)
     //to be store in The RelCache
     //retruns the index of The location in relCache at which New Entry Is Placed
 
-    printf("bringInRelCache(char * relCatEntry=%s,Rid *foundRid(pid ,slotnum)(%u %u))",relCatEntry,foundRid->pid,foundRid->slotnum);
+    //printf("bringInRelCache(char * relCatEntry=%s,Rid *foundRid(pid ,slotnum)(%u %u))",relCatEntry,foundRid->pid,foundRid->slotnum);
     int loc,flushed,entrymade=0;
     loc=relCacheRplcmntInd;//entryWhere();
     flushed=flushRelCacheEntry(loc);
@@ -88,7 +88,7 @@ int bringInRelCache(char * relCatEntry,Rid *foundRid)
                 
             }
            else{
-                printf("\n\nERROR SYSTEM CATALOG(RELCAT/ATTRCAT) ENTRY IN CACHE IS REPLACED BY OPENREL...");
+      //          printf("\n\nERROR SYSTEM CATALOG(RELCAT/ATTRCAT) ENTRY IN CACHE IS REPLACED BY OPENREL...");
                //relCacheRplcmntInd=MR_FIRST_USR_RLTN_IND;
            }
         }
@@ -108,7 +108,7 @@ int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid)
 {
     //for Refferences...
     //int FindRec(int relNum,Rid*startRid,Rid *foundRid,char *recPtr,unsigned short attrType,unsigned attrSize,unsigned offset,char *valuePtr,int compOp )rltnExist=findRecInRelcat(relName,relCatEntry,&foundRid);
-    printf("findRecInRelcat(char * relName =%s,char *recPtr= %s,Rid *foundRid(pid,slotnum)=%u %u )",relName,recPtr,foundRid->pid,foundRid->slotnum);
+    //printf("findRecInRelcat(char * relName =%s,char *recPtr= %s,Rid *foundRid(pid,slotnum)=%u %u )",relName,recPtr,foundRid->pid,foundRid->slotnum);
     int status;
     Rid startRid;
 
@@ -119,14 +119,14 @@ int findRecInRelcat(char * relName,char *recPtr,Rid *foundRid)
 
     if(status==1)
     {
-        printf("\n\nIn findRecInRelcat");
+      //  printf("\n\nIn findRecInRelcat");
         return 1;
     }
     else{
 
-        printf("\n\nInfindRecRelcat...");
+        //printf("\n\nInfindRecRelcat...");
 
-        printf("\n\nRELATION DOES NOT EXISTS...");
+        //printf("\n\nRELATION DOES NOT EXISTS...");
     }
     return 0;
 }
@@ -150,7 +150,7 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
     */
     //relcat(relName,recLength,rcPerPg,numPgs,numRecs,numAttrs,pid,rid)
 
-    printf("\n\nint makeRelCacheEntry(char *relCatEntry=%s,int indexLoc =%d,Rid *foundRid(pid,SlotNum)(%u ,%u))",relCatEntry,indexLoc,foundRid->pid,foundRid->slotnum);
+    //printf("\n\nint makeRelCacheEntry(char *relCatEntry=%s,int indexLoc =%d,Rid *foundRid(pid,SlotNum)(%u ,%u))",relCatEntry,indexLoc,foundRid->pid,foundRid->slotnum);
     int offset,attrCatEntryMade=0;
     offset=0;
     char path[MAX_PATH_LENGTH];
@@ -187,7 +187,7 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
         relCache[indexLoc].valid='v';
 
        
-        printf("\n\nEntry In RelCahce:-\n%s %u %u %u %u %d %u %u",relCache[indexLoc].relName,relCache[indexLoc].recLength,relCache[indexLoc].recPerPg,relCache[indexLoc].numPgs,relCache[indexLoc].numRecs,relCache[indexLoc].numAttrs,relCache[indexLoc].attr0Rid.pid,relCache[indexLoc].attr0Rid.slotnum);
+      //  printf("\n\nEntry In RelCahce:-\n%s %u %u %u %u %d %u %u",relCache[indexLoc].relName,relCache[indexLoc].recLength,relCache[indexLoc].recPerPg,relCache[indexLoc].numPgs,relCache[indexLoc].numRecs,relCache[indexLoc].numAttrs,relCache[indexLoc].attr0Rid.pid,relCache[indexLoc].attr0Rid.slotnum);
         //POPULATE attrHead
         //relCache[indexLoc].attrHead[]
         attrCatEntryMade=makeAttrCacheEntry(indexLoc,relCache[indexLoc].attr0Rid,relCache[indexLoc].numAttrs,relCache[indexLoc].recLength);
@@ -203,19 +203,19 @@ int makeRelCacheEntry(char *relCatEntry,int indexLoc,Rid *foundRid)
         getPath(path,relCache[indexLoc].relName);
         strcat(path,"/");
         strcat(path,relCache[indexLoc].relName);
-        printf("\n\nmakeRelCahceEntry relName=%s RelNum=%d path %s",relCache[indexLoc].relName,indexLoc,path);
+        ///printf("\n\nmakeRelCahceEntry relName=%s RelNum=%d path %s",relCache[indexLoc].relName,indexLoc,path);
         relCache[indexLoc].relFile=fopen(path,"rb+");
         if(relCache[indexLoc].relFile == NULL)
         {
-            printf("\n\nNEW RELATION FILE CAN NOT BE OPENED");
-            return 0;
+            //printf("\n\nNEW RELATION FILE CAN NOT BE OPENED");
+           return 0;
         }
         return 1;
     }
     else
     {
         relCache[indexLoc].valid='i';
-        printf("\n\nEROR IN CLOSING OLDRELATION FILE.....");
+        //printf("\n\nEROR IN CLOSING OLDRELATION FILE.....");
         return 0;
     }
 
@@ -255,7 +255,7 @@ int makeAttrCacheEntry(int Loc,Rid start_Rid,unsigned short numAttrs,unsigned re
     tslotnum=start_Rid.slotnum;
     numOfAttrs=numAttrs;
 
-    printf("\n\nmakeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength) numAttrs %u",numAttrs);
+    //printf("\n\nmakeAttrCacheEntry(int Loc,Rid startRid,unsigned numAttrs,unsigned recLength) numAttrs %u",numAttrs);
     relCache[Loc].attrHead.clear();
    
     i=0;
@@ -277,7 +277,7 @@ int makeAttrCacheEntry(int Loc,Rid start_Rid,unsigned short numAttrs,unsigned re
             attrHead.length=*((unsigned *)(recPtr+offset));
             offset=offset+4;
             attrHead.type=*((short *)(recPtr+offset));    
-            printf("\n\nENTRY MADE IN ATTRCACHE at loc %d %s %u %u %d",Loc,attrHead.attrName,attrHead.offset,attrHead.length,attrHead.type);
+          //  printf("\n\nENTRY MADE IN ATTRCACHE at loc %d %s %u %u %d",Loc,attrHead.attrName,attrHead.offset,attrHead.length,attrHead.type);
       
             relCache[Loc].attrHead.push_back(attrHead);
       
@@ -301,7 +301,7 @@ int makeAttrCacheEntry(int Loc,Rid start_Rid,unsigned short numAttrs,unsigned re
     }
     else
     {
-        printf("\n\nMakeAttrCacheEntry Function Fails In Pupulating Cache.....");
+        //printf("\n\nMakeAttrCacheEntry Function Fails In Pupulating Cache.....");
         return 0;
     }
     
@@ -309,7 +309,7 @@ int makeAttrCacheEntry(int Loc,Rid start_Rid,unsigned short numAttrs,unsigned re
 int flushRelCacheEntry(int Loc)
 {   //ONLY FLUSHES RELCHACHE ENTRY TO THE RELCAT AND DOESNT DO ENYTHING FOR ATTRCAT
     //IF UPDATE COMMAND CHANGES THE ATTRIBUTE COULD CREATE PROBLEM
-    printf("\n\nint flushRelCacheEntry(int Loc)=%d",Loc);
+   // printf("\n\nint flushRelCacheEntry(int Loc)=%d",Loc);
     int gPgFlushed=0;
     unsigned char cacheEntry[MR_RELCAT_REC_SIZE];
     unsigned offset;
@@ -317,7 +317,7 @@ int flushRelCacheEntry(int Loc)
     //check Befor Flshing Cache That Corresponding Page In gPgTable Is Not Dirty Or Flushed That Page 1st
     if(gPgTable[Loc].dirty=='d' && relCache[Loc].valid=='v')
     {
-        printf("\n\nflushRelCacheEntry(int Loc)....Calling FLUSH=%d",Loc);
+     //   printf("\n\nflushRelCacheEntry(int Loc)....Calling FLUSH=%d",Loc);
         gPgFlushed=FlushPage(Loc,gPgTable[Loc].pid);
     }
     else{
@@ -331,7 +331,7 @@ int flushRelCacheEntry(int Loc)
 
     //---------------------------------------------
 
-    printf("flushRelCacheEntry(int Loc) gPg Flushed %d---relcahe[loc].dirty=%c",gPgFlushed,relCache[Loc].dirty);    
+   // printf("flushRelCacheEntry(int Loc) gPg Flushed %d---relcahe[loc].dirty=%c",gPgFlushed,relCache[Loc].dirty);    
     if(gPgFlushed==1)//after success fully dealling with gPgTable
     {
         //Check if Cache Entry Is Dirty Or Not Corresponding To The Location That Is To Be Replaced
@@ -340,7 +340,7 @@ int flushRelCacheEntry(int Loc)
             //write this entry into relation and attribute Catalog
             //insert A Record At Particular Place
             makeRelCatRec(cacheEntry,Loc);//put the Cache Content in cacheEntry Rec
-            printf("\n\n Printing RelCat Record that IS PREPAREd cahceEntry....");
+     //       printf("\n\n Printing RelCat Record that IS PREPAREd cahceEntry....");
             shwRelCatRec(cacheEntry);
             WriteRec(0,cacheEntry,&(relCache[Loc].Rid));//bug remove code with write checking
            
@@ -377,13 +377,13 @@ int entryWhere()
 {
     if(relCacheIndex < NUM_RELCACHE_ENTRY)//relCacheIndex<MAX_RELCACHE_ENTRY
     {
-        printf("\n\nint entryWhere()=%d",relCacheIndex);
+       // printf("\n\nint entryWhere()=%d",relCacheIndex);
         return relCacheIndex;
     }
     else{
             //decide replacement policy
             //for fifo use below
-            printf("\n\nint entryWhere()-> whomToReplace()");
+         //   printf("\n\nint entryWhere()-> whomToReplace()");
             //return whomToReplace();
             return relCacheRplcmntInd;
     }
@@ -412,7 +412,7 @@ int whomToReplace(void)
             i=MR_FIRST_USR_RLTN_IND;
         }
     }
-    printf("\n\nint whomToReplace(void)=%d",relCacheRplcmntInd);
+//    printf("\n\nint whomToReplace(void)=%d",relCacheRplcmntInd);
     return relCacheRplcmntInd;
     /*
     if(relCacheRplcmntInd<20)//relCacheIndex<MAX_RELCACHE_ENTRY

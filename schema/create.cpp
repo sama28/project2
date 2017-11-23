@@ -167,6 +167,8 @@ int Create (int argc,char** argv)
     if(isInputValid(argc,argv)){
         //printf("Valid");
         GetSlots(&RidArray[0],attrCount,1);
+        for(int i=0;i<attrCount;i++)
+        printf("\nslots are\t%d\t%d\n",RidArray[i].Rid.pid,RidArray[i].Rid.slotnum);
         for(int i=2;i<argc;i=i+2){
             offset=0;
             sanitize(record,relCache[1].recLength+1);
@@ -264,13 +266,13 @@ int Create (int argc,char** argv)
         //for(int k=0;k<relCache[0].recLength;k++)
        // printf("%x",record2[k]);
 
-        /*int t=0;
+        int t=0;
         unsigned char q[32];
         bread_string(record2,32,&t,q);
         int a1=bread_int(record2,4,&t);int a2=bread_int(record2,4,&t);int a3=bread_int(record2,4,&t);
         int a4=bread_int(record2,4,&t);int a5=bread_int(record2,2,&t);int a6=bread_int(record2,4,&t);
         int a7=bread_int(record2,4,&t);
-        printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);*/
+        printf("\n%s\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",q,a1,a2,a3,a4,a5,a6,a7);
         InsertRec(0,record2);
         relCache[0].dirty='d';
         relCache[1].dirty='d';
@@ -280,6 +282,7 @@ int Create (int argc,char** argv)
     }
     else{
         printf("Invalid parameters for create function.");
+        return -1;
     }
 
     return 1;

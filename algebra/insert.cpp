@@ -107,6 +107,28 @@ int calcOffset(int relNum,int num){
     return offset;
 }
 
+void trim(char* s){
+    size_t size;
+    char *end;
+    int index=0;
+    size = strlen(s);
+
+    if (!size)
+        return ;
+
+    for(int i=strlen(s)-1;i>-1 && (s[i]==0x20 || s[i]=='\t');i--){
+        s[i]=0x00;
+    }
+
+    for(int i=0;i<strlen(s) && (s[i]==0x20 || s[i]=='\t');i++)
+        index++;
+	//printf("\nindex%d\n",index);
+	for(int i=0;i<strlen(s);i++){
+		s[i]=s[i+index];
+	}
+}
+
+
 int recordExist(int relNum,char* record){
     //Remove lines below.
     /*{
@@ -126,16 +148,19 @@ int recordExist(int relNum,char* record){
     int flag=0;
     for(int i=0;i<relCache[relNum].numRecs && flag==0;i++){
         if(GetNextRec(relNum,&startRid,&foundRid,record2)){
-            /*
+            printf("\n2 records below\n");
             for(int k=0;k<relCache[relNum].recLength;k++)
             printf("%02x",record[k]);
             printf("\n");
-            */
+            for(int k=0;k<relCache[relNum].recLength;k++)
+            printf("%02x",record2[k]);
+            printf("\n");
             int n=memcmp(record,record2,relCache[relNum].recLength);
             if(n==0){
                 flag=1;
                 printf("\naa%d\n",n);
             }
+
 
             startRid.pid=foundRid.pid;
             startRid.slotnum=foundRid.slotnum+1;
@@ -193,7 +218,10 @@ int Insert (int argc, char **argv)
             }break;
 
             case DTSTRING:{
-                for(int j=0;j<relCache[relNum].attrHead[order[i/2-1]].length;j++){
+                printf("strlen :::%d\n",strlen(argv[i+1]));
+                trim(argv[i+1]);
+                printf("strlen :::%d\n",strlen(argv[i+1]));
+                for(int j=0;j<strlen(argv[i+1])/*relCache[relNum].attrHead[order[i/2-1]].length*/;j++){
                     record[offset+j]=argv[i+1][j];
                 }
             }break;
